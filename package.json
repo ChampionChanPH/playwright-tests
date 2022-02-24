@@ -3,5 +3,9 @@
     "@playwright/test": "^1.19.1",
     "playwright": "^1.19.1"
   },
-  "scripts": {}
+  "scripts": {},
+  "dependencies": {
+    "allure-playwright": "^2.0.0-beta.15",
+    "jest-playwright-allure": "^1.4.3"
+  }
 }
