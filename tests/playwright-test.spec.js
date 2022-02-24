@@ -1,17 +1,12 @@
-const { chromium } = require('playwright');
+const { test, expect} = require('@playwright/test')
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('https://demo.playwright.dev/todomvc');
-});
-
-test.describe('New Todo', () => {
-  test('should allow me to add todo items', async ({ page }) => {
-    // Create 1st todo.
-    await page.locator('text=Sign in').click();
-    await new Promise(r => setTimeout(r, 2000));
-    assert.equal(page.url(), 'https://login.prosple.com/login?state=hKFo2SB4X0Rkd0tZa0s0RzZPQjVvV2l2ZThBQnFidTR0Y09wZKFupWxvZ2luo3RpZNkgbTVFY21DWVhGSGFjOFRmcGw1UklQUFI1dm9nZGVaVVajY2lk2SBFWXhnTG1ka0wyVjBmMDNjNkZrZmFHMGc5bE1XSk9hbQ&client=EYxgLmdkL2V0f03c6FkfaG0g9lMWJOam&protocol=oauth2&audience=https%3A%2F%2Fauth.prosple.com&mode=null&app_name=GradAustralia&logo=&scope=openid%20profile%20email%20offline_access&response_type=code&response_mode=query&nonce=LXVyWjROb3RUek80TzAxbkF5c2F5NjlIbFp4UTBLNFBxQmJnLm1ERkwyRQ%3D%3D&redirect_uri=https%3A%2F%2Fgradaustralia.com.au%2Fcallback&code_challenge=WBloQjBc3IcqDJ7YGJWsPjYmgz5T-u4ZxRtpYgSsCh0&code_challenge_method=S256&auth0Client=eyJuYW1lIjoiYXV0aDAtc3BhLWpzIiwidmVyc2lvbiI6IjEuMTIuMCJ9');
-    // ---------------------
-    await context.close();
-    await browser.close();
-  });
-});
+test.describe('login tests', async () => {
+  test('confirm a successful login by checking profile icon shows on the page after loggin in', async ({  page }) => {
+    await page.goto('https://gradaustralia.com.au/')
+    await page.locator("//a[contains(@class, 'ViuJv button AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
+    await page.fill("input#email", "testing.with.prosple@gmail.com")
+    await page.fill("input#password", "Prosple0000")
+    await page.click("button#btn-login")
+    await expect(page.locator("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")).toBeVisible()
+  })
+})
