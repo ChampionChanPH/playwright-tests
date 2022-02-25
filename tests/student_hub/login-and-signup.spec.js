@@ -64,7 +64,7 @@ test.describe('signup tests', async () => {
   })
 
   test.only('user signup via Facebook', async ({ page, browserName }) => {
-    test.skip(browserName !== "chromium", "cannot run logins in parallel in multiple browsers")
+    test.skip(browserName !== "chromium", "cannot run signups in parallel in multiple browsers")
     await page.click("//div[@id='signup-message']//a[@class='open-signup']")
     await page.locator("#signup-form >> text=Facebook").click()
     await page.fill("input#email", SH_EMAIL)
