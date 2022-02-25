@@ -63,7 +63,7 @@ test.describe('signup tests', async () => {
     await expect(page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1)).toBeVisible()
   })
 
-  test('user signup via Facebook', async ({ page, browserName }) => {
+  test.only('user signup via Facebook', async ({ page, browserName }) => {
     test.skip(browserName !== "chromium", "cannot run signups in parallel in multiple browsers")
     await page.click("//div[@id='signup-message']//a[@class='open-signup']")
     await page.locator("#signup-form >> text=Facebook").click()
