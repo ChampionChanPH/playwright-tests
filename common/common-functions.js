@@ -1,6 +1,5 @@
 function getRandomNumber(minimum, maximum) {
-    let random = Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue
-    return random
+    return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum
 }
 
 module.exports = {
