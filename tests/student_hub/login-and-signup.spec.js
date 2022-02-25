@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test')
-const { SH_EMAIL , SH_PASSWORD, SH_FB_PASSWORD, FIRST_NAME, LAST_NAME, SH_EMAIL_SIGNUP, SH_PASSWORD_SIGNUP } = require("../../credentials/login-credentials.js")
+const { SH_EMAIL , SH_PASSWORD, SH_FB_PASSWORD, FIRST_NAME, LAST_NAME, SH_EMAIL_SIGNUP, SH_PASSWORD_SIGNUP } = require("../../common/login-credentials.js")
 
 test.beforeEach(async ({ page }) => {
   await page.goto('https://gradaustralia.com.au/')
