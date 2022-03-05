@@ -13,7 +13,7 @@ jobs:
         browser: [chromium, firefox, webkit]
     timeout-minutes: 60
     runs-on: windows-latest
-    if: github.event.deployment_status.state == 'success'
+    # if: github.event.deployment_status.state == 'success'
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
