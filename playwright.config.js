@@ -51,6 +51,7 @@ const config = {
       },
     },
 
+    /*
     {
       name: 'firefox',
       use: {
@@ -64,6 +65,7 @@ const config = {
         ...devices['Desktop Safari'],
       },
     },
+    */
 
     /* Test against mobile viewports. */
     // {
