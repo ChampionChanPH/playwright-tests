@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test.describe('login via email and password tests', async () => {
-  test.only('user login and when successful, confirm the profile icon', async ({ page }) => {
+  test('user login and when successful, confirm the profile icon', async ({ page }) => {
     await page.fill("input#email", SH_EMAIL)
     await page.fill("input#password", SH_PASSWORD)
     await page.click("button#btn-login")

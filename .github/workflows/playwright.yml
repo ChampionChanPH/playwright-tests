@@ -5,8 +5,8 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
-    name: "Windows tests"
+  test-win:
+    name: "Windows"
     strategy:
       fail-fast: false
       matrix:
