@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   await page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
 })
 
-test.describe('login via email and password tests', async () => {
+test.describe('login via email and password tests on student hub', async () => {
   test('user login and when successful, confirm the profile icon', async ({ page }) => {
     await page.fill("input#email", SH_EMAIL)
     await page.fill("input#password", SH_PASSWORD)
@@ -33,7 +33,7 @@ test.describe('login via email and password tests', async () => {
   })
 })
 
-test.describe('social media login tests', async () => {
+test.describe('social media login tests on student hub', async () => {
   test('user login via Facebook', async ({ page, browserName }) => {
     test.skip(browserName !== "chromium", "cannot run logins in parallel in multiple browsers")
     await page.locator("#login-form >> text=Facebook").click()
@@ -46,12 +46,12 @@ test.describe('social media login tests', async () => {
   })
 })
 
-test.describe('signup tests', async () => {
+test.describe('signup tests on student hub', async () => {
   test('user signup via email and password', async ({ page, browserName }) => {
     // test.skip(browserName !== "chromium", "cannot run signups in parallel in multiple browsers")
     await page.click("//div[@id='signup-message']//a[@class='open-signup']")
-    await page.fill("input#given-name", FIRST_NAME)
-    await page.fill("input#family-name", LAST_NAME)
+    await page.fill("input#given-name", data.firstName)
+    await page.fill("input#family-name", data.lastName)
     await page.fill("input#email-signup", SH_EMAIL_SIGNUP)
     await page.fill("input#password-signup", SH_PASSWORD_SIGNUP)
     await page.click("button#btn-signup")

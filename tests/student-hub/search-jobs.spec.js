@@ -1,11 +1,9 @@
 const { test, expect} = require('@playwright/test')
 const { getRandomCharacters } = require('../../common/common-functions')
-const { SH_URL } = require('../../common/login-credentials')
 const data = require("../../common/common-details.json")
 
 test.beforeEach(async ({ page }) => {
-  console.log(data.studentHubUrl)
-  await page.goto(`${SH_URL}search-jobs/`)
+  await page.goto(`${data.studentHubUrl}search-jobs/`)
 })
 
 test.describe('search job page tests', async () => {
