@@ -40,6 +40,7 @@ const config = {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure' // other options: "on" (screenshot every test), "off"
   },
 
   /* Configure projects for major browsers */

@@ -6,19 +6,27 @@ test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl + "/search-jobs")
 })
 
+// tests that can be done on the search job page on the student hub
 test.describe('search job page tests', async () => {
-    test("select a study field and check that the job results is showing correctly", async ({ page }) => {
-        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]").nth(0)
-        await filter.locator("//a[contains(@class, 'truncate-trigger')]").click()
-        const fields = filter.locator("//div[@class='facet__item']")
+    // use the study field filter and check that the filtered results showing correct study field
+    test("study field filter", async ({ page }) => {
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
+        const studyFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'studying or have a qualification')]//following-sibling::*[@class='toggle-target']")
+        await studyFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const fields = studyFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
-        const chosenField = await fields.nth(random - 1).locator("//label").innerText()
-        let studyField = /.*(?= \()/.exec(chosenField)
         await Promise.all([
             page.waitForNavigation(),
             fields.nth(random - 1).locator("//label/a").click()
         ])
+        const chosenField = await fields.locator("//div[input[@class='is-checked']]/following-sibling::label").innerText()
+        let studyField = /.*(?= \()/.exec(chosenField)
+        let total = /(?<=\()\d*/.exec(chosenField)
+        const breadcrumb = await page.locator("a[itemprop=item] span").last().innerText()
+        expect(breadcrumb.toLowerCase()).toEqual(studyField[0].toLowerCase())
+        const totalItems = await page.locator("div.search__meta p").innerText()
+        expect(totalItems).toContain(total[0])
         const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
         const countJobs = await jobs.count()
         const jobShowMore = jobs.locator("//a[contains(@class, 'truncate-trigger')]")
@@ -32,18 +40,25 @@ test.describe('search job page tests', async () => {
         }
     })
 
-    test("select a job type and check that the job results is showing correctly", async ({ page }) => {
-        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]").nth(1)
-        await filter.locator("//a[contains(@class, 'truncate-trigger')]").click()
-        const fields = filter.locator("//div[@class='facet__item']")
+    // use the job type filter and check that the filtered results showing correct job type
+    test("job type filter", async ({ page }) => {
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
+        const jobFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'looking for')]//following-sibling::*[@class='toggle-target']")
+        await jobFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const fields = jobFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
-        const chosenField = await fields.nth(random - 1).locator("//label").innerText()
-        let jobType = /.*(?= \()/.exec(chosenField)
         await Promise.all([
             page.waitForNavigation(),
             fields.nth(random - 1).locator("//label/a").click()
         ])
+        const chosenField = await fields.locator("//div[input[@class='is-checked']]/following-sibling::label").innerText()
+        let jobType = /.*(?= \()/.exec(chosenField)
+        let total = /(?<=\()\d*/.exec(chosenField)
+        const breadcrumb = await page.locator("a[itemprop=item] span").last().innerText()
+        expect(breadcrumb.toLowerCase()).toEqual(jobType[0].toLowerCase())
+        const totalItems = await page.locator("div.search__meta p").innerText()
+        expect(totalItems).toContain(total[0])
         const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
         const countJobs = await jobs.count()
         for (let i = 0; i < countJobs; i++) {
@@ -52,20 +67,66 @@ test.describe('search job page tests', async () => {
         }
     })
 
-    test("clicking Read reviews link goes to the correct page", async ({ page }) => {
-        const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
-        const countJobs = await jobs.count()
-        let random = getRandomNumber(1, countJobs)
-        const employerListPage = await jobs.nth(random - 1).locator("div.logo__item p").innerText()
+    // use the location filter and check that the total items matches the total showing on the filter
+    test("location filter", async ({ page }) => {
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
+        const locationFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'work in')]//following-sibling::*[@class='toggle-target']")
+        await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const fields = locationFilter.locator("//div[@class='facet__item']")
+        const countFields = await fields.count()
+        let random = getRandomNumber(1, countFields)
         await Promise.all([
             page.waitForNavigation(),
-            jobs.nth(random - 1).locator("//div[contains(@class, 'viewport--viewport-read-reviews')]//a").click()
+            fields.nth(random - 1).locator("//label/a").click()
         ])
-        const employerOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
-        expect(employerOverviewPage).toEqual(employerListPage)
+        const chosenField = await fields.locator("//div[input[@class='is-checked']]/following-sibling::label").innerText()
+        let location = /.*(?= \()/.exec(chosenField)
+        let total = /(?<=\()\d*/.exec(chosenField)
+        const breadcrumb = await page.locator("a[itemprop=item] span").last().innerText()
+        expect(breadcrumb.toLowerCase()).toEqual(location[0].toLowerCase())
+        const totalItems = await page.locator("div.search__meta p").innerText()
+        expect(totalItems).toContain(total[0])
     })
 
-    test("clicking the job title goes to the correct page", async ({ page }) => {
+    // use the sectors filter and check that the total items matches the total showing on the filter
+    test("sectors filter", async ({ page }) => {
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
+        const sectorFilter = filter.locator("//button[@class='toggle-trigger' and div/h4/text()='I prefer these sectors']//following-sibling::*[@class='toggle-target']")
+        await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const fields = sectorFilter.locator("//div[@class='facet__item']")
+        const countFields = await fields.count()
+        let random = getRandomNumber(1, countFields)
+        await Promise.all([
+            page.waitForNavigation(),
+            fields.nth(random - 1).locator("//label/a").click()
+        ])
+        const chosenField = await fields.locator("//div[input[@class='is-checked']]/following-sibling::label").innerText()
+        let sector = /.*(?= \()/.exec(chosenField)
+        let total = /(?<=\()\d*/.exec(chosenField)
+        const breadcrumb = await page.locator("a[itemprop=item] span").last().innerText()
+        expect(breadcrumb.toLowerCase()).toEqual(sector[0].toLowerCase())
+        const totalItems = await page.locator("div.search__meta p").innerText()
+        expect(totalItems).toContain(total[0])
+    })
+
+    // choose a job on the search jobs page with "Read reviews", click the link and see that it redirects to the correct detail page
+    test("click review link to detail page", async ({ page }) => {
+        const reviews = page.locator("//div[contains(@class, 'viewport--viewport-read-reviews')]")
+        const countReviews = await reviews.count()
+        let random = getRandomNumber(1, countReviews)
+        const employerListPage = await reviews.nth(random - 1).locator("//preceding-sibling::*[contains(@class, 'Logostyle__Logo')]//p").innerText()
+        await Promise.all([
+            page.waitForNavigation(),
+            reviews.locator("//a").nth(random - 1).click()
+        ])
+        const employerOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
+        const employerReviewTitle = await page.locator("h1.heading").innerText()
+        expect(employerOverviewPage).toEqual(employerListPage)
+        expect(employerReviewTitle).toEqual(`${employerListPage} Reviews`)
+    })
+
+    // choose a job on the search jobs page, click the job title and see that it redirects to the correct detail page
+    test("click job title to detail page", async ({ page }) => {
         const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
         const countJobs = await jobs.count()
         let random = getRandomNumber(1, countJobs)
@@ -81,7 +142,14 @@ test.describe('search job page tests', async () => {
         expect(jobTitleOverviewPage).toEqual(jobTitleListPage)
     })
 
-    test("test to confirm that the apply now button is clickable", async ({ page }) => {
-
+    // confirm that the apply now button on the search jobs page is working as expected
+    test.skip("apply now button is clickable", async ({ page }) => {
+        const apply = page.locator("a.button--type-apply")
+        const countApply = apply.count()
+        let random = getRandomNumber(1, countApply)
+        await Promise.all([
+            page.waitForNavigation(),
+            apply.nth(random - 1).click()
+        ])
     })
 })

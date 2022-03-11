@@ -1,13 +1,12 @@
 {
   "devDependencies": {
-    "@playwright/test": "^1.19.1",
+    "@playwright/test": "^1.19.2",
     "playwright": "^1.19.1"
   },
   "scripts": {
     "test": "npx playwright test"
   },
   "dependencies": {
-    "allure-playwright": "^2.0.0-beta.15",
     "jest-playwright-allure": "^1.4.3"
   }
 }

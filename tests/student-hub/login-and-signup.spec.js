@@ -10,8 +10,10 @@ test.beforeEach(async ({ page }) => {
     ])
 })
 
-test.describePro('login via email and password tests on student hub', async () => {
-    test('user login and when successful, confirm the profile icon', async ({ page }) => {
+// tests for login to the student hub
+test.describe('login via email and password tests on student hub', async () => {
+    // user successfully login to the student hub via email and password and confirm that the profile icon shows up to confirm it is logged in
+    test('successful user login', async ({ page }) => {
         await page.fill("input#email", data.studentHubEmail)
         await page.fill("input#password", data.studentHubPass)
         await Promise.all([
@@ -26,14 +28,16 @@ test.describePro('login via email and password tests on student hub', async () =
         await expect.soft(page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1)).toBeVisible()
     })
 
-    test('user input incorrect password and confirm that it shows an error', async ({ page }) => {
+    // user input incorrect password and it will show a red error message saying "Wrong email or password."
+    test('incorrect password', async ({ page }) => {
         await page.fill("input#email", data.studentHubEmail)
         await page.fill("input#password", "IncorrectPassword")
         await page.click("button#btn-login")
         await expect.soft(page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
     })
 
-    test('user left email and password empty and confirm that it shows an error', async ({ page }) => {
+    // user clicked on the login button without providing the email and password, confirm that it shows red error messages
+    test('empty email and password', async ({ page }) => {
         await page.fill("input#email", "")
         await page.fill("input#password", "")
         await page.click("button#btn-login")
@@ -42,8 +46,11 @@ test.describePro('login via email and password tests on student hub', async () =
     })
 })
 
+// tests for the sign up process on student hub
 test.describe('signup tests on student hub', async () => {
-    test('user signup via email and password', async ({ page }) => {
+    // user successfully sign up for an account in the student hub by providing some personal details
+    // after successful signup, close the account and check that the credentials won't work when tried to login
+    test('successful user signup', async ({ page }) => {
         await page.click("//div[@id='signup-message']//a[@class='open-signup']")
         await page.fill("input#given-name", data.firstName)
         await page.fill("input#family-name", data.lastName)
