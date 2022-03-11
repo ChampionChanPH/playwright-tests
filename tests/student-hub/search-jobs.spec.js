@@ -1,4 +1,4 @@
-const { test, expect} = require('@playwright/test')
+const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
 const data = require("../../common/common-details.json")
 
@@ -85,28 +85,3 @@ test.describe('search job page tests', async () => {
 
     })
 })
-
-// test.describe('search job page tests that requires a logged-in user', async () => {
-//   // test.beforeEach(async ({ page }) => {
-//   //   await Promise.all([
-//   //     page.waitForNavigation(),
-//   //     page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
-//   //   ])
-//   //   await page.fill("input#email", data.studentHubEmail)
-//   //   await page.fill("input#password", data.studentHubPass)
-//   //   await Promise.all([
-//   //     page.waitForNavigation(),
-//   //     page.click("button#btn-login")
-//   //   ])
-//   //   await page.waitForLoadState('networkidle', 5000)
-//   // })
-
-//   test.skip("check that bookmarks are working", async ({ page }) => {
-//     const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]").nth(0)
-//     const title = await jobs.locator("//div[contains(@class, 'teaser__item--title')]").innerText()
-//     console.log(title)
-//     await jobs.click("//div[contains(@class, 'viewport--viewport-bookmark-large')]//a[contains(@class, 'Savestyle__Button')]")
-//     const buttonText = await jobs.locator("//div[contains(@class, 'viewport--viewport-bookmark-large')]//a[contains(@class, 'Savestyle__Button')]").innerText()
-//     expect(buttonText).toContain("Saved")
-//   })
-// })

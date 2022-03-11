@@ -12,8 +12,8 @@ test.beforeEach(async ({ page }) => {
     ])
 })
 
-test.describe('test for job opportunities on the employer hub', async () => {
-    test('check the job opportunities tab', async ({ page }) => {
+test.describe('test for diversity contents on the employer hub', async () => {
+    test.skip('edit the ', async ({ page }) => {
         await page.waitForURL("**/dashboard/overview/")
         await Promise.all([
             page.waitForNavigation(),
@@ -30,7 +30,7 @@ test.describe('test for job opportunities on the employer hub', async () => {
         const optionCount = await options.count()
         let random = getRandomNumber(1, optionCount - 1)
         const chosenOption = await options.nth(random).innerText()
-        await page.locator("select[name=category]").selectOption({label: chosenOption})
+        await page.locator("select[name=category]").selectOption({ label: chosenOption })
         const summary = getRandomCharacters(12)
         await page.locator("textarea[name=summary]").fill(`This is a summary for the diversity content with some random characters: ${summary}.`)
         const body = getRandomCharacters(12)
