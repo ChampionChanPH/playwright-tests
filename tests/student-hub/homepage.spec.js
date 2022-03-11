@@ -7,15 +7,21 @@ test.beforeEach(async ({ page }) => {
 })
 
 test.describe('homepage tests', async () => {
-  test('check that the menu is working', async ({  page }) => {
+  test('check that the dropdowns are working', async ({  page }) => {
     const count = await page.locator("//select").count()
     for(let i = 0; i < count; i++) {
-      const dropdown = await page.locator("//select").nth(i).locator("//option").allInnerTexts()
-      let random = getRandomNumber(1, dropdown.length)
-      console.log(dropdown[random])
-      await page.locator(`//select`).nth(i).selectOption({label: dropdown[random]})
+      const options = page.locator("//select").nth(i).locator("//option")
+      const optionCount = await options.count()
+      let random = getRandomNumber(1, optionCount)
+      const chosenOption = await options.nth(random - 1).innerText()
+      console.log(chosenOption)
+      await page.locator('//select').nth(i).selectOption({label: chosenOption})
     }
-    await page.click(`div.input-group--actions button`)
-    await page.waitForURL(/search-jobs/)
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click("div.input-group--actions button")
+    ])
+    const url = page.url()
+    expect(url).toContain("/search-jobs")
   })
 })

@@ -4,8 +4,7 @@
     "playwright": "^1.19.1"
   },
   "scripts": {
-    "test": "npx playwright test",
-    "headed": "npx playwright test --headed"
+    "test": "npx playwright test"
   },
   "dependencies": {
     "allure-playwright": "^2.0.0-beta.15",

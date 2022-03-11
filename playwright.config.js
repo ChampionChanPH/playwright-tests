@@ -45,21 +45,21 @@ const config = {
   /* Configure projects for major browsers */
   projects: [
     // {
-    //   name: 'Google Chrome',
+    //   name: 'Chrome',
     //   use: {
     //     ...devices['Desktop Chrome'],
     //   },
     // },
 
     // {
-    //   name: 'firefox',
+    //   name: 'Firefox',
     //   use: {
     //     ...devices['Desktop Firefox'],
     //   },
     // },
 
     // {
-    //   name: 'webkit',
+    //   name: 'Safari',
     //   use: {
     //     ...devices['Desktop Safari'],
     //   },
@@ -80,15 +80,15 @@ const config = {
     // },
 
     /* Test against branded browsers. */
-    {
-      name: 'Microsoft Edge',
-      use: {
-        channel: 'msedge',
-      },
-    },
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: {
+    //     channel: 'msedge',
+    //   },
+    // },
 
     {
-      name: 'Google Chrome',
+      name: 'Chrome',
       use: {
         channel: 'chrome',
       },
