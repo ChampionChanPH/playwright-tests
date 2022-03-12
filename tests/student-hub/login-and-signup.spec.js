@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test')
 const data = require("../../common/common-details.json")
 const { getRandomNumber } = require("../../common/common-functions")
 
+// start by going to the student hub homepage and click on the sign-in button
 test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl)
     await Promise.all([

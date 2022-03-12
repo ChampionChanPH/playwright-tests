@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl)
 })
 
-// tests for the homepage
+// tests for the student hub homepage
 test.describe('homepage tests', async () => {
     // choose options from the dropdowns and check that the search button will redirect to a different page
     test('confirm dropdowns and search button is working', async ({ page }) => {

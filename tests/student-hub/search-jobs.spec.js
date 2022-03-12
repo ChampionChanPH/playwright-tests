@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
 const data = require("../../common/common-details.json")
 
+// go to the search jobs page on the student hub
 test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl + "/search-jobs")
 })
@@ -143,7 +144,8 @@ test.describe('search job page tests', async () => {
     })
 
     // confirm that the apply now button on the search jobs page is working as expected
-    test.skip("apply now button is clickable", async ({ page }) => {
+    // skipped: test not working yet
+    test.only("apply now button is clickable", async ({ page }) => {
         const apply = page.locator("a.button--type-apply")
         const countApply = apply.count()
         let random = getRandomNumber(1, countApply)
@@ -151,5 +153,52 @@ test.describe('search job page tests', async () => {
             page.waitForNavigation(),
             apply.nth(random - 1).click()
         ])
+    })
+})
+
+test.describe("search job page tests for logged-in users", async () => {
+    // login process
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
+        ])
+        await page.fill("input#email", data.studentHubEmail)
+        await page.fill("input#password", data.studentHubPass)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click("button#btn-login")
+        ])
+    })
+
+    // bookmark a job and check that what was saved is correct
+    test("bookmark job", async ({ page }) => {
+        await page.waitForSelector("div.viewport--normal a.logo")
+        const saveButton = page.locator("div.viewport--viewport-bookmark-large")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        console.log(random)
+        const employerListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]//div[@class='logo__item']/p").innerText()
+        const jobListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]//*[contains(@class, 'OpportunityTeaserstyle__OpportunityTitle')]").innerText()
+        await page.waitForTimeout(3000)
+        await saveButton.nth(random - 1).click()
+        await page.waitForTimeout(3000)
+        const textButton = await saveButton.nth(random - 1).innerText()
+        expect(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[text()='Jobs']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const employerBookmarked = await page.locator("div.logo__item").innerText()
+        const jobBookmarked = await page.locator("//*[contains(@class, 'OpportunityTeaserstyle__OpportunityTitle')]").innerText()
+        expect(employerBookmarked).toEqual(employerListPage)
+        expect(jobBookmarked).toEqual(jobListPage)
+        await page.locator("div.viewport--viewport-bookmark-large").click()
     })
 })

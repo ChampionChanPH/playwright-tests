@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
 const data = require("../../common/common-details.json")
 
+// go to the employers page in the student hub
 test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl + "/graduate-employers")
 })
@@ -141,7 +142,7 @@ test.describe('employer page tests', async () => {
     })
 
     // choose an employer on the employers page, click the employer name and see that it redirects to the correct detail page
-    test.only("click employer to detail page", async ({ page }) => {
+    test("click employer to detail page", async ({ page }) => {
         const employers = page.locator("h2.heading a")
         const countEmployers = await employers.count()
         let random = getRandomNumber(1, countEmployers)
