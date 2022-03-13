@@ -143,16 +143,21 @@ test.describe('search job page tests', async () => {
         expect(jobTitleOverviewPage).toEqual(jobTitleListPage)
     })
 
-    // confirm that the apply now button on the search jobs page is working as expected
-    // skipped: test not working yet
-    test.only("apply now button is clickable", async ({ page }) => {
+    // confirm that the apply now button on the search jobs page is working as expected\
+    // clicking apply now button opens a new tab that's why it checks for 2 pages
+    test.only("apply now button is clickable", async ({ page, context }) => {
         const apply = page.locator("a.button--type-apply")
-        const countApply = apply.count()
+        const countApply = await apply.count()
         let random = getRandomNumber(1, countApply)
+        const url = await apply.nth(random - 1).getAttribute("href")
         await Promise.all([
-            page.waitForNavigation(),
+            page.waitForTimeout(3000),
             apply.nth(random - 1).click()
         ])
+        // const urls = []
+        const pages = context.pages().length
+        // pages.forEach(element => urls.push(element._mainFrame._url))
+        expect(pages).toEqual(2)
     })
 })
 

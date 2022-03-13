@@ -26,7 +26,7 @@ test.describe('login via email and password tests on student hub', async () => {
             page.waitForNavigation(),
             page.locator('text=Logout').nth(1).click()
         ])
-        await expect.soft(page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1)).toBeVisible()
+        await expect(page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1)).toBeVisible()
     })
 
     // user input incorrect password and it will show a red error message saying "Wrong email or password."
@@ -34,7 +34,7 @@ test.describe('login via email and password tests on student hub', async () => {
         await page.fill("input#email", data.studentHubEmail)
         await page.fill("input#password", "IncorrectPassword")
         await page.click("button#btn-login")
-        await expect.soft(page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
+        await expect(page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
     })
 
     // user clicked on the login button without providing the email and password, confirm that it shows red error messages
@@ -43,7 +43,7 @@ test.describe('login via email and password tests on student hub', async () => {
         await page.fill("input#password", "")
         await page.click("button#btn-login")
         await expect.soft(page.locator("//span[@class='input-error-message' and text()='Enter your email address']")).toBeVisible()
-        await expect.soft(page.locator("//span[@class='input-error-message' and text()='Enter your password']")).toBeVisible()
+        await expect(page.locator("//span[@class='input-error-message' and text()='Enter your password']")).toBeVisible()
     })
 })
 
@@ -75,6 +75,6 @@ test.describe('signup tests on student hub', async () => {
         await page.fill("input#email", `christian.anasco+${random}@prosple.com`)
         await page.fill("input#password", `Prosple1234`)
         await page.click("button#btn-login")
-        await expect.soft(page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
+        await expect(page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
     })
 })
