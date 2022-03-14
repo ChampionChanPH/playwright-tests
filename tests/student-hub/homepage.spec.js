@@ -22,7 +22,6 @@ test.describe('homepage tests', async () => {
             page.waitForNavigation(),
             page.click("div.input-group--actions button")
         ])
-        const url = page.url()
-        expect(url).toContain("/search-jobs")
+        expect(page.url()).toContain("/search-jobs")
     })
 })

@@ -1,6 +1,7 @@
 const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
 const data = require("../../common/common-details.json")
+const { CompleteLogin } = require("../../common/common-classes")
 
 // go to the search jobs page on the student hub
 test.beforeEach(async ({ page }) => {
@@ -164,25 +165,15 @@ test.describe('search job page tests', async () => {
 test.describe("search job page tests for logged-in users", async () => {
     // login process
     test.beforeEach(async ({ page }) => {
-        await Promise.all([
-            page.waitForNavigation(),
-            page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
-        ])
-        await page.fill("input#email", data.studentHubEmail)
-        await page.fill("input#password", data.studentHubPass)
-        await Promise.all([
-            page.waitForNavigation(),
-            page.click("button#btn-login")
-        ])
+        const login = new CompleteLogin(page)
+        await login.studentHubLogin()
     })
 
     // bookmark a job and check that what was saved is correct
-    test("bookmark job", async ({ page }) => {
-        await page.waitForSelector("div.viewport--normal a.logo")
+    test.only("bookmark job", async ({ page }) => {
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)
-        console.log(random)
         const employerListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]//div[@class='logo__item']/p").innerText()
         const jobListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]//*[contains(@class, 'OpportunityTeaserstyle__OpportunityTitle')]").innerText()
         await page.waitForTimeout(3000)
