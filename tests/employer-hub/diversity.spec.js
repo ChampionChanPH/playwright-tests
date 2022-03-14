@@ -1,15 +1,11 @@
 const { test, expect } = require('@playwright/test')
-const data = require("../../common/common-details.json")
 const { getRandomNumber, getRandomCharacters } = require("../../common/common-functions")
+const { CompleteLogin } = require("../../common/common-classes")
+const data = require("../../common/common-details.json")
 
 test.beforeEach(async ({ page }) => {
-    await page.goto(data.employerHubUrl)
-    await page.fill("input#email", data.employerHubEmail)
-    await page.fill("input#password", data.employerHubPass)
-    await Promise.all([
-        page.waitForNavigation(),
-        page.click("button#btn-login")
-    ])
+    const login = new CompleteLogin(page)
+    await login.employerHubLogin()
 })
 
 test.describe('test for diversity contents on the employer hub', async () => {

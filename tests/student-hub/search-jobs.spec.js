@@ -1,11 +1,12 @@
 const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
-const data = require("../../common/common-details.json")
 const { CompleteLogin } = require("../../common/common-classes")
+const data = require("../../common/common-details.json")
 
 // go to the search jobs page on the student hub
 test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl + "/search-jobs")
+    await page.waitForSelector("div.viewport--normal a.logo")
 })
 
 // tests that can be done on the search job page on the student hub
@@ -160,8 +161,183 @@ test.describe('search job page tests', async () => {
         // pages.forEach(element => urls.push(element._mainFrame._url))
         expect(pages).toEqual(2)
     })
+
+    // check that the closing in message on jobs is correct
+    test("closing in alert message", async ({ page }) => {
+        const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
+        const countJobs = await jobs.count()
+        console.log(countJobs)
+        for (let i = 0; i < countJobs; i++) {
+            const closeAlert = jobs.nth(i).locator("li.deadline-warning")
+            const alert = await closeAlert.isVisible()
+            if (alert) {
+                let result = false
+                let alertMessage = await closeAlert.innerText()
+                let applyClose = await jobs.nth(i).locator("//div[contains(@class, 'field-label') and text()='Applications Close']/following-sibling::*").innerText()
+                let difference = Math.abs(Date.parse(applyClose) - Date.now()) / 1000
+                let differenceDays = Math.floor(difference / 86400) + 1
+
+                if (Date.parse(applyClose) < Date.now()) {
+                    result = alertMessage.includes("Today")
+                } else {
+                    result = alertMessage.includes(`${differenceDays.toString()} day`)
+                }
+
+                expect(result).toBeTruthy()
+            }
+        }
+    })
+
+    // check that when filtered, the results were filtered correctly
+    test("sort by filter, closing date", async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('select[name=sort]').selectOption({ label: "Closing Date" })
+        ])
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let sorted = true
+            const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
+            const jobContents = await jobs.locator("//*[contains(@class, 'field-label') and text()='Applications Close']/following-sibling::*").allTextContents()
+            for (let i = 0; i < jobContents.length - 1; i++) {
+                if (Date.parse(jobContents[i]) > Date.parse(jobContents[i + 1])) {
+                    sorted = false
+                    break
+                }
+            }
+            expect(sorted).toBeTruthy()
+        }
+    })
+
+    // check that when filtered, the results were filtered correctly
+    test("sort by filter, employers a-z", async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('select[name=sort]').selectOption({ label: "Employers A-Z" })
+        ])
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let sorted = true
+            const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
+            const jobContents = await jobs.locator("div.logo__item p").allTextContents()
+            for (let i = 0; i < jobContents.length - 1; i++) {
+                if (jobContents[i] > jobContents[i + 1]) {
+                    sorted = false
+                    break
+                }
+            }
+            expect(sorted).toBeTruthy()
+        }
+    })
+
+    // check that when filtered, the results were filtered correctly
+    test("sort by filter, employers z-a", async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('select[name=sort]').selectOption({ label: "Employers Z-A" })
+        ])
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let sorted = true
+            const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
+            const jobContents = await jobs.locator("div.logo__item p").allTextContents()
+            for (let i = 0; i < jobContents.length - 1; i++) {
+                if (jobContents[i] < jobContents[i + 1]) {
+                    sorted = false
+                    break
+                }
+            }
+            expect(sorted).toBeTruthy()
+        }
+    })
+
+    // check that when filtered, the results were filtered correctly
+    test("sort by filter, newest opportunities", async ({ page }) => {
+
+    })
+
+    // test the pagination on the search job page
+    test("pagination", async ({ page }) => {
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let active = await page.locator("li.pagination-item.is-active").innerText()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("li.pagination-item--direction-previous").click()
+            ])
+            let newActive = await page.locator("li.pagination-item.is-active").innerText()
+            let result = active > newActive
+            expect.soft(result).toBeTruthy()
+            expect.soft(page.url()).toContain(`start=${(newActive - 1) * 8}`)
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("li.pagination-item--direction-next").click()
+            ])
+            active = await page.locator("li.pagination-item.is-active").innerText()
+            result = active > newActive
+            expect.soft(result).toBeTruthy()
+            expect(page.url()).toContain(`start=${(active - 1) * 8}`)
+        }
+    })
+
+    // click the save button, user will be asked to login first
+    test("bookmark job and login via popup", async ({ page }) => {
+        const saveButton = page.locator("div.viewport--viewport-bookmark-large")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        await Promise.all([
+            page.waitForTimeout(3000),
+            saveButton.nth(random - 1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Log in')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign in')")).toBeVisible()
+    })
+
+    // click the save button, user can opt to sign up
+    test("bookmark job and signup via popup", async ({ page }) => {
+        const saveButton = page.locator("div.viewport--viewport-bookmark-large")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        await Promise.all([
+            page.waitForTimeout(3000),
+            saveButton.nth(random - 1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Sign up')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign up with')")).toBeVisible()
+    })
 })
 
+// tests on search job page tests that requires users to login
 test.describe("search job page tests for logged-in users", async () => {
     // login process
     test.beforeEach(async ({ page }) => {
@@ -170,7 +346,7 @@ test.describe("search job page tests for logged-in users", async () => {
     })
 
     // bookmark a job and check that what was saved is correct
-    test.only("bookmark job", async ({ page }) => {
+    test("bookmark job", async ({ page }) => {
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)

@@ -5,6 +5,7 @@ const data = require("../../common/common-details.json")
 // go to the employers page in the student hub
 test.beforeEach(async ({ page }) => {
     await page.goto(data.studentHubUrl + "/graduate-employers")
+    await page.waitForSelector("div.viewport--normal a.logo")
 })
 
 // tests that can be done on the employer page tests on the student hub

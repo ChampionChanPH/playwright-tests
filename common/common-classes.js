@@ -18,6 +18,17 @@ class CompleteLogin {
         ])
         await this.page.waitForSelector("div.viewport--normal a.logo")
     }
+
+    async employerHubLogin() {
+        await this.page.goto(data.employerHubUrl)
+        await this.page.fill("input#email", data.employerHubEmail)
+        await this.page.fill("input#password", data.employerHubPass)
+        await Promise.all([
+            this.page.waitForNavigation(),
+            this.page.click("button#btn-login")
+        ])
+        await this.page.waitForSelector("//div[contains(@class, 'viewport viewport--normal')]//a[contains(@class, 'Navigationstyle__LogoLink')]")
+    }
 }
 
 module.exports = { CompleteLogin }
