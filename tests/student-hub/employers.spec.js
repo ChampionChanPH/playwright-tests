@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
+const { CompleteLogin } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
 
 // go to the employers page in the student hub
