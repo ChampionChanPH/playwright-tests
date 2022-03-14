@@ -155,4 +155,65 @@ test.describe('employer page tests', async () => {
         const employerOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
         expect(employerOverviewPage).toEqual(employerListPage)
     })
+
+    // check that when filtered, the results were filtered correctly
+    test("sort by filter, name a-z", async ({ page }) => {
+
+    })
+
+    // check that when filtered, the results were filtered correctly
+    test("sort by filter, name z-a", async ({ page }) => {
+
+    })
+
+    // test the pagination on the employers page
+    test("pagination", async ({ page }) => {
+
+    })
+
+    // click the save button, user will be asked to login first
+    test.only("bookmark job and login via popup", async ({ page }) => {
+        const saveButton = page.locator("button.button")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        await Promise.all([
+            page.waitForTimeout(3000),
+            saveButton.nth(random - 1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Log in')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign in')")).toBeVisible()
+    })
+
+    // click the save button, user can opt to sign up
+    test.only("bookmark job and signup via popup", async ({ page }) => {
+        const saveButton = page.locator("button.button")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        await Promise.all([
+            page.waitForTimeout(3000),
+            saveButton.nth(random - 1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Sign up')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign up with')")).toBeVisible()
+    })
+})
+
+// tests on employer page that requires users to login
+test.describe("employer page tests for logged-in users", async () => {
+    // login process
+    test.beforeEach(async ({ page }) => {
+        const login = new CompleteLogin(page)
+        await login.studentHubLogin()
+    })
+
+    // bookmark an employer and check that what was saved is correct
+    test("bookmark employer", async ({ page }) => {
+
+    })
 })

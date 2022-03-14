@@ -337,7 +337,7 @@ test.describe('search job page tests', async () => {
     })
 })
 
-// tests on search job page tests that requires users to login
+// tests on search job page that requires users to login
 test.describe("search job page tests for logged-in users", async () => {
     // login process
     test.beforeEach(async ({ page }) => {
