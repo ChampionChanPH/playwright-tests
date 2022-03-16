@@ -39,7 +39,50 @@ test.describe('seo landing page tests', async () => {
         })
     })
 
+    // TODO: clicking the advice article title will redirect to the correct detail page
+    test("click article title to detail page", async ({ page }) => {
 
+    })
+
+    // TODO: clicking the video title will redirect to the correct detail page
+    test("click video title to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the "Read full story" button on graduate stories section will redirect to the correct detail page
+    test("click read full story button in graduate stories to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the name of the person featured in graduate stories section will redirect to the correct detail page
+    test("click name in graduate stories to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the "Read full story" button on day in the life stories section will redirect to the correct detail page
+    test("click read full story button in day in the life to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the name of the person featured in day in the life stories section will redirect to the correct detail page
+    test("click name in day in the life to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the employer name will redirect to the correct detail page
+    test("click employer name to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the employer banner will redirect to the correct detail page
+    test("click employer banner to detail page", async ({ page }) => {
+
+    })
+
+    // TODO: clicking the employer logo will redirect to the correct detail page
+    test("click employer logo to detail page", async ({ page }) => {
+
+    })
 })
 
 // tests on seo landing page that requires users to login
@@ -51,7 +94,7 @@ test.describe("seo landing page tests for logged-in users", async () => {
     })
 
     // bookmark a job and see that what was saved on the account is correct
-    test.only("bookmark job", async ({ page }) => {
+    test("bookmark job", async ({ page }) => {
         await page.waitForSelector("div.viewport--viewport-bookmark-large")
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()
@@ -84,5 +127,15 @@ test.describe("seo landing page tests for logged-in users", async () => {
         await page.locator("div.viewport--viewport-bookmark-large").click()
         const message = await page.locator("h1.heading").innerText()
         expect(message).toEqual("No Saved Jobs")
+    })
+
+    // TODO: bookmark an article and see that what was saved on the account is correct
+    test("bookmark article", async ({ page }) => {
+
+    })
+
+    // TODO: bookmark an employer and see that what was saved on the account is correct
+    test("bookmark employer", async ({ page }) => {
+
     })
 })
