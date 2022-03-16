@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
     await page.waitForSelector("div.viewport--normal a.logo")
 })
 
-// tests that can be done on the employer page tests on the student hub
+// tests that can be done on the employer page on the student hub
 test.describe('employer page tests', async () => {
     // use the company size filter and then check that all filtered results shows the correct company size
     test("company size filter", async ({ page }) => {
@@ -159,21 +159,92 @@ test.describe('employer page tests', async () => {
 
     // check that when filtered, the results were filtered correctly
     test("sort by filter, name a-z", async ({ page }) => {
-
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('select[name=sort]').selectOption({ label: "Name A-Z" })
+        ])
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let sorted = true
+            const employers = page.locator("//div[contains(@class, 'EmployerTeaserstyle__EmployerTeaser')]")
+            const employerContents = await employers.locator("div.teaser__item h2.heading a").allTextContents()
+            for (let i = 0; i < employerContents.length - 1; i++) {
+                console.log(`${employerContents[i]} -- ${employerContents[i + 1]}`)
+                if (employerContents[i].toLowerCase() > employerContents[i + 1].toLowerCase()) {
+                    sorted = false
+                    break
+                }
+            }
+            expect(sorted).toBeTruthy()
+        }
     })
 
     // check that when filtered, the results were filtered correctly
     test("sort by filter, name z-a", async ({ page }) => {
-
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('select[name=sort]').selectOption({ label: "Name Z-A" })
+        ])
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let sorted = true
+            const employers = page.locator("//div[contains(@class, 'EmployerTeaserstyle__EmployerTeaser')]")
+            const employerContents = await employers.locator("div.teaser__item h2.heading a").allTextContents()
+            for (let i = 0; i < employerContents.length - 1; i++) {
+                console.log(`${employerContents[i]} -- ${employerContents[i + 1]}`)
+                if (employerContents[i].toLowerCase() < employerContents[i + 1].toLowerCase()) {
+                    sorted = false
+                    break
+                }
+            }
+            expect(sorted).toBeTruthy()
+        }
     })
 
     // test the pagination on the employers page
     test("pagination", async ({ page }) => {
-
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let active = await page.locator("li.pagination-item.is-active").innerText()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("li.pagination-item--direction-previous").click()
+            ])
+            let newActive = await page.locator("li.pagination-item.is-active").innerText()
+            let result = active > newActive
+            expect.soft(result).toBeTruthy()
+            expect.soft(page.url()).toContain(`start=${(newActive - 1) * 8}`)
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("li.pagination-item--direction-next").click()
+            ])
+            active = await page.locator("li.pagination-item.is-active").innerText()
+            result = active > newActive
+            expect.soft(result).toBeTruthy()
+            expect(page.url()).toContain(`start=${(active - 1) * 8}`)
+        }
     })
 
     // click the save button, user will be asked to login first
-    test.only("bookmark job and login via popup", async ({ page }) => {
+    test("bookmark job and login via popup", async ({ page }) => {
         const saveButton = page.locator("button.button")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)
@@ -189,7 +260,7 @@ test.describe('employer page tests', async () => {
     })
 
     // click the save button, user can opt to sign up
-    test.only("bookmark job and signup via popup", async ({ page }) => {
+    test("bookmark job and signup via popup", async ({ page }) => {
         const saveButton = page.locator("button.button")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)
@@ -215,6 +286,31 @@ test.describe("employer page tests for logged-in users", async () => {
 
     // bookmark an employer and check that what was saved is correct
     test("bookmark employer", async ({ page }) => {
-
+        const saveButton = page.locator("a.save")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        const employerListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'EmployerTeaserstyle__EmployerTeaser')]//div[@class='teaser__item']//h2").innerText()
+        console.log("bookmarked employer:", employerListPage)
+        await page.waitForTimeout(3000)
+        await saveButton.nth(random - 1).click()
+        await page.waitForTimeout(3000)
+        const textButton = await saveButton.nth(random - 1).innerText()
+        expect(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Employers']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const employerBookmarked = await page.locator("div.teaser__item h2").innerText()
+        console.log("saved employer:", employerBookmarked)
+        expect(employerBookmarked).toEqual(employerListPage)
+        await page.locator("a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Employers")
     })
 })

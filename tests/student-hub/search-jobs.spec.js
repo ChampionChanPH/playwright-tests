@@ -233,7 +233,7 @@ test.describe('search job page tests', async () => {
             const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
             const jobContents = await jobs.locator("div.logo__item p").allTextContents()
             for (let i = 0; i < jobContents.length - 1; i++) {
-                if (jobContents[i] > jobContents[i + 1]) {
+                if (jobContents[i].toLowerCase() > jobContents[i + 1].toLowerCase()) {
                     sorted = false
                     break
                 }
@@ -260,7 +260,7 @@ test.describe('search job page tests', async () => {
             const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
             const jobContents = await jobs.locator("div.logo__item p").allTextContents()
             for (let i = 0; i < jobContents.length - 1; i++) {
-                if (jobContents[i] < jobContents[i + 1]) {
+                if (jobContents[i].toLowerCase() < jobContents[i + 1].toLowerCase()) {
                     sorted = false
                     break
                 }
@@ -352,11 +352,13 @@ test.describe("search job page tests for logged-in users", async () => {
         let random = getRandomNumber(1, countSaveButton)
         const employerListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]//div[@class='logo__item']/p").innerText()
         const jobListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]//*[contains(@class, 'OpportunityTeaserstyle__OpportunityTitle')]").innerText()
+        console.log("bookmarked employer:", employerListPage)
+        console.log("bookmarked job:", jobListPage)
         await page.waitForTimeout(3000)
         await saveButton.nth(random - 1).click()
         await page.waitForTimeout(3000)
         const textButton = await saveButton.nth(random - 1).innerText()
-        expect(textButton).toEqual("Saved")
+        expect.soft(textButton).toEqual("Saved")
         await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
         await Promise.all([
             page.waitForNavigation(),
@@ -364,13 +366,17 @@ test.describe("search job page tests for logged-in users", async () => {
         ])
         await Promise.all([
             page.waitForNavigation(),
-            page.locator("//a[text()='Jobs']").click()
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Jobs']").click()
         ])
         await page.waitForTimeout(3000)
         const employerBookmarked = await page.locator("div.logo__item").innerText()
         const jobBookmarked = await page.locator("//*[contains(@class, 'OpportunityTeaserstyle__OpportunityTitle')]").innerText()
-        expect(employerBookmarked).toEqual(employerListPage)
-        expect(jobBookmarked).toEqual(jobListPage)
+        expect.soft(employerBookmarked).toEqual(employerListPage)
+        expect.soft(jobBookmarked).toEqual(jobListPage)
+        console.log("saved employer:", employerBookmarked)
+        console.log("saved job:", jobBookmarked)
         await page.locator("div.viewport--viewport-bookmark-large").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Jobs")
     })
 })

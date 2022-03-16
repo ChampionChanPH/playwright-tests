@@ -11,18 +11,28 @@ test.beforeEach(async ({ page }) => {
 test.describe('homepage tests', async () => {
     // choose options from the dropdowns and check that the search button will redirect to a different page
     test('confirm dropdowns and search button is working', async ({ page }) => {
+        const choices = []
         const count = await page.locator("//select").count()
         for (let i = 0; i < count; i++) {
             const options = page.locator("//select").nth(i).locator("//option")
             const optionCount = await options.count()
             let random = getRandomNumber(1, optionCount)
             const chosenOption = await options.nth(random - 1).innerText()
+            choices.push(chosenOption)
             await page.locator('//select').nth(i).selectOption({ label: chosenOption })
         }
         await Promise.all([
             page.waitForNavigation(),
             page.click("div.input-group--actions button")
         ])
+        console.log("choices:", choices)
         expect(page.url()).toContain("/search-jobs")
+        const breadcrumbs = await page.locator("ul.breadcrumbs span").allTextContents()
+        console.log("breadcrumbs:", breadcrumbs)
+        choices.forEach(choice => {
+            if (!(choice.includes("Any"))) {
+                expect(breadcrumbs.includes(choice)).toBeTruthy()
+            }
+        })
     })
 })
