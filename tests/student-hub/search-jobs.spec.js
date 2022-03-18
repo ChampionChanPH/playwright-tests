@@ -145,13 +145,13 @@ test.describe('search job page tests', async () => {
         expect(jobTitleOverviewPage).toEqual(jobTitleListPage)
     })
 
-    // confirm that the apply now button on the search jobs page is working as expected\
+    // confirm that the apply now button on the search jobs page is working as expected
     // clicking apply now button opens a new tab that's why it checks for 2 pages
     test("apply now button is clickable", async ({ page, context }) => {
         const apply = page.locator("a.button--type-apply")
         const countApply = await apply.count()
         let random = getRandomNumber(1, countApply)
-        const url = await apply.nth(random - 1).getAttribute("href")
+        // const url = await apply.nth(random - 1).getAttribute("href")
         await Promise.all([
             page.waitForTimeout(3000),
             apply.nth(random - 1).click()
