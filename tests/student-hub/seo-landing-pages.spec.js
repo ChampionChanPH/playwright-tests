@@ -213,19 +213,53 @@ test.describe('seo landing page tests', async () => {
         expect(jobTitleDetailPage).toEqual(jobTitle)
     })
 
-    // TODO: clicking the employer name will redirect to the correct detail page
+    // clicking the employer name will redirect to the correct detail page
     test("click employer name to detail page", async ({ page }) => {
-
+        const employers = page.locator("div.viewport--large div.grid__item")
+        const employerCount = await employers.count()
+        let random = getRandomNumber(1, employerCount)
+        const name = await employers.nth(random - 1).locator("h3.heading a").innerText()
+        console.log(`chosen employer: ${name}`)
+        await Promise.all([
+            page.waitForNavigation(),
+            employers.nth(random - 1).locator("h3.heading a").click()
+        ])
+        const nameDetailPage = await page.locator("div.masthead__title h2.heading").innerText()
+        console.log(`detail page employer: ${nameDetailPage}`)
+        expect(nameDetailPage).toEqual(name)
     })
 
-    // TODO: clicking the employer banner will redirect to the correct detail page
+    // clicking the employer banner will redirect to the correct detail page
     test("click employer banner to detail page", async ({ page }) => {
-
+        const employers = page.locator("div.viewport--large div.grid__item")
+        const employerCount = await employers.count()
+        let random = getRandomNumber(1, employerCount)
+        const name = await employers.nth(random - 1).locator("h3.heading a").innerText()
+        console.log(`chosen employer: ${name}`)
+        await Promise.all([
+            page.waitForNavigation(),
+            employers.nth(random - 1).locator("div.organisation-card__banner a").click()
+        ])
+        const nameDetailPage = await page.locator("div.masthead__title h2.heading").innerText()
+        console.log(`detail page employer: ${nameDetailPage}`)
+        expect(nameDetailPage).toEqual(name)
     })
 
-    // TODO: clicking the employer logo will redirect to the correct detail page
+    // clicking the employer logo will redirect to the correct detail page
     test("click employer logo to detail page", async ({ page }) => {
-
+        await page.locator("h2.heading:has-text('Employers recruiting for ')").click()
+        const employers = page.locator("div.viewport--large div.grid__item")
+        const employerCount = await employers.count()
+        let random = getRandomNumber(1, employerCount)
+        const name = await employers.nth(random - 1).locator("h3.heading a").innerText()
+        console.log(`chosen employer: ${name}`)
+        await Promise.all([
+            page.waitForNavigation(),
+            employers.nth(random - 1).locator("div.organisation-card__logo a").click()
+        ])
+        const nameDetailPage = await page.locator("div.masthead__title h2.heading").innerText()
+        console.log(`detail page employer: ${nameDetailPage}`)
+        expect(nameDetailPage).toEqual(name)
     })
 })
 
@@ -273,9 +307,37 @@ test.describe("seo landing page tests for logged-in users", async () => {
         expect(message).toEqual("No Saved Jobs")
     })
 
-    // TODO: bookmark an article and see that what was saved on the account is correct
+    // bookmark an article and see that what was saved on the account is correct
     test("bookmark article", async ({ page }) => {
-
+        await page.locator("h2.heading:has-text('Advice for ')").click()
+        const advices = page.locator("h2.heading:has-text('Advice for ')").locator("//following-sibling::div//div[@data-testid='collection-item']")
+        await advices.nth(0).locator("a.save").waitFor()
+        const saveButton = advices.locator("a.save")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        const adviceTitle = await advices.nth(random - 1).locator("h3.heading a").innerText()
+        console.log("bookmarked advice:", adviceTitle)
+        await page.waitForTimeout(3000)
+        await saveButton.nth(random - 1).click()
+        await page.waitForTimeout(3000)
+        const textButton = await saveButton.nth(random - 1).innerText()
+        expect.soft(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Advice']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const adviceBookmarked = await page.locator("//*[contains(@class, 'AdviceSnippetstyle__AdviceSnippetContent')]/h3/a").innerText()
+        expect.soft(adviceBookmarked).toEqual(adviceTitle)
+        console.log("saved advice:", adviceTitle)
+        await page.locator("a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Articles")
     })
 
     // TODO: bookmark an employer and see that what was saved on the account is correct
