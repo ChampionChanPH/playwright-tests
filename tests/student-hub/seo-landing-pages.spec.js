@@ -334,14 +334,42 @@ test.describe("seo landing page tests for logged-in users", async () => {
         await page.waitForTimeout(3000)
         const adviceBookmarked = await page.locator("//*[contains(@class, 'AdviceSnippetstyle__AdviceSnippetContent')]/h3/a").innerText()
         expect.soft(adviceBookmarked).toEqual(adviceTitle)
-        console.log("saved advice:", adviceTitle)
+        console.log("saved advice:", adviceBookmarked)
         await page.locator("a.save").click()
         const message = await page.locator("h1.heading").innerText()
         expect(message).toEqual("No Saved Articles")
     })
 
-    // TODO: bookmark an employer and see that what was saved on the account is correct
+    // bookmark an employer and see that what was saved on the account is correct
     test("bookmark employer", async ({ page }) => {
-
+        await page.locator("h2.heading:has-text('Employers recruiting for ')").click()
+        const employers = page.locator("div.viewport--large div.grid__item")
+        await employers.nth(0).locator("a.save").waitFor()
+        const saveButton = employers.locator("a.save")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        const name = await employers.nth(random - 1).locator("h3.heading a").innerText()
+        console.log("bookmarked employer:", name)
+        await page.waitForTimeout(3000)
+        await saveButton.nth(random - 1).click()
+        await page.waitForTimeout(3000)
+        const textButton = await saveButton.nth(random - 1).innerText()
+        expect.soft(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Employers']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const employerBookmarked = await page.locator("//*[contains(@class, 'EmployerTeaserstyle__EmployerTeaser')]//header/h2[contains(@class, 'heading')]/a").innerText()
+        expect.soft(employerBookmarked).toEqual(name)
+        console.log("saved employer:", employerBookmarked)
+        await page.locator("a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Employers")
     })
 })
