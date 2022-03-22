@@ -1,4 +1,5 @@
 const data = require("./common-details.json")
+const { getRandomNumber } = require("./common-functions")
 
 class CompleteLogin {
     constructor(page) {
@@ -31,4 +32,22 @@ class CompleteLogin {
     }
 }
 
-module.exports = { CompleteLogin }
+class Input {
+    constructor(page) {
+        this.page = page
+    }
+
+    async randomSelect(locator, includeFirst = true) {
+        const options = this.page.locator(locator).locator("//option")
+        const optionCount = await options.count()
+        const start = includeFirst ? 1 : 2
+        const random = getRandomNumber(start, optionCount)
+        const chosenOption = await options.nth(random - 1).innerText()
+        console.log(`Option selected: ${chosenOption}`)
+        await this.page.locator(locator).selectOption({ label: chosenOption })
+        return chosenOption
+    }
+}
+
+
+module.exports = { CompleteLogin, Input }

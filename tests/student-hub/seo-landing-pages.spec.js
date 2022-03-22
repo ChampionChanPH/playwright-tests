@@ -272,6 +272,7 @@ test.describe("seo landing page tests for logged-in users", async () => {
     })
 
     // bookmark a job and see that what was saved on the account is correct
+    // FIXME: get rid of the waitfortimeout
     test("bookmark job", async ({ page }) => {
         await page.waitForSelector("div.viewport--viewport-bookmark-large")
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
@@ -308,6 +309,7 @@ test.describe("seo landing page tests for logged-in users", async () => {
     })
 
     // bookmark an article and see that what was saved on the account is correct
+    // FIXME: get rid of the waitfortimeout
     test("bookmark article", async ({ page }) => {
         await page.locator("h2.heading:has-text('Advice for ')").click()
         const advices = page.locator("h2.heading:has-text('Advice for ')").locator("//following-sibling::div//div[@data-testid='collection-item']")
@@ -341,6 +343,7 @@ test.describe("seo landing page tests for logged-in users", async () => {
     })
 
     // bookmark an employer and see that what was saved on the account is correct
+    // FIXME: get rid of the waitfortimeout
     test("bookmark employer", async ({ page }) => {
         await page.locator("h2.heading:has-text('Employers recruiting for ')").click()
         const employers = page.locator("div.viewport--large div.grid__item")

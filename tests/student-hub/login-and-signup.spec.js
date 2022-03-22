@@ -56,8 +56,8 @@ test.describe('signup tests on student hub', async () => {
         await page.fill("input#given-name", data.firstName)
         await page.fill("input#family-name", data.lastName)
         let random = getRandomNumber(1, 100)
-        await page.fill("input#email-signup", `christian.anasco+${random}@prosple.com`)
-        await page.fill("input#password-signup", `Prosple1234`)
+        await page.fill("input#email-signup", `testing.with.prosple+${random}@gmail.com`)
+        await page.fill("input#password-signup", data.studentHubPass)
         await page.click("button#btn-signup")
         await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
         await Promise.all([

@@ -45,12 +45,12 @@ const config = {
 
   /* Configure projects for major browsers */
   projects: [
-    // {
-    //   name: 'Chrome',
-    //   use: {
-    //     ...devices['Desktop Chrome'],
-    //   },
-    // },
+    {
+      name: 'Chrome',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
 
     // {
     //   name: 'Firefox',
@@ -88,12 +88,12 @@ const config = {
     //   },
     // },
 
-    {
-      name: 'Chrome',
-      use: {
-        channel: 'chrome',
-      },
-    },
+    // {
+    //   name: 'Chrome',
+    //   use: {
+    //     channel: 'chrome',
+    //   },
+    // },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */

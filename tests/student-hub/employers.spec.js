@@ -285,6 +285,7 @@ test.describe("employer page tests for logged-in users", async () => {
     })
 
     // bookmark an employer and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
     test("bookmark employer", async ({ page }) => {
         const saveButton = page.locator("a.save")
         const countSaveButton = await saveButton.count()

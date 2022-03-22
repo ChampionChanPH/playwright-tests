@@ -147,6 +147,7 @@ test.describe('search job page tests', async () => {
 
     // confirm that the apply now button on the search jobs page is working as expected
     // clicking apply now button opens a new tab that's why it checks for 2 pages
+    // FIXME: get rid of the waitfortimeout
     test("apply now button is clickable", async ({ page, context }) => {
         const apply = page.locator("a.button--type-apply")
         const countApply = await apply.count()
@@ -321,6 +322,7 @@ test.describe('search job page tests', async () => {
     })
 
     // click the save button, user can opt to sign up
+    // FIXME: get rid of the waitfortimeout
     test("bookmark job and signup via popup", async ({ page }) => {
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()
@@ -346,6 +348,7 @@ test.describe("search job page tests for logged-in users", async () => {
     })
 
     // bookmark a job and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
     test("bookmark job", async ({ page }) => {
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()
