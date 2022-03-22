@@ -306,6 +306,7 @@ test.describe('search job page tests', async () => {
     })
 
     // click the save button, user will be asked to login first
+    // FIXME: get rid of the waitfortimeout
     test("bookmark job and login via popup", async ({ page }) => {
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()

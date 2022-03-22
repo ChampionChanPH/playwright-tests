@@ -95,7 +95,7 @@ test.describe("user profile tests", async () => {
 
     // tests to perform on "More Information About You" section
     // FIXME: checkbox on "SEND ME INFORMATION ON RELEVANT CAREER & EDUCATION OPPORTUNITIES." is not working. commented out for now.
-    test.only("more information about you section", async ({ page }) => {
+    test("more information about you section", async ({ page }) => {
         const input = new Input(page)
         await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
         const moreInfo = page.locator("//h3[contains(@class, 'field-set__label') and text()='More Information About You']")
@@ -131,12 +131,12 @@ test.describe("user profile tests", async () => {
         await form.locator("input[name=cv]").setInputFiles(doc)
         await form.locator("//button[text()='Submit']").click()
         await page.waitForSelector("//li[@data-testid='message-item' and p/text()='Form was submitted successfully.']")
-        let savedMobile = await form.locator("//label[contains(@class, input-label) and text()='Mobile']/following-sibling::div").innerText()
-        let savedNationality = await form.locator("//label[contains(@class, input-label) and text()='Nationality']/following-sibling::div//li[@class='list__item']").innerText()
-        let savedCountry = await form.locator("//label[contains(@class, input-label) and text()='Country of Residence']/following-sibling::div//li[@class='list__item']").innerText()
-        let savedWorkRight = await form.locator("//label[contains(@class, input-label) and text()='Work Rights']/following-sibling::div//li[@class='list__item']").innerText()
-        let savedGender = await form.locator("//label[contains(@class, input-label) and text()='Gender']/following-sibling::div//li[@class='list__item']").innerText()
-        let savedLanguages = await form.locator("//label[contains(@class, input-label) and text()='Spoken Languages']/following-sibling::div//li[@class='list__item']").innerText()
+        const savedMobile = await form.locator("//label[contains(@class, input-label) and text()='Mobile']/following-sibling::div").innerText()
+        const savedNationality = await form.locator("//label[contains(@class, input-label) and text()='Nationality']/following-sibling::div//li[@class='list__item']").innerText()
+        const savedCountry = await form.locator("//label[contains(@class, input-label) and text()='Country of Residence']/following-sibling::div//li[@class='list__item']").innerText()
+        const savedWorkRight = await form.locator("//label[contains(@class, input-label) and text()='Work Rights']/following-sibling::div//li[@class='list__item']").innerText()
+        const savedGender = await form.locator("//label[contains(@class, input-label) and text()='Gender']/following-sibling::div//li[@class='list__item']").innerText()
+        const savedLanguages = await form.locator("//label[contains(@class, input-label) and text()='Spoken Languages']/following-sibling::div//li[@class='list__item']").innerText()
         expect.soft(savedMobile).toEqual(mobile)
         expect.soft(savedNationality).toEqual(nationality)
         expect.soft(savedCountry).toEqual(country)
@@ -173,7 +173,44 @@ test.describe("user profile tests", async () => {
     })
 
     // tests to perform on "About Your High School" section
+    // TODO: add test cases for graduation year when user put below 1900 or above 9999
     test("about your high school section", async ({ page }) => {
-
+        const input = new Input(page)
+        await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
+        const about = page.locator("//h3[contains(@class, 'field-set__label') and text()='About Your High School']")
+        const checkVisible = await about.isVisible()
+        test.skip(!checkVisible, "skip test when no career preferences section")
+        const form = about.locator("//following-sibling::form")
+        await about.locator("//following-sibling::button[@class='field-set__trigger']").click()
+        await expect.soft(form.locator("button.button:has-text('Submit')")).toBeVisible()
+        // await form.locator("input[name=highschoolGraduationYear]").fill("10000")
+        // await form.locator("//button[text()='Submit']").click()
+        // await expect.soft(form.locator("//*[text()='Value must be less than or equal to 9999.']")).toBeVisible()
+        // await form.locator("input[name=highschoolGraduationYear]").fill("1888")
+        // await form.locator("//button[text()='Submit']").click()
+        // await expect.soft(form.locator("//*[text()='Value must be greater than or equal to 1900.']")).toBeVisible()
+        const randomYear = getRandomNumber(2018, 2025)
+        await form.locator("input[name=highschoolGraduationYear]").fill(randomYear.toString())
+        const location = await input.randomSelect("//select[@name='highSchoolLocation.0']", false)
+        const randomSchool = "High School_" + getRandomCharacters(6)
+        await form.locator("input[name=highSchoolName]").fill(randomSchool)
+        const remove = form.locator("button.button:has-text('Remove')")
+        const removeCount = await remove.count()
+        for (let i = 0; i < removeCount; i++) {
+            await remove.nth(0).click()
+        }
+        await form.locator("//label[contains(@class, 'input-label') and text()='What final year high school subjects do/did you take?']/following-sibling::*/button[text()='Add']").click()
+        const randomSubject = "Math_" + getRandomCharacters(6)
+        await form.locator("//input[@name='finalYearHighSchoolSubjects.0']").fill(randomSubject)
+        await form.locator("//button[text()='Submit']").click()
+        await page.waitForSelector("//li[@data-testid='message-item' and p/text()='Form was submitted successfully.']")
+        const savedYear = await form.locator("//label[contains(@class, input-label) and text()='Expected/actual high school graduation year?']/following-sibling::div").innerText()
+        const savedLocation = await form.locator("//label[contains(@class, input-label) and text()='Where do/did you go to high school?']/following-sibling::div//li[@class='list__item']").innerText()
+        const savedSchool = await form.locator("//label[contains(@class, input-label) and text()='What is/was the name of your high school?']/following-sibling::div").innerText()
+        const savedSubject = await form.locator("//label[contains(@class, input-label) and text()='What final year high school subjects do/did you take?']/following-sibling::div//li[@class='list__item']").innerText()
+        expect.soft(savedYear).toEqual(randomYear.toString())
+        expect.soft(savedLocation).toEqual(location)
+        expect.soft(savedSchool).toEqual(randomSchool)
+        expect(savedSubject).toEqual(randomSubject)
     })
 })
