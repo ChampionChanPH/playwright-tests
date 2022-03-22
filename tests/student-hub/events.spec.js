@@ -11,22 +11,22 @@ test.beforeEach(async ({ page }) => {
 
 // tests that can be done on the events page on the student hub
 test.describe('events page tests', async () => {
-    // use the event type filter and check that the filtered results showing correct event type
+    // use the event type filter and check that the total items matches the total showing on the filter
     test("event type filter", async ({ page }) => {
 
     })
 
-    // use the location filter and check that the filtered results showing correct location
+    // use the location filter and check that the total items matches the total showing on the filter
     test("location filter", async ({ page }) => {
 
     })
 
-    // use the degree filter and check that the filtered results showing correct degree
+    // use the degree filter and check that the total items matches the total showing on the filter
     test("degree filter", async ({ page }) => {
 
     })
 
-    // use the industry sector filter and check that the filtered results showing correct industry sector
+    // use the industry sector filter and check that the total items matches the total showing on the filter
     test("industry sector filter", async ({ page }) => {
 
     })
