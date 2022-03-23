@@ -1,10 +1,13 @@
-name: Playwright Tests
+name: Employer Hub E2E Tests
 on:
   workflow_dispatch
   # push:
   #   branches: [ main, master ]
   # pull_request:
   #   branches: [ main, master ]
+defaults:
+  run:
+    working-directory: tests/employer-hub
 jobs:
   test-win:
     name: "Windows"
