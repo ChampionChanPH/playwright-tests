@@ -5,7 +5,7 @@ on:
   #   branches: [ main, master ]
   # pull_request:
   #   branches: [ main, master ]
-default:
+defaults:
   run:
     working-directory: tests/student-hub
 jobs:
