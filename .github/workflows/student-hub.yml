@@ -1,0 +1,37 @@
+name: Student Hub E2E Tests
+on:
+  workflow_dispatch
+  # push:
+  #   branches: [ main, master ]
+  # pull_request:
+  #   branches: [ main, master ]
+default:
+  run:
+    working-directory: tests/student-hub
+jobs:
+  test-win:
+    name: "Windows"
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    timeout-minutes: 60
+    runs-on: windows-latest # macos-latest, ubuntu-latest
+    # if: github.event.deployment_status.state == 'success'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+    - uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report
+        retention-days: 30
