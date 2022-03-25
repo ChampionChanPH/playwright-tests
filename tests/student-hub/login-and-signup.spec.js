@@ -51,7 +51,7 @@ test.describe('login via email and password tests on student hub', async () => {
 test.describe('signup tests on student hub', async () => {
     // user successfully sign up for an account in the student hub by providing some personal details
     // after successful signup, close the account and check that the credentials won't work when tried to login
-    test('successful user signup', async ({ page }) => {
+    test.only('successful user signup', async ({ page }) => {
         await page.click("//div[@id='signup-message']//a[@class='open-signup']")
         await page.fill("input#given-name", data.firstName)
         await page.fill("input#family-name", data.lastName)

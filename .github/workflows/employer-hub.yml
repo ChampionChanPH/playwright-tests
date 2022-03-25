@@ -7,17 +7,16 @@ on:
   #   branches: [ main, master ]
 defaults:
   run:
-    working-directory: tests/employer-hub
+    working-directory: tests/student-hub
 jobs:
   test-win:
     name: "Windows"
     strategy:
       fail-fast: false
       matrix:
-        browser: chromium # [chromium, firefox, webkit]
-        os: windows-latest # windows-latest, macos-latest, ubuntu-latest
+        browser: [chromium, firefox, webkit]
     timeout-minutes: 60
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest # macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'
     steps:
     - uses: actions/checkout@v2
@@ -33,64 +32,6 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: employer-hub-${{ matrix.os }}-${{ matrix.browser }}-test
-        path: test-results
-        retention-days: 30
-  
-  test-mac:
-    name: "Mac OS"
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: webkit #[chromium, firefox, webkit]
-        os: macos-latest # windows-latest, macos-latest, ubuntu-latest
-    timeout-minutes: 60
-    runs-on: ${{ matrix.os }}
-    # if: github.event.deployment_status.state == 'success'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: npm ci
-      run: npm run build
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: employer-hub-${{ matrix.os }}-${{ matrix.browser }}-test
-        path: test-results
-        retention-days: 30
-
-  test_linux:
-    name: "Linux"
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: firefox #[chromium, firefox, webkit]
-        os: ubuntu-latest #windows-latest, macos-latest, ubuntu-latest
-    timeout-minutes: 60
-    runs-on: ${{ matrix.os }}
-    # if: github.event.deployment_status.state == 'success'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: npm ci
-      run: npm run build
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: employer-hub-${{ matrix.os }}-${{ matrix.browser }}-test
-        path: test-results
+        name: playwright-report
+        path: playwright-report
         retention-days: 30
