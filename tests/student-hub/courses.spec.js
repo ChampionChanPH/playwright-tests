@@ -180,12 +180,32 @@ test.describe('courses page tests', async () => {
 
     // check that the website redirect button is working
     test("website redirect button is clickable", async ({ page }) => {
-
+        await page.locator("a.button--type-apply").nth(0).waitFor()
+        const apply = page.locator("a.button--type-apply")
+        const countApply = await apply.count()
+        let random = getRandomNumber(1, countApply)
+        await apply.nth(random - 1).click()
     })
 
     // choose a course on the courses page, click the course title and see that it redirects to the correct detail page
     test("click course title to detail page", async ({ page }) => {
-
+        const courses = page.locator("//div[contains(@class, 'CourseTeaserstyle__CourseTeaser')]")
+        const countCourses = await courses.count()
+        let random = getRandomNumber(1, countCourses)
+        const institutionListPage = await courses.nth(random - 1).locator("div.logo__item p").innerText()
+        const courseTitleListPage = await courses.nth(random - 1).locator("div.teaser__item--title a").innerText()
+        console.log("Chosen institution:", institutionListPage)
+        console.log("Chosen course:", courseTitleListPage)
+        await Promise.all([
+            page.waitForNavigation(),
+            courses.nth(random - 1).locator("div.teaser__item--title a").click()
+        ])
+        const institutionOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
+        const courseTitleOverviewPage = await page.locator("h1.heading").innerText()
+        expect(institutionOverviewPage).toEqual(institutionListPage)
+        expect(courseTitleOverviewPage).toEqual(courseTitleListPage)
+        console.log("Saved institution:", institutionOverviewPage)
+        console.log("Saved course:", courseTitleOverviewPage)
     })
 
     // check that when filtered, the results were filtered correctly
@@ -256,6 +276,36 @@ test.describe("courses page tests for logged-in users", async () => {
     // bookmark a course and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
     test("bookmark course", async ({ page }) => {
-
+        const saveButton = page.locator("div.teaser__item--save")
+        const countSaveButton = await saveButton.count()
+        let random = getRandomNumber(1, countSaveButton)
+        const institutionListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'CourseTeaserstyle__CourseTeaser')]//div[@class='logo__item']/p").innerText()
+        const courseListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'CourseTeaserstyle__CourseTeaser')]//*[contains(@class, 'teaser__item--title')]//a").innerText()
+        console.log("Bookmarked institution:", institutionListPage)
+        console.log("Bookmarked course:", courseListPage)
+        await page.waitForTimeout(3000)
+        await saveButton.nth(random - 1).click()
+        await page.waitForTimeout(3000)
+        const textButton = await saveButton.nth(random - 1).innerText()
+        expect.soft(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Courses']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const institutionBookmarked = await page.locator("div.logo__item p").innerText()
+        const courseBookmarked = await page.locator("div.teaser__item--title a").innerText()
+        expect.soft(institutionBookmarked).toEqual(institutionListPage)
+        expect.soft(courseBookmarked).toEqual(courseListPage)
+        console.log("Saved institution:", institutionBookmarked)
+        console.log("Saved course:", courseBookmarked)
+        await page.locator("div.teaser__item--save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Courses")
     })
 })

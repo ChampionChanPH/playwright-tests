@@ -1,4 +1,4 @@
-name: Employer Hub QA Tests
+name: Test Only QA Tests
 on:
   workflow_dispatch
   # push:

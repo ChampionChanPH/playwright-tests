@@ -1,4 +1,4 @@
-name: Student Hub E2E Tests
+name: Student Hub QA Tests
 on:
   workflow_dispatch
   # push:
