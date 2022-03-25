@@ -9,8 +9,8 @@ defaults:
   run:
     working-directory: tests/test-only
 jobs:
-  test-win:
-    name: "Windows"
+  test-chromium:
+    name: "Chromium"
     strategy:
       fail-fast: false
       matrix:
@@ -32,18 +32,18 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: employer-hub-windows-${{ matrix.browser }}-test
+        name: student-hub-${{ matrix.browser }}-test
         path: test-results
         retention-days: 30
   
-  test-mac:
-    name: "Mac OS"
+  test-webkit:
+    name: "Webkit"
     strategy:
       fail-fast: false
       matrix:
-        browser: [webkit] #[chromium, firefox, webkit]
+        browser: [webkit] # [chromium, firefox, webkit]
     timeout-minutes: 60
-    runs-on: macos-latest # windows-latest, macos-latest, ubuntu-latest
+    runs-on: windows-latest # windows-latest, macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'
     steps:
     - uses: actions/checkout@v2
@@ -59,18 +59,18 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: employer-hub-macos-${{ matrix.browser }}-test
+        name: student-hub-${{ matrix.browser }}-test
         path: test-results
         retention-days: 30
 
-  test_linux:
-    name: "Linux"
+  test-firefox:
+    name: "Firefox"
     strategy:
       fail-fast: false
       matrix:
-        browser: [firefox] #[chromium, firefox, webkit]
+        browser: [firefox] # [chromium, firefox, webkit]
     timeout-minutes: 60
-    runs-on: ubuntu-latest #windows-latest, macos-latest, ubuntu-latest
+    runs-on: windows-latest # windows-latest, macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'
     steps:
     - uses: actions/checkout@v2
@@ -86,6 +86,6 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: employer-hub-linux-${{ matrix.browser }}-test
+        name: student-hub-${{ matrix.browser }}-test
         path: test-results
         retention-days: 30
