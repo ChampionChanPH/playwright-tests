@@ -7,7 +7,7 @@ on:
   #   branches: [ main, master ]
 defaults:
   run:
-    working-directory: tests/employer-hub
+    working-directory: tests/test-only
 jobs:
   test-win:
     name: "Windows"
