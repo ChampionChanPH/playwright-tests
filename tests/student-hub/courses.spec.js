@@ -296,7 +296,7 @@ test.describe('courses page tests', async () => {
 
     // click the save button, user will be asked to login first
     // FIXME: get rid of the waitfortimeout
-    test.only("bookmark courses and login via popup", async ({ page }) => {
+    test("bookmark courses and login via popup", async ({ page }) => {
         const saveButton = page.locator("button.button.save")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)
@@ -313,7 +313,7 @@ test.describe('courses page tests', async () => {
 
     // click the save button, user can opt to sign up
     // FIXME: get rid of the waitfortimeout
-    test.only("bookmark courses and signup via popup", async ({ page }) => {
+    test("bookmark courses and signup via popup", async ({ page }) => {
         const saveButton = page.locator("button.button.save")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)
