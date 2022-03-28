@@ -61,6 +61,7 @@ class CompleteLogin {
         await this.page.fill("input#password-signup", data.studentHubPass)
         await this.page.click("button#btn-signup")
         await this.page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        console.log(this.browserName)
     }
 }
 
