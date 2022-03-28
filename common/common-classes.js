@@ -37,17 +37,17 @@ class CompleteLogin {
         if (this.browserName === 'chromium') {
             firstName = "chromium"
             lastName = "windows"
-            email = "1"
+            email = "101"
         }
         if (this.browserName === 'firefox') {
             firstName = "firefox"
             lastName = "linux"
-            email = "2"
+            email = "102"
         }
         if (this.browserName === 'webkit') {
             firstName = "webkit"
             lastName = "macos"
-            email = "3"
+            email = "103"
         }
         await this.page.goto(data.studentHubUrl)
         await Promise.all([

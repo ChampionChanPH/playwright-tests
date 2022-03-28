@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 
 // tests that can be done on the courses page on the student hub
 test.describe('courses page tests', async () => {
-    // use the study field filter and check that the total items matches thPe total showing on the filter
+    // use the study field filter and check that the total items matches the total showing on the filter
     test("study field filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const courseFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'looking for a course in')]//following-sibling::*[@class='toggle-target']")
@@ -261,6 +261,36 @@ test.describe('courses page tests', async () => {
                 }
             }
             expect(sorted).toBeTruthy()
+        }
+    })
+
+    // test the pagination on the courses page
+    test("pagination", async ({ page }) => {
+        const pagination = page.locator("//li[@class='pagination-item']")
+        const countPage = await pagination.count()
+        if (countPage > 0) {
+            let random = getRandomNumber(1, countPage)
+            await Promise.all([
+                page.waitForNavigation(),
+                pagination.nth(random - 1).click()
+            ])
+            let active = await page.locator("li.pagination-item.is-active").innerText()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("li.pagination-item--direction-previous").click()
+            ])
+            let newActive = await page.locator("li.pagination-item.is-active").innerText()
+            let result = active > newActive
+            expect.soft(result).toBeTruthy()
+            expect.soft(page.url()).toContain(`start=${(newActive - 1) * 8}`)
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("li.pagination-item--direction-next").click()
+            ])
+            active = await page.locator("li.pagination-item.is-active").innerText()
+            result = active > newActive
+            expect.soft(result).toBeTruthy()
+            expect(page.url()).toContain(`start=${(active - 1) * 8}`)
         }
     })
 })

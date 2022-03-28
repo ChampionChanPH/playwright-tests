@@ -82,7 +82,7 @@ test.describe('employer page tests', async () => {
         const countEmployer = await employer.count()
         for (let i = 0; i < countEmployer; i++) {
             const sector = await employer.nth(i).locator("//div[contains(@class, 'teaser__item--industry')]//div[contains(@class, 'field-item')]").innerText()
-            expect(sector).toContain(sectorField[0])
+            expect(sector.toLowerCase()).toContain(sectorField[0].toLowerCase())
         }
     })
 
