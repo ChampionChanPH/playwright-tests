@@ -13,4 +13,4 @@ The line above will download the dependencies needed. You also will need to down
 
 I also would recommend reading the [Playwright Introduction](https://playwright.dev/docs/intro) to help you get started.
 
-If you have any questions, feel free to ask the QA Engineering team.
+If you have any questions, feel free to ask the Prosple QA Engineering team.
