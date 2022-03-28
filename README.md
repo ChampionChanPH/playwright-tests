@@ -3,7 +3,7 @@ This repository contains all of the QA Tests for the Prosple products: Student h
 
 The main framework used for the tests is Playwright JS. To get started, first make sure you have Node JS installed on your machine.
 
-Simply download it from their website: [Node JS](https://nodejs.org/). Once you have Node JS, on your Integrated Develpment Environment or IDE like [Visual Studio Code](), on the terminal, type the code below to download Playwright.
+Simply download it from their website: [Node JS](https://nodejs.org/). Once you have Node JS on your Integrated Develpment Environment or IDE like [Visual Studio Code](), go to the terminal and type the code below to download Playwright.
 
 `npm install --save-dev @playwright/test`
 
