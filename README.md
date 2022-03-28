@@ -1,5 +1,5 @@
 # Prosple E2E Test | Playwright JS
-This repository contains all of the QA Tests for the Prosple products: Student hub like [GradAustralia](https://gradaustralia.com.au/) and [GradNewZealand](https://gradnewzealand.nz/) and for the [Employer hub](https://portal.prosple.com/).
+This repository contains all of the QA Tests for the Prosple products: Student hub like [GradAustralia](https://gradaustralia.com.au/) and [GradNewZealand](https://gradnewzealand.nz/) and for the [Employer hub](https://portal.prosple.com/). Tests will also be made for the CMS and other Prosple products in the future.
 
 The main framework used for the tests is Playwright JS. To get started, first make sure you have Node JS installed on your machine.
 
