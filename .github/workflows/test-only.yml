@@ -1,4 +1,4 @@
-name: Test Only QA Tests
+name: Student Hub QA Tests
 on:
   workflow_dispatch
   # push:
@@ -9,14 +9,14 @@ defaults:
   run:
     working-directory: tests/test-only
 jobs:
-  test-chromium:
-    name: "Chromium"
+  test-win:
+    name: "Windows"
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium] # [chromium, firefox, webkit]
+        browser: [chromium, firefox, webkit]
     timeout-minutes: 60
-    runs-on: windows-latest # windows-latest, macos-latest, ubuntu-latest
+    runs-on: windows-latest # macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'
     steps:
     - uses: actions/checkout@v2
@@ -32,60 +32,6 @@ jobs:
     - uses: actions/upload-artifact@v2
       if: always()
       with:
-        name: student-hub-${{ matrix.browser }}-test
-        path: test-results
-        retention-days: 30
-  
-  test-webkit:
-    name: "Webkit"
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [webkit] # [chromium, firefox, webkit]
-    timeout-minutes: 60
-    runs-on: windows-latest # windows-latest, macos-latest, ubuntu-latest
-    # if: github.event.deployment_status.state == 'success'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: student-hub-${{ matrix.browser }}-test
-        path: test-results
-        retention-days: 30
-
-  test-firefox:
-    name: "Firefox"
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [firefox] # [chromium, firefox, webkit]
-    timeout-minutes: 60
-    runs-on: windows-latest # windows-latest, macos-latest, ubuntu-latest
-    # if: github.event.deployment_status.state == 'success'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: student-hub-${{ matrix.browser }}-test
-        path: test-results
+        name: playwright-report
+        path: playwright-report
         retention-days: 30
