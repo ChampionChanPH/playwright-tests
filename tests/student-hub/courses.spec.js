@@ -280,7 +280,7 @@ test.describe('courses page tests', async () => {
                 page.locator("li.pagination-item--direction-previous").click()
             ])
             let newActive = await page.locator("li.pagination-item.is-active").innerText()
-            let result = active > newActive
+            let result = Number(active) > Number(newActive)
             expect.soft(result).toBeTruthy()
             expect.soft(page.url()).toContain(`start=${(newActive - 1) * 8}`)
             await Promise.all([
@@ -288,7 +288,7 @@ test.describe('courses page tests', async () => {
                 page.locator("li.pagination-item--direction-next").click()
             ])
             active = await page.locator("li.pagination-item.is-active").innerText()
-            result = active > newActive
+            result = Number(active) > Number(newActive)
             expect.soft(result).toBeTruthy()
             expect(page.url()).toContain(`start=${(active - 1) * 8}`)
         }
@@ -339,7 +339,7 @@ test.describe("courses page tests for logged-in users", async () => {
 
     // bookmark a course and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
-    test("bookmark course", async ({ page }) => {
+    test("bookmark course from the courses page", async ({ page }) => {
         const saveButton = page.locator("div.teaser__item--save")
         const countSaveButton = await saveButton.count()
         const random = getRandomNumber(1, countSaveButton)
@@ -373,9 +373,46 @@ test.describe("courses page tests for logged-in users", async () => {
         expect(message).toEqual("No Saved Courses")
     })
 
+    // choose a course to check the detail page, then bookmark and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
+    test("bookmark course from the course detail page", async ({ page }) => {
+        const courses = page.locator("//div[contains(@class, 'CourseTeaserstyle__CourseTeaser-sc')]")
+        const countCourses = await courses.count()
+        const random = getRandomNumber(1, countCourses)
+        const courseListPage = await courses.nth(random - 1).locator('h2.heading a').innerText()
+        await Promise.all([
+            page.waitForNavigation(),
+            courses.nth(random - 1).locator('h2.heading a').click()
+        ])
+        const courseOverviewPage = await page.locator("h1.heading").innerText()
+        expect.soft(courseOverviewPage).toEqual(courseListPage)
+        await page.waitForTimeout(3000)
+        await page.locator("li.list__item a.save").click()
+        await page.waitForTimeout(3000)
+        const textButton = await page.locator("li.list__item a.save").innerText()
+        expect.soft(textButton).toEqual("Saved")
+        console.log("Bookmarked course:", courseOverviewPage)
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Courses']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const courseBookmarked = await page.locator("h2.heading a").innerText()
+        expect.soft(courseBookmarked).toEqual(courseOverviewPage)
+        console.log("Saved course:", courseBookmarked)
+        await page.locator("div.teaser__item a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Courses")
+    })
+
     // bookmark institution by going to the course page first and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
-    test("bookmark institution", async ({ page }) => {
+    test("bookmark institution from the course detail page", async ({ page }) => {
         const courses = page.locator("//div[contains(@class, 'CourseTeaserstyle__CourseTeaser-sc')]")
         const countCourses = await courses.count()
         const random = getRandomNumber(1, countCourses)
@@ -391,6 +428,7 @@ test.describe("courses page tests for logged-in users", async () => {
         await page.waitForTimeout(3000)
         const textButton = await page.locator("div.masthead__meta a.save").innerText()
         expect.soft(textButton).toEqual("Saved")
+        console.log("Bookmarked institution:", institutionOverviewPage)
         await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
         await Promise.all([
             page.waitForNavigation(),

@@ -251,4 +251,42 @@ test.describe("user profile tests", async () => {
         expect.soft(studyMode).toEqual(chosenStudyMode)
         expect(location).toEqual(chosenLocation)
     })
+
+    // tests to perform on "Postgraduate Study" section
+    test("postgraduate study section", async ({ page }) => {
+        const input = new Input(page)
+        await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
+        const postgrad = page.locator("//h3[contains(@class, 'field-set__label') and text()='Postgraduate Study']")
+        const checkVisible = await postgrad.isVisible()
+        test.skip(!checkVisible, "skip test when no postgraduate study section")
+        await postgrad.locator("//following-sibling::button[@class='field-set__trigger']").click()
+        const form = postgrad.locator("//following-sibling::div/form")
+        await expect.soft(form.locator("button.button:has-text('Submit')")).toBeVisible()
+        const remove = form.locator("button.button:has-text('Remove')")
+        const removeCount = await remove.count()
+        for (let i = 0; i < removeCount; i++) {
+            await remove.nth(0).click()
+        }
+        await form.locator("//label[contains(@class, 'input-label') and text()='What postgraduate study field are you interested in?']/following-sibling::*/button[text()='Add']").click()
+        const chosenStudyField = await input.randomSelect("//select[@name='pgStudyFieldInterests.0.0']", false)
+        const label = "If your interests aren't listed, write them here."
+        await form.locator(`//label[contains(@class, 'input-label') and text()="${label}"]/following-sibling::*/button[text()='Add']`).click()
+        const random = getRandomCharacters(6)
+        const chosenInterest = `Travel_${random}`
+        await form.locator("//input[@name='pgOtherStudyFieldInterests.0']").fill(chosenInterest)
+        await form.locator("//label[contains(@class, 'input-label') and text()='What mode of study do you prefer?']/following-sibling::*/button[text()='Add']").click()
+        const chosenStudyMode = await input.randomSelect("//select[@name='pgModeOfStudyPreference.0.0']", false)
+        await form.locator("//label[contains(@class, 'input-label') and text()='Where do you want to study?']/following-sibling::*/button[text()='Add']").click()
+        const chosenLocation = await input.randomSelect("//select[@name='pgStudyLocationPreference.0.0']", false)
+        await form.locator("//button[text()='Submit']").click()
+        await page.waitForSelector("//li[@data-testid='message-item' and p/text()='Form was submitted successfully.']")
+        const studyField = await form.locator("//label[contains(@class, input-label) and text()='What postgraduate study field are you interested in?']/following-sibling::div//li[@class='list__item']").innerText()
+        const interest = await form.locator(`//label[contains(@class, input-label) and text()="${label}"]/following-sibling::div//li[@class='list__item']`).innerText()
+        const studyMode = await form.locator("//label[contains(@class, input-label) and text()='What mode of study do you prefer?']/following-sibling::div//li[@class='list__item']").innerText()
+        const location = await form.locator("//label[contains(@class, input-label) and text()='Where do you want to study?']/following-sibling::div//li[@class='list__item']").innerText()
+        expect.soft(studyField).toEqual(chosenStudyField)
+        expect.soft(interest).toEqual(chosenInterest)
+        expect.soft(studyMode).toEqual(chosenStudyMode)
+        expect(location).toEqual(chosenLocation)
+    })
 })

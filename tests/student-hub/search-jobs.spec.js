@@ -289,7 +289,7 @@ test.describe('search job page tests', async () => {
                 page.locator("li.pagination-item--direction-previous").click()
             ])
             let newActive = await page.locator("li.pagination-item.is-active").innerText()
-            let result = active > newActive
+            let result = Number(active) > Number(newActive)
             expect.soft(result).toBeTruthy()
             expect.soft(page.url()).toContain(`start=${(newActive - 1) * 8}`)
             await Promise.all([
@@ -297,7 +297,7 @@ test.describe('search job page tests', async () => {
                 page.locator("li.pagination-item--direction-next").click()
             ])
             active = await page.locator("li.pagination-item.is-active").innerText()
-            result = active > newActive
+            result = Number(active) > Number(newActive)
             expect.soft(result).toBeTruthy()
             expect(page.url()).toContain(`start=${(active - 1) * 8}`)
         }
@@ -348,7 +348,7 @@ test.describe("search job page tests for logged-in users", async () => {
 
     // bookmark a job and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
-    test("bookmark job", async ({ page }) => {
+    test("bookmark job from search jobs page", async ({ page }) => {
         const saveButton = page.locator("div.viewport--viewport-bookmark-large")
         const countSaveButton = await saveButton.count()
         let random = getRandomNumber(1, countSaveButton)
@@ -380,5 +380,79 @@ test.describe("search job page tests for logged-in users", async () => {
         await page.locator("div.viewport--viewport-bookmark-large").click()
         const message = await page.locator("h1.heading").innerText()
         expect(message).toEqual("No Saved Jobs")
+    })
+
+    // bookmark a job by going to the job detail page first and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
+    test("bookmark job from job detail page", async ({ page }) => {
+        const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing-sc')]")
+        const countJobs = await jobs.count()
+        const random = getRandomNumber(1, countJobs)
+        const jobListPage = await jobs.nth(random - 1).locator('div.teaser__item--title a').innerText()
+        await Promise.all([
+            page.waitForNavigation(),
+            jobs.nth(random - 1).locator('div.teaser__item--title a').click()
+        ])
+        const jobOverviewPage = await page.locator("h1.heading").innerText()
+        expect.soft(jobOverviewPage).toEqual(jobListPage)
+        await page.waitForTimeout(3000)
+        await page.locator("div.section--header li.list__item a.save").click()
+        await page.waitForTimeout(3000)
+        const textButton = await page.locator("div.section--header li.list__item a.save").innerText()
+        expect.soft(textButton).toEqual("Saved")
+        console.log("Bookmarked job:", jobOverviewPage)
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Jobs']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const jobBookmarked = await page.locator("div.teaser__item--title a").innerText()
+        expect.soft(jobBookmarked).toEqual(jobOverviewPage)
+        console.log("Saved job:", jobBookmarked)
+        await page.locator("div.viewport--viewport-bookmark-large a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Jobs")
+    })
+
+    // bookmark an employer by going to the job detail page first and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
+    test("bookmark employer from job detail page", async ({ page }) => {
+        const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing-sc')]")
+        const countJobs = await jobs.count()
+        const random = getRandomNumber(1, countJobs)
+        const employerListPage = await jobs.nth(random - 1).locator("div.logo__item p").innerText()
+        await Promise.all([
+            page.waitForNavigation(),
+            jobs.nth(random - 1).locator('div.teaser__item--title a').click()
+        ])
+        const employerOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
+        expect.soft(employerOverviewPage).toEqual(employerListPage)
+        await page.waitForTimeout(3000)
+        await page.locator("div.masthead__meta a.save").click()
+        await page.waitForTimeout(3000)
+        const textButton = await page.locator("div.masthead__meta a.save").innerText()
+        expect.soft(textButton).toEqual("Saved")
+        console.log("Bookmarked employer:", employerOverviewPage)
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Employers']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const employerBookmarked = await page.locator("h2.heading a").innerText()
+        expect.soft(employerBookmarked).toEqual(employerOverviewPage)
+        console.log("Saved employer:", employerBookmarked)
+        await page.locator("div.teaser__item a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Employers")
     })
 })

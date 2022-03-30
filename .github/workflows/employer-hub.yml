@@ -7,14 +7,14 @@ on:
   #   branches: [ main, master ]
 defaults:
   run:
-    working-directory: tests/student-hub
+    working-directory: tests/employer-hub
 jobs:
   test-win:
     name: "Windows"
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium] # [chromium, firefox, webkit]
     timeout-minutes: 60
     runs-on: windows-latest # macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'

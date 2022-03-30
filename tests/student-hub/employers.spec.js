@@ -229,7 +229,7 @@ test.describe('employer page tests', async () => {
                 page.locator("li.pagination-item--direction-previous").click()
             ])
             let newActive = await page.locator("li.pagination-item.is-active").innerText()
-            let result = active > newActive
+            let result = Number(active) > Number(newActive)
             expect.soft(result).toBeTruthy()
             expect.soft(page.url()).toContain(`start=${(newActive - 1) * 8}`)
             await Promise.all([
@@ -237,7 +237,7 @@ test.describe('employer page tests', async () => {
                 page.locator("li.pagination-item--direction-next").click()
             ])
             active = await page.locator("li.pagination-item.is-active").innerText()
-            result = active > newActive
+            result = Number(active) > Number(newActive)
             expect.soft(result).toBeTruthy()
             expect(page.url()).toContain(`start=${(active - 1) * 8}`)
         }

@@ -5,8 +5,7 @@ const data = require("../../common/common-details.json")
 
 // go to the seo landing page for graduate jobs
 test.beforeEach(async ({ page }) => {
-    let path = data.studentHubUrl != "https://gradaustralia.com.au" ? "/engineering-graduate-jobs-programs" : "/engineering-graduate-jobs"
-    await page.goto(data.studentHubUrl + path)
+    await page.goto(data.studentHubUrl + "/graduate-jobs")
     await page.waitForSelector("div.viewport--normal a.logo")
 })
 
