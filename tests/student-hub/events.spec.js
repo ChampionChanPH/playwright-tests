@@ -103,6 +103,25 @@ test.describe('events page tests', async () => {
         console.log(totalItems)
     })
 
+    // search by keyword filter
+    test("search by keyword filter", async ({ page }) => {
+        let count = 0
+        const keyword = "Open Day"
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetInputTextstyle__FacetInputText-sc')]")
+        const keywordFilter = filter.locator("//button[@class='toggle-trigger' and h4/text()='Search by keyword']/following-sibling::*[@class='toggle-target']")
+        await keywordFilter.locator("input[name=facet--input-text--fulltext]").fill(keyword)
+        await Promise.all([
+            page.waitForNavigation(),
+            keywordFilter.locator("button span.icon--search").click()
+        ])
+        const events = await page.locator("//h6[contains(@class, 'EventSnippetstyle__EventHeading-sc')]/a").allInnerTexts()
+        for (const event of events) {
+            if (event.toLowerCase().includes(keyword.toLowerCase())) count++
+        }
+        expect.soft(count).toBeGreaterThan(0)
+        console.log(events)
+    })
+
     // choose an event, click the "View details" button and see that it redirects to the correct detail page
     test("click view details button to detail page", async ({ page }) => {
         let employerListPage = ""

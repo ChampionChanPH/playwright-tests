@@ -127,6 +127,21 @@ test.describe('employer page tests', async () => {
         expect(totalItems).toContain(total[0])
     })
 
+    // search by name filter
+    test("search by name filter", async ({ page }) => {
+        const keyword = "Commonwealth Bank"
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetInputTextstyle__FacetInputText-sc')]")
+        const keywordFilter = filter.locator("//button[@class='toggle-trigger' and h4/text()='Search by name']/following-sibling::*[@class='toggle-target']")
+        await keywordFilter.locator("input[name=facet--input-text--fulltext]").fill(keyword)
+        await Promise.all([
+            page.waitForNavigation(),
+            keywordFilter.locator("button span.icon--search").click()
+        ])
+        const employers = await page.locator("h2.heading a").allInnerTexts()
+        expect(employers.includes(keyword)).toBeTruthy()
+        console.log(employers)
+    })
+
     // choose an employer on the employers page with "Read reviews", click the link and see that it redirects to the correct detail page
     test("click review link to detail page", async ({ page }) => {
         const reviews = page.locator("//li[@class='list__item' and a[contains(text(), 'Read reviews')]]")

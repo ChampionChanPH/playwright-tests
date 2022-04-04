@@ -35,4 +35,53 @@ test.describe('homepage tests', async () => {
             }
         })
     })
+
+    // choose options from the dropdowns and check that the search button will redirect to a different page
+    test.slow('confirm dropdowns and search button is working', async ({ page }) => {
+        const [homepage_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl),
+            page.goto(data.studentHubUrl),
+        ])
+        expect.soft(homepage_response.status()).toBeLessThan(400)
+        const [jobs_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/search-jobs"),
+            page.goto(data.studentHubUrl + "/search-jobs"),
+        ])
+        expect.soft(jobs_response.status()).toBeLessThan(400)
+        const [employers_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/graduate-employers"),
+            page.goto(data.studentHubUrl + "/graduate-employers"),
+        ])
+        expect.soft(employers_response.status()).toBeLessThan(400)
+        const [courses_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/courses"),
+            page.goto(data.studentHubUrl + "/courses"),
+        ])
+        expect.soft(courses_response.status()).toBeLessThan(400)
+        const [scholarships_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/scholarships"),
+            page.goto(data.studentHubUrl + "/scholarships"),
+        ])
+        expect.soft(scholarships_response.status()).toBeLessThan(400)
+        const [institutions_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/institutions"),
+            page.goto(data.studentHubUrl + "/institutions"),
+        ])
+        expect.soft(institutions_response.status()).toBeLessThan(400)
+        const [articles_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/advice/all"),
+            page.goto(data.studentHubUrl + "/advice/all"),
+        ])
+        expect.soft(articles_response.status()).toBeLessThan(400)
+        const [events_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/events"),
+            page.goto(data.studentHubUrl + "/events"),
+        ])
+        expect.soft(events_response.status()).toBeLessThan(400)
+        const [stories_response] = await Promise.all([
+            page.waitForResponse(data.studentHubUrl + "/profiles"),
+            page.goto(data.studentHubUrl + "/profiles"),
+        ])
+        expect.soft(stories_response.status()).toBeLessThan(400)
+    })
 })

@@ -149,6 +149,25 @@ test.describe('courses page tests', async () => {
         }
     })
 
+    // search by keyword filter
+    test("search by keyword filter", async ({ page }) => {
+        let count = 0
+        const keyword = "Graduate Certificate of Science"
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetInputTextstyle__FacetInputText-sc')]")
+        const keywordFilter = filter.locator("//button[@class='toggle-trigger' and h4/text()='Search by keyword']/following-sibling::*[@class='toggle-target']")
+        await keywordFilter.locator("input[name=facet--input-text--fulltext]").fill(keyword)
+        await Promise.all([
+            page.waitForNavigation(),
+            keywordFilter.locator("button span.icon--search").click()
+        ])
+        const courses = await page.locator("h2.heading a").allInnerTexts()
+        for (const course of courses) {
+            if (course.toLowerCase().includes(keyword.toLowerCase())) count++
+        }
+        expect.soft(count).toBeGreaterThan(0)
+        console.log(courses)
+    })
+
     // use the annual budget filter and check that the filtered results has fees within the specified range
     test("annual budget fee filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetRangestyle__FacetRange')]")
