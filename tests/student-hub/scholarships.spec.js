@@ -185,6 +185,27 @@ test.describe('scholarships page tests', async () => {
         }
     })
 
+    // choose a scholarship on the scholarships page, click the scholarship title and see that it redirects to the correct detail page
+    test("click scholarship title to detail page", async ({ page }) => {
+        const scholarships = page.locator("//div[contains(@class, 'ScholarshipTeaserstyle__ScholarshipListing-sc')]")
+        const countScholarships = await scholarships.count()
+        let random = getRandomNumber(1, countScholarships)
+        const institutionListPage = await scholarships.nth(random - 1).locator("div.logo__item p").innerText()
+        const scholarshipListPage = await scholarships.nth(random - 1).locator("div.teaser__item--title a").innerText()
+        console.log("Chosen institution:", institutionListPage)
+        console.log("Chosen scholarship:", scholarshipListPage)
+        await Promise.all([
+            page.waitForNavigation(),
+            scholarships.nth(random - 1).locator("div.teaser__item--title a").click()
+        ])
+        const institutionOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
+        const scholarshipOverviewPage = await page.locator("h1.heading").innerText()
+        expect(institutionOverviewPage).toEqual(institutionListPage)
+        expect(scholarshipOverviewPage).toEqual(scholarshipListPage)
+        console.log("Institution detail page:", institutionOverviewPage)
+        console.log("Scholarship detail page:", scholarshipOverviewPage)
+    })
+
     // confirm that the website button on the search jobs page is working as expected
     // clicking apply now button opens a new tab that's why it checks for 2 pages
     // FIXME: get rid of the waitfortimeout
@@ -241,8 +262,33 @@ test.describe("scholarships page tests for logged-in users", async () => {
 
     // bookmark a scholarship and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
-    test("bookmark scholarship from scholarships page", async ({ page }) => {
-
+    test.only("bookmark scholarship from scholarships page", async ({ page }) => {
+        const saveButton = page.locator("div.teaser__item--save a.save")
+        const countSaveButton = await saveButton.count()
+        const random = getRandomNumber(1, countSaveButton)
+        const scholarshipListPage = await saveButton.nth(random - 1).locator("//ancestor::div[contains(@class, 'ScholarshipTeaserstyle__ScholarshipListing-sc')]//h2[contains(@class, 'heading')]/a").innerText()
+        console.log("Bookmarked scholarship:", scholarshipListPage)
+        await page.waitForTimeout(3000)
+        await saveButton.nth(random - 1).click()
+        await page.waitForTimeout(3000)
+        const textButton = await saveButton.nth(random - 1).innerText()
+        expect.soft(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Scholarships']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const scholarshipBookmarked = await page.locator("h2.heading a").innerText()
+        expect.soft(scholarshipBookmarked).toEqual(scholarshipListPage)
+        console.log("Saved institution:", scholarshipBookmarked)
+        await page.locator("div.teaser__item a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Scholarships")
     })
 
     // bookmark a scholarship and check that what was saved is correct
