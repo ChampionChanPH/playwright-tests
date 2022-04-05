@@ -429,7 +429,7 @@ test.describe("courses page tests for logged-in users", async () => {
         expect(message).toEqual("No Saved Courses")
     })
 
-    // bookmark institution by going to the course page first and check that what was saved is correct
+    // bookmark institution by going to the courses page first and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
     test("bookmark institution from the course detail page", async ({ page }) => {
         const courses = page.locator("//div[contains(@class, 'CourseTeaserstyle__CourseTeaser-sc')]")

@@ -328,9 +328,40 @@ test.describe("scholarships page tests for logged-in users", async () => {
         expect(message).toEqual("No Saved Scholarships")
     })
 
-    // bookmark a scholarship and check that what was saved is correct
+    // bookmark institution by going to the scholarships page first and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
     test("bookmark institution from scholarship detail page", async ({ page }) => {
-
+        const scholarships = page.locator("//div[contains(@class, 'ScholarshipTeaserstyle__ScholarshipListing-sc')]")
+        const countScholarships = await scholarships.count()
+        const random = getRandomNumber(1, countScholarships)
+        const institutionScholarshipPage = await scholarships.nth(random - 1).locator("div.logo__item p").innerText()
+        await Promise.all([
+            page.waitForNavigation(),
+            scholarships.nth(random - 1).locator('h2.heading a').click()
+        ])
+        const institutionOverviewPage = await page.locator("div.masthead__title h2.heading").innerText()
+        expect.soft(institutionOverviewPage).toEqual(institutionScholarshipPage)
+        await page.waitForTimeout(3000)
+        await page.locator("div.masthead__meta a.save").click()
+        await page.waitForTimeout(3000)
+        const textButton = await page.locator("div.masthead__meta a.save").innerText()
+        expect.soft(textButton).toEqual("Saved")
+        console.log("Bookmarked institution:", institutionOverviewPage)
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Institutions']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const institutionBookmarked = await page.locator("h2.heading a").innerText()
+        expect.soft(institutionBookmarked).toEqual(institutionOverviewPage)
+        console.log("Saved institution:", institutionBookmarked)
+        await page.locator("div.teaser__item a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Institutions")
     })
 })
