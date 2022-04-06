@@ -36,8 +36,10 @@ test.describe('homepage tests', async () => {
         })
     })
 
-    // choose options from the dropdowns and check that the search button will redirect to a different page
-    test.slow('confirm dropdowns and search button is working', async ({ page }) => {
+    // check individual pages and see if they are working
+    test.slow('confirm if pages are available on the website', async ({ page }) => {
+        // const checkJobs = await page.locator("//li[@class='menu__item']/a[@href='/search-jobs']").isVisible()
+        // console.log("Value is:", checkJobs)
         const [homepage_response] = await Promise.all([
             page.waitForResponse(data.studentHubUrl),
             page.goto(data.studentHubUrl),
@@ -83,5 +85,19 @@ test.describe('homepage tests', async () => {
             page.goto(data.studentHubUrl + "/profiles"),
         ])
         expect.soft(stories_response.status()).toBeLessThan(400)
+    })
+
+    // check each menu items on the website
+    test('test for the menu on the website', async ({ page }) => {
+        const menus = page.locator("//div[contains(@class, 'Headerstyle__HeaderBar-sc')]//div[contains(@class, 'viewport--menu-large')]/div/ul/li/a")
+        const countMenus = await menus.count()
+        for (let index = 0; index < countMenus; index++) {
+            const menu = await menus.nth(index).innerText()
+            console.log(menu)
+            await Promise.all([
+                page.waitForNavigation(),
+                menus.nth(index).click()
+            ])
+        }
     })
 })
