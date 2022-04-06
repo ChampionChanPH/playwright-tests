@@ -12,7 +12,6 @@ test.beforeEach(async ({ page }) => {
 test.describe('test for diversity contents on the employer hub', async () => {
     // edit one of the diversity contents and see the changes took effect
     test('edit the diversity content', async ({ page }) => {
-        await page.waitForURL("**/dashboard/overview/")
         await Promise.all([
             page.waitForNavigation(),
             page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()

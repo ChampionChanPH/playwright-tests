@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 // tests for the student hub footer
 test.describe('footer tests', async () => {
     // click on each of the social icons on the website
-    test.only('test for the social icons on the website', async ({ page }) => {
+    test.skip('test for the social icons on the website', async ({ page }) => {
         const socialIcons = page.locator("div[data-testid=section] div.social-icons a")
         const countSocialIcons = await socialIcons.count()
         for (let index = 0; index < countSocialIcons; index++) {

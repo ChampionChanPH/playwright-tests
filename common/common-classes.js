@@ -29,7 +29,7 @@ class CompleteLogin {
             this.page.waitForNavigation(),
             this.page.click("button#btn-login")
         ])
-        await this.page.waitForSelector("//div[contains(@class, 'viewport viewport--normal')]//a[contains(@class, 'Navigationstyle__LogoLink')]")
+        await this.page.waitForURL("**/dashboard/overview/")
     }
 
     async signUp() {
