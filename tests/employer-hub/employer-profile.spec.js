@@ -3,6 +3,9 @@ const { getRandomNumber, getRandomCharacters } = require("../../common/common-fu
 const { CompleteLogin } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
 
+const csv = "./resources/blank.xlsx"
+const prospleLogo = "./resources/prosple-logo.png"
+
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
@@ -64,7 +67,20 @@ test.describe('test for employer profile on the employer hub', async () => {
 
     // tests for the branding section under employer profile
     test.describe('branding section on employer profile', async () => {
+        // before each test, go to the basic details section
+        test.beforeEach(async ({ page }) => {
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Branding']").click()
+        })
 
+        // remove existing logo and add a new one
+        test.only('edit your logo', async ({ page }) => {
+            const logo = page.locator("//span[label/text()='Your logo']/following-sibling::div")
+            await logo.click("span.icon--pencil")
+            await logo.locator("input[name=logoUpload]").setInputFiles(csv)
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Unsupported format']")).toBeVisible()
+            await logo.locator("input[name=logoUpload]").setInputFiles(prospleLogo)
+        })
     })
 })
 
