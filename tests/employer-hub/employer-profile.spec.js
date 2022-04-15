@@ -133,13 +133,13 @@ test.describe('test for employer profile on the employer hub', async () => {
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
-            let random = getRandomCharacters(151, withSpaces = true)
+            let random = getRandomCharacters(151)
             await page.locator("textarea[name=summary]").fill(random)
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Characters should not exceed to 150']")).toBeVisible()
             await expect(page.locator("span.error")).toBeVisible()
-            random = getRandomCharacters(150, withSpaces = true)
+            random = getRandomCharacters(15) + ' ' + getRandomCharacters(15)
             await page.locator("textarea[name=summary]").fill(random)
         })
 
@@ -177,7 +177,7 @@ test.describe('test for employer profile on the employer hub', async () => {
 
         // edit the what remuneration and career growth can candidates expect section
         // check for error message when the field was left blank
-        test('edit the what can candidates expect section', async ({ page }) => {
+        test('edit the what remuneration section', async ({ page }) => {
             const label = page.locator("//span[label/text()='What remuneration and career growth can candidates expect?']")
             const whatRemuneration = label.locator("//following-sibling::div")
             await whatRemuneration.locator("div.ck-editor__editable").click()
@@ -223,6 +223,43 @@ test.describe('test for employer profile on the employer hub', async () => {
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Hiring Criteria']").click()
         })
 
+        // edit what regions are you targeting candidates in field
+        // check for error message when no region is selected
+        test('edit target regions', async ({ page }) => {
+            const input = new Input(page)
+            const targetRegion = page.locator("//span[label/text()='What regions are you targeting candidates in?']/following-sibling::div")
+            await targetRegion.locator("//button[text()='Remove']").waitFor()
+            const remove = targetRegion.locator("//button[text()='Remove']")
+            const removeCount = await remove.count()
+            for (let i = 0; i < removeCount; i++) {
+                await remove.nth(0).click()
+            }
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Select at least one location']")).toBeVisible()
+            const add = targetRegion.locator("//button[text()='Add']")
+            await add.click()
+            await input.randomSelect("select.sc-khIgXV", false)
+        })
+
+        // edit what study fields does your organisation typically recruit from fields
+        // check for error message when no study field is selected
+        test('edit target study fields', async ({ page }) => {
+            const studyFieldLabel = page.locator("//span[label/text()='What study fields does your organisation typically recruit from?']/following-sibling::div")
+            const studyFields = studyFieldLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+            await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").waitFor()
+            const countStudyFields = await studyFields.count()
+            for (let i = 0; i < countStudyFields; i++) {
+                const checkbox = await studyFields.nth(i).locator("div.input--type-checkbox input").getAttribute("class")
+                if (checkbox == "is-checked") await studyFields.nth(i).locator("label").click()
+            }
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Select at least one study field']")).toBeVisible()
+            for (let i = 0; i < countStudyFields; i++) {
+                const random = getRandomNumber(1, 2)
+                if (random == 1) await studyFields.nth(i).locator("label").click()
+            }
+        })
     })
 
     // tests for the hiring locations section under employer profile
@@ -232,6 +269,23 @@ test.describe('test for employer profile on the employer hub', async () => {
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Hiring Locations']").click()
         })
 
+        // edit what regions are your job opportunities located in field
+        // check for error message when no region is selected
+        test('edit target regions', async ({ page }) => {
+            const input = new Input(page)
+            const targetRegion = page.locator("//span[label/text()='What regions are your job opportunities located in?']/following-sibling::div")
+            await targetRegion.locator("//button[text()='Remove']").waitFor()
+            const remove = targetRegion.locator("//button[text()='Remove']")
+            const removeCount = await remove.count()
+            for (let i = 0; i < removeCount; i++) {
+                await remove.nth(0).click()
+            }
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Select at least one location']")).toBeVisible()
+            const add = targetRegion.locator("//button[text()='Add']")
+            await add.click()
+            await input.randomSelect("select.sc-khIgXV", false)
+        })
     })
 })
 

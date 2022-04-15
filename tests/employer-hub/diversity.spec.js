@@ -6,24 +6,23 @@ const data = require("../../common/common-details.json")
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
+    await Promise.all([
+        page.waitForNavigation(),
+        page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
+    ])
 })
 
 // tests that can be done on the diversity & inclusion section in the employer hub
 test.describe('test for diversity contents on the employer hub', async () => {
-    // edit one of the diversity contents and see the changes took effect
-    test('edit the diversity content', async ({ page }) => {
-        await Promise.all([
-            page.waitForNavigation(),
-            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
-        ])
-        const url = page.url()
-        expect(url).toContain("/diversity-and-inclusion/")
-        await page.waitForSelector("//a[contains(@class, 'htBKgl') and contains(text(), 'Edit')]")
+    // change the content type to something else and see that it was updated successfully
+    // check for error message when selected ---
+    test('change the content type', async ({ page }) => {
+        await page.locator("//a[contains(@class, 'htBKgl') and contains(text(), 'Edit')]").nth(0).waitFor()
         const articles = await page.locator("h3").allTextContents()
         console.log("Current articles:", articles)
         await Promise.all([
             page.waitForNavigation(),
-            page.locator("//a[contains(@class, 'htBKgl') and contains(text(), 'Edit')]").nth(0).click()
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
         ])
         await page.locator("select[name=category]").waitFor()
         const options = await page.locator("select[name=category] option").allTextContents()
@@ -32,28 +31,58 @@ test.describe('test for diversity contents on the employer hub', async () => {
         await page.locator("select[name=category]").selectOption({ label: "---" })
         await expect.soft(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
         const optionCount = optionsFilter.length
-        let random = getRandomNumber(1, optionCount - 1)
+        const random = getRandomNumber(1, optionCount - 1)
         const chosenOption = optionsFilter[random]
         await page.locator("select[name=category]").selectOption({ label: chosenOption })
-        console.log("Chosen option:", chosenOption)
-        const summary = getRandomCharacters(12)
-        let summary_content = "This is a summary for the diversity content with some random characters: "
-        await page.locator("textarea[name=summary]").fill(`${summary_content}${summary}.`)
-        const body = getRandomCharacters(12)
-        await page.locator("div.ck-editor__editable").click()
-        await page.keyboard.press("Control+A")
-        await page.keyboard.press("Delete")
-        let body_content = "This is the body of the diversity content with some random characters: "
-        await page.locator("div.ck-editor__editable").fill(`${body_content}${body}.`)
-        await page.locator("//div[contains(@class, 'Formstyle__FormActions')]//button[@type='submit' and span/text()='Save']").click()
+        console.log("Option selected:", chosenOption)
+        await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
         await Promise.all([
             page.waitForNavigation(),
             page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
         ])
-        await page.waitForSelector("//a[contains(@class, 'htBKgl') and contains(text(), 'Edit')]")
-        const type = page.locator(`//div[contains(@class, 'GenericTeaserstyle__DetailsContainer') and div//text()='${chosenOption}']`)
-        const checkSummary = await type.locator("//p[contains(@class, 'GenericTeaserstyle__Description')]").innerText()
-        expect(checkSummary).toEqual(`${summary_content}${summary}.`)
+        await page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).waitFor()
+        const contentType = await page.locator("//h3[contains(@class, 'GenericTeaserstyle__Title')]").nth(0).innerText()
+        expect(contentType).toEqual(chosenOption)
+    })
+
+    // test to update the content of the summary field
+    test('update the summary field', async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        const summary = getRandomCharacters(6)
+        const summary_content = "This is a summary for the diversity content with some random characters:"
+        await page.locator("textarea[name=summary]").fill(`${summary_content} ${summary}.`)
+        await page.click("button.button span:has-text('Save')")
+        await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
+        ])
+        await page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).waitFor()
+        const checkSummary = await page.locator("//p[contains(@class, 'GenericTeaserstyle__Description-sc')]").nth(0).innerText()
+        expect(checkSummary).toEqual(`${summary_content} ${summary}.`)
+    })
+
+    // test to update the body field
+    // check for error message when the field was left blank
+    test('update the body field', async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        const body = getRandomCharacters(6)
+        const body_content = "This is the body of the diversity content with some random characters:"
+        await page.locator("div.ck-editor__editable").click()
+        await page.keyboard.press("Control+A")
+        await page.keyboard.press("Delete")
+        await page.click("button.button span:has-text('Save')")
+        await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+        await page.locator("div.ck-editor__editable").fill(`${body_content} ${body}.`)
+        await page.locator("label:has-text('Body')").click()
+        await page.click("button.button span:has-text('Save')")
+        await page.locator("//button[text()='Close']").click()
     })
 })
