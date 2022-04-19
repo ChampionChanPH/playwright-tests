@@ -3,6 +3,7 @@ const { getRandomNumber, getRandomCharacters } = require("../../common/common-fu
 const { CompleteLogin, Input } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
 
+// go to the events section
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
@@ -10,14 +11,34 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Events']").nth(1).click()
     ])
-    await Promise.all([
-        page.waitForNavigation(),
-        page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
-    ])
+})
+
+// test to add a new event on the employer hub
+test.describe('tests to add a new event on the employer hub', async () => {
+    // click on the add event button on the list page
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[span/text()='+ Add event']").click()
+        ])
+    })
+
+    // TODO: test to add a new event
+    test('add new event', async ({ page }) => {
+
+    })
 })
 
 // tests that can be done on the events section in the employer hub
-test.describe('test for events on the employer hub', async () => {
+test.describe('tests to edit events on the employer hub', async () => {
+    // click on the edit button of the first content on the list page
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+    })
+
     // update the event name
     // check for error message when the field was left blank
     test('update event name', async ({ page }) => {
@@ -93,6 +114,12 @@ test.describe('test for events on the employer hub', async () => {
         await page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).waitFor()
         const eventDetails = await page.locator("//p[contains(@class, 'EventTeaserstyle__EventDetails-sc')]").nth(0).innerText()
         expect(eventDetails).toContain(newValue)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[span/text()='Preview']").nth(0).click()
+        ])
+        const timezonePreview = await page.locator("//div[contains(@class, 'field-label') and text()='Time Zone']/following-sibling::div[contains(@class, 'field-item')]").innerText()
+        expect(timezonePreview).toContain(newValue)
     })
 
     // TODO: update the event start date and time
@@ -102,10 +129,59 @@ test.describe('test for events on the employer hub', async () => {
 
     })
 
-    // TODO: update the event location
-    // check for error messages when the field was left blank
-    test("update event location", async ({ page }) => {
+    // update the event location and choose venue
+    test.only("update event location - select venue", async ({ page }) => {
+        const input = new Input(page)
+        await page.locator("label[for=venue]").click()
+        expect(await page.locator("input[id=venue]").isChecked()).toBeTruthy()
+        const label = page.locator("//span[label/text()='Location']/following-sibling::div[last()]")
+        await label.locator("//span[label/text()='Country']/following-sibling::div//select").waitFor()
+        await label.locator("//span[label/text()='Country']/following-sibling::div//select").selectOption({ label: "---" })
+        await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+        const random = getRandomNumber(1, 2)
+        let newValue = ""
+        if (random == 1) {
+            newValue = "AU"
+            await label.locator("//span[label/text()='Country']/following-sibling::div//select").selectOption(newValue)
+            await page.locator("//span[label/text()='state']/following-sibling::div//select").waitFor()
+            await input.randomSelect("//span[label/text()='state']/following-sibling::div//select", false)
+        } else {
+            newValue = "PH"
+            await label.locator("//span[label/text()='Country']/following-sibling::div//select").selectOption(newValue)
+            await page.locator("//span[label/text()='province']/following-sibling::div//select").waitFor()
+            await input.randomSelect("//span[label/text()='province']/following-sibling::div//select", false)
+        }
+        await label.locator("input[name='eventLocation.address.addressLine1']").fill("1 Raintree Ave")
+        await label.locator("input[name='eventLocation.address.locality']").fill("Hayman Island")
+        await label.locator("input[name='eventLocation.address.postalCode']").fill("4801")
+        await page.click("button.button span:has-text('Save')")
+        await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Events']").nth(1).click()
+        ])
+        await page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).waitFor()
+        const eventDetails = await page.locator("//p[contains(@class, 'EventTeaserstyle__EventDetails-sc')]").nth(0).innerText()
+        expect(eventDetails).toContain(newValue)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[span/text()='Preview']").nth(0).click()
+        ])
+        const timezonePreview = await page.locator("//div[contains(@class, 'field-label') and text()='Location']/following-sibling::div[contains(@class, 'field-item')]").innerText()
+        expect(timezonePreview).toContain(newValue)
+    })
 
+    // update the event location and choose online/virtual
+    test("update event location - select online/virtual", async ({ page }) => {
+        const input = new Input(page)
+        await page.locator("label[for='online-virtual']").click()
+        expect(await page.locator("input[id='online-virtual']").isChecked()).toBeTruthy()
+        await page.click("button.button span:has-text('Save')")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[text()='Preview']").click()
+        ])
+        await expect(page.locator("//div[contains(@class, 'field-label') and text()='Location']")).not.toBeVisible()
     })
 
     // update the event cost and check that it was saved
