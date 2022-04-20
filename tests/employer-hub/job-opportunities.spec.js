@@ -539,9 +539,29 @@ test.describe('edit job opportunity', async () => {
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
         })
 
-        // TODO: application open and close date and time
-        test('update the application open and close date and time', async ({ page }) => {
-
+        // application open and close date and time
+        // check for error message when application close date was left blank
+        test.slow('update the application open date and time', async ({ page }) => {
+            const applicationOpen = page.locator("//span[label/text()='Application open date']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+            const applicationClose = page.locator("//span[label/text()='Application close date']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+            await applicationOpen.locator("//div[contains(@class, 'StyledDatePicker')]//input").fill("")
+            await applicationClose.locator("//div[contains(@class, 'StyledDatePicker')]//input").fill("")
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            await applicationOpen.locator("//div[contains(@class, 'StyledDatePicker')]//input").fill(`${moment().format("MMMM D, YYYY")}`)
+            await applicationClose.locator("//div[contains(@class, 'StyledDatePicker')]//input").fill(`${moment().add(1, 'd').format("MMMM D, YYYY")}`)
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).waitFor()
+            const applicationOpenListPage = await page.locator("//dt[text()='Applications Open']/following-sibling::dd[1]").nth(0).innerText()
+            const applicationCloseListPage = await page.locator("//dt[text()='Applications Close']/following-sibling::dd[1]").nth(0).innerText()
+            expect(applicationOpenListPage).toEqual(`${moment().format("D MMM YYYY")}`)
+            expect(applicationCloseListPage).toEqual(`${moment().add(1, 'd').format("D MMM YYYY")}`)
         })
 
         // test for the expected start date where user chose "A specific date"
