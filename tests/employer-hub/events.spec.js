@@ -130,7 +130,7 @@ test.describe('tests to edit events on the employer hub', async () => {
     })
 
     // update the event location and choose venue
-    test.only("update event location - select venue", async ({ page }) => {
+    test("update event location - select venue", async ({ page }) => {
         const input = new Input(page)
         await page.locator("label[for=venue]").click()
         expect(await page.locator("input[id=venue]").isChecked()).toBeTruthy()
