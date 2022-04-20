@@ -56,6 +56,12 @@ test.describe('tests to edit events on the employer hub', async () => {
         await page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).waitFor()
         const name = await page.locator("//h3[contains(@class, 'EventTeaserstyle__Title-sc')]").nth(0).innerText()
         expect(name).toEqual(`New Event - ${random}`)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[span/text()='Preview']").nth(0).click()
+        ])
+        const namePreview = await page.locator("//h2[contains(@class, 'PageHeadingstyle__Heading')]").innerText()
+        expect(namePreview).toEqual(`New Event - ${random}`)
     })
 
     // test to update the event organiser
@@ -103,6 +109,9 @@ test.describe('tests to edit events on the employer hub', async () => {
         if (getValue == "Sydney") {
             newValue = "Manila"
         }
+        await label.locator("button span.icon--cross").click()
+        await page.click("button.button span:has-text('Save')")
+        await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
         await label.locator("input").fill(newValue)
         await label.locator(`li:has-text('${newValue}')`).click()
         await page.click("button.button span:has-text('Save')")

@@ -11,7 +11,7 @@ function getRandomCharacters(length) {
     let charactersLength = allCharacters.length
 
     for (let i = 0; i < length; i++) {
-        result += allCharacters.charAt(getRandomNumber(0, charactersLength - 1));
+        result += allCharacters.charAt(getRandomNumber(1, charactersLength) - 1);
     }
 
     console.log(`Random characters: ${result}`)

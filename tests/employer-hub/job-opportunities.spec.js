@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test')
 const { getRandomNumber, getRandomCharacters } = require("../../common/common-functions")
 const { CompleteLogin, Input } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
+const moment = require('moment')
 
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
@@ -517,6 +518,149 @@ test.describe('edit job opportunity', async () => {
         // before each test, go to the application timeline section
         test.beforeEach(async ({ page }) => {
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Application Timeline']").click()
+        })
+
+        // test to update the time zone
+        // check that it was saved
+        test('update time zone', async ({ page }) => {
+            const label = page.locator("//span[label/text()='Time zone']/following-sibling::div")
+            const getValue = await label.locator("input").getAttribute("value")
+            let newValue = "Sydney"
+            if (getValue == "Sydney") {
+                newValue = "New York"
+            }
+            await label.locator("button span.icon--cross").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            await label.locator("input").fill(newValue)
+            await label.locator(`li:has-text('${newValue}')`).click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+        })
+
+        // TODO: application open and close date and time
+        test('update the application open and close date and time', async ({ page }) => {
+
+        })
+
+        // test for the expected start date where user chose "A specific date"
+        // also test for April 1 - check that date was not changed on daylight savings
+        test('update expected start date - a specific date (April 1)', async ({ page }) => {
+            await page.locator("label[for='start-date-specific']").waitFor()
+            await page.locator("label[for='start-date-specific']").click()
+            await expect(page.locator("input[id='start-date-specific']")).toHaveClass("is-checked")
+            const label = page.locator("//div[text()='Please enter the specific date successful candidates will begin working:']/following-sibling::div")
+            await label.locator("input").fill("")
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            const currentYear = moment().format("YYYY")
+            let newDate = moment(`${currentYear}-04-01`).format("MMMM D, YYYY")
+            await label.locator("input").fill(newDate)
+            await page.locator("//span[text()='Application Timeline']").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).waitFor()
+            let startDate = await page.locator("//dt[text()='Start Date']/following-sibling::dd[1]").nth(0).innerText()
+            expect(startDate).toEqual(`1 Apr ${currentYear}`)
+        })
+
+        // test for the expected start date where user chose "A specific date"
+        // also test for December 1 - check that date was not changed on daylight savings
+        test('update expected start date - a specific date (December 1)', async ({ page }) => {
+            await page.locator("label[for='start-date-specific']").waitFor()
+            await page.locator("label[for='start-date-specific']").click()
+            await expect(page.locator("input[id='start-date-specific']")).toHaveClass("is-checked")
+            const label = page.locator("//div[text()='Please enter the specific date successful candidates will begin working:']/following-sibling::div")
+            const currentYear = moment().format("YYYY")
+            let newDate = moment(`${currentYear}-12-01`).format("MMMM D, YYYY")
+            await label.locator("input").fill(newDate)
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).waitFor()
+            let startDate = await page.locator("//dt[text()='Start Date']/following-sibling::dd[1]").nth(0).innerText()
+            expect(startDate).toEqual(`1 Dec ${currentYear}`)
+        })
+
+        // test for the expected start date where user chose "A date range"
+        test('update expected start date - a date range', async ({ page }) => {
+            await page.locator("label[for='start-date-range']").waitFor()
+            await page.locator("label[for='start-date-range']").click()
+            await expect(page.locator("input[id='start-date-range']")).toHaveClass("is-checked")
+            const label = page.locator("//div[text()='Please enter the date range successful candidates might begin working:']/following-sibling::div")
+            const startDate = moment().format("MMMM D, YYYY")
+            const endDate = moment().add(1, 'd').format("MMMM D, YYYY")
+            await label.locator("input").nth(0).fill("")
+            await label.locator("input").nth(1).fill("")
+            await page.locator("//span[text()='Application Timeline']").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Start date and end date are required']")).toBeVisible()
+            await label.locator("input").nth(0).fill("")
+            await label.locator("input").nth(1).fill(endDate)
+            await page.locator("//span[text()='Application Timeline']").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Start date is required']")).toBeVisible()
+            await label.locator("input").nth(0).fill(startDate)
+            await label.locator("input").nth(1).fill("")
+            await page.locator("//span[text()='Application Timeline']").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='End date is required']")).toBeVisible()
+            await label.locator("input").nth(0).fill(startDate)
+            await label.locator("input").nth(1).fill(endDate)
+            await page.locator("//span[text()='Application Timeline']").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).waitFor()
+            let startDateListPage = await page.locator("//dt[text()='Start Date']/following-sibling::dd[1]").nth(0).innerText()
+            expect(startDateListPage).toEqual(`${moment().format("D MMM YYYY")} - ${moment().add(1, 'd').format("D MMM YYYY")}`)
+        })
+
+        // test for the expected start date where user chose "ASAP"
+        test('update expected start date - asap', async ({ page }) => {
+            await page.locator("label[for='start-date-8']").waitFor()
+            await page.locator("label[for='start-date-8']").click()
+            await expect(page.locator("input[id='start-date-8']")).toHaveClass("is-checked")
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).waitFor()
+            let startDateListPage = await page.locator("//dt[text()='Start Date']/following-sibling::dd[1]").nth(0).innerText()
+            expect(startDateListPage).toEqual("ASAP")
+        })
+
+        // test for the expected start date where user chose "Ongoing"
+        test('update expected start date - ongoing', async ({ page }) => {
+            await page.locator("label[for='start-date-779']").waitFor()
+            await page.locator("label[for='start-date-779']").click()
+            await expect(page.locator("input[id='start-date-779']")).toHaveClass("is-checked")
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).waitFor()
+            let startDateListPage = await page.locator("//dt[text()='Start Date']/following-sibling::dd[1]").nth(0).innerText()
+            expect(startDateListPage).toEqual("Ongoing")
         })
 
         // test that clicking the back button goes to the previous page
