@@ -257,6 +257,213 @@ test.describe('edit job opportunity', async () => {
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
         })
 
+        // test to update the requirements and pathways and user chose "Degree or Certificate"
+        // test to check for error message when user left the title field blank
+        test('update requirements and pathways - choose degree or certificate', async ({ page }) => {
+            const input = new Input(page)
+            const label = page.locator("//div[span/label/text()='Requirements and Pathways']")
+            const pathway = label.locator("//following-sibling::div")
+            const checkVisible = await pathway.locator("span.icon--cross").isVisible()
+            if (checkVisible) {
+                await pathway.locator("span.icon--cross").click()
+                const modal = page.locator("//div[contains(@class, 'Modalstyle') and text()='Are you sure you want to remove this pathway?']/following-sibling::div")
+                await modal.locator("a.button:has-text('Remove')").click()
+            }
+            await label.locator("//following-sibling::button[text()='+ Add Pathway']").click()
+            await pathway.locator("input[name='pathways.0.title']").fill("")
+            await pathway.locator("//label[text()='Title']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            const random = getRandomCharacters(6)
+            await pathway.locator("input[name='pathways.0.title']").fill(`Bachelor degree in any study field - ${random}`)
+            await pathway.locator("//label[text()='Title']").click()
+            await pathway.locator("a.button:has-text('+ Add Requirement')").click()
+            await pathway.locator("//span[label/text()='Requirement Type']/following-sibling::div/select").selectOption("DegreeCert")
+            await pathway.locator("select[name='pathways.0.studyRequirements.0.levelOfStudy']").waitFor()
+            await input.randomSelect("select[name='pathways.0.studyRequirements.0.levelOfStudy']", false)
+            const studyFieldLabel = pathway.locator("//span[label/text()='Select Study Field']/following-sibling::div")
+            const studyFields = studyFieldLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+            await studyFieldLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]").nth(0).waitFor()
+            const countStudyFields = await studyFields.count()
+            for (let i = 0; i < countStudyFields; i++) {
+                const random = getRandomNumber(1, 2)
+                if (random == 1) await studyFields.nth(i).locator("label").click()
+            }
+            await pathway.locator("button.button:has-text('Save Requirement')").click()
+            await pathway.locator("button.button:has-text('Save Pathway')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            const title = await pathway.locator("//span[contains(@class, 'Collapsiblestyle__CollapsibleTitle-sc')]").innerText()
+            expect(title).toEqual(`Bachelor degree in any study field - ${random}`)
+        })
+
+        // test to update the requirements and pathways and user chose "Microcredential"
+        test('update requirements and pathways - choose microcredential', async ({ page }) => {
+            const label = page.locator("//div[span/label/text()='Requirements and Pathways']")
+            const pathway = label.locator("//following-sibling::div")
+            const checkVisible = await pathway.locator("span.icon--cross").isVisible()
+            if (checkVisible) {
+                await pathway.locator("span.icon--cross").click()
+                const modal = page.locator("//div[contains(@class, 'Modalstyle') and text()='Are you sure you want to remove this pathway?']/following-sibling::div")
+                await modal.locator("a.button:has-text('Remove')").click()
+            }
+            await label.locator("//following-sibling::button[text()='+ Add Pathway']").click()
+            const random = getRandomCharacters(6)
+            await pathway.locator("input[name='pathways.0.title']").fill(`Bachelor degree in any study field - ${random}`)
+            await pathway.locator("//label[text()='Title']").click()
+            await pathway.locator("a.button:has-text('+ Add Requirement')").click()
+            await pathway.locator("//span[label/text()='Requirement Type']/following-sibling::div/select").selectOption("Microcredential")
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.title']").waitFor()
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.title']").fill("")
+            await pathway.locator("//label[text()='Microcredential Name']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.title']").fill(`Microcredential name - ${random}`)
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.url']").fill("")
+            await pathway.locator("//label[text()='Link to Microcredential']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.url']").fill("hello")
+            await pathway.locator("//label[text()='Link to Microcredential']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='URL is not valid']")).toBeVisible()
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.url']").fill(`https://dev.frontend.prosple.com/${random}`)
+            await pathway.locator("button.button:has-text('Save Requirement')").click()
+            await pathway.locator("button.button:has-text('Save Pathway')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            const title = await pathway.locator("//span[contains(@class, 'Collapsiblestyle__CollapsibleTitle-sc')]").innerText()
+            expect(title).toEqual(`Bachelor degree in any study field - ${random}`)
+        })
+
+        // test to update the requirements and pathways and user chose "Portfolio"
+        test('update requirements and pathways - choose portfolio', async ({ page }) => {
+            const label = page.locator("//div[span/label/text()='Requirements and Pathways']")
+            const pathway = label.locator("//following-sibling::div")
+            const checkVisible = await pathway.locator("span.icon--cross").isVisible()
+            if (checkVisible) {
+                await pathway.locator("span.icon--cross").click()
+                const modal = page.locator("//div[contains(@class, 'Modalstyle') and text()='Are you sure you want to remove this pathway?']/following-sibling::div")
+                await modal.locator("a.button:has-text('Remove')").click()
+            }
+            await label.locator("//following-sibling::button[text()='+ Add Pathway']").click()
+            const random = getRandomCharacters(6)
+            await pathway.locator("input[name='pathways.0.title']").fill(`Bachelor degree in any study field - ${random}`)
+            await pathway.locator("//label[text()='Title']").click()
+            await pathway.locator("a.button:has-text('+ Add Requirement')").click()
+            await pathway.locator("//span[label/text()='Requirement Type']/following-sibling::div/select").selectOption("Portfolio")
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").waitFor()
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").fill("")
+            await pathway.locator("//label[text()='Requirement Type']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            const body_content = "Some portfolio description with some random characters:"
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").fill(`${body_content} ${random}.`)
+            await pathway.locator("button.button:has-text('Save Requirement')").click()
+            await pathway.locator("button.button:has-text('Save Pathway')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            const title = await pathway.locator("//span[contains(@class, 'Collapsiblestyle__CollapsibleTitle-sc')]").innerText()
+            expect(title).toEqual(`Bachelor degree in any study field - ${random}`)
+        })
+
+        // test to update the requirements and pathways and user chose "Work Experience"
+        test('update requirements and pathways - choose work experience', async ({ page }) => {
+            const label = page.locator("//div[span/label/text()='Requirements and Pathways']")
+            const pathway = label.locator("//following-sibling::div")
+            const checkVisible = await pathway.locator("span.icon--cross").isVisible()
+            if (checkVisible) {
+                await pathway.locator("span.icon--cross").click()
+                const modal = page.locator("//div[contains(@class, 'Modalstyle') and text()='Are you sure you want to remove this pathway?']/following-sibling::div")
+                await modal.locator("a.button:has-text('Remove')").click()
+            }
+            await label.locator("//following-sibling::button[text()='+ Add Pathway']").click()
+            const random = getRandomCharacters(6)
+            await pathway.locator("input[name='pathways.0.title']").fill(`Bachelor degree in any study field - ${random}`)
+            await pathway.locator("//label[text()='Title']").click()
+            await pathway.locator("a.button:has-text('+ Add Requirement')").click()
+            await pathway.locator("//span[label/text()='Requirement Type']/following-sibling::div/select").selectOption("WorkExperience")
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").waitFor()
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").fill("")
+            await pathway.locator("//label[text()='Requirement Type']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            const body_content = "Some work experience description with some random characters:"
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").fill(`${body_content} ${random}.`)
+            await pathway.locator("button.button:has-text('Save Requirement')").click()
+            await pathway.locator("button.button:has-text('Save Pathway')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            const title = await pathway.locator("//span[contains(@class, 'Collapsiblestyle__CollapsibleTitle-sc')]").innerText()
+            expect(title).toEqual(`Bachelor degree in any study field - ${random}`)
+        })
+
+        // test to update the requirements and pathways and user chose "Other"
+        test('update requirements and pathways - choose other', async ({ page }) => {
+            const label = page.locator("//div[span/label/text()='Requirements and Pathways']")
+            const pathway = label.locator("//following-sibling::div")
+            const checkVisible = await pathway.locator("span.icon--cross").isVisible()
+            if (checkVisible) {
+                await pathway.locator("span.icon--cross").click()
+                const modal = page.locator("//div[contains(@class, 'Modalstyle') and text()='Are you sure you want to remove this pathway?']/following-sibling::div")
+                await modal.locator("a.button:has-text('Remove')").click()
+            }
+            await label.locator("//following-sibling::button[text()='+ Add Pathway']").click()
+            const random = getRandomCharacters(6)
+            await pathway.locator("input[name='pathways.0.title']").fill(`Bachelor degree in any study field - ${random}`)
+            await pathway.locator("//label[text()='Title']").click()
+            await pathway.locator("a.button:has-text('+ Add Requirement')").click()
+            await pathway.locator("//span[label/text()='Requirement Type']/following-sibling::div/select").selectOption("Other")
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.title']").waitFor()
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.title']").fill("")
+            await pathway.locator("//label[text()='Requirement Type']").click()
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            await pathway.locator("input[name='pathways.0.studyRequirements.0.title']").fill(`Some title - ${random}`)
+            const body_content = "Some description with some random characters:"
+            await pathway.locator("textarea[name='pathways.0.studyRequirements.0.bodyCopy']").fill(`${body_content} ${random}.`)
+            await pathway.locator("button.button:has-text('Save Requirement')").click()
+            await pathway.locator("button.button:has-text('Save Pathway')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            const title = await pathway.locator("//span[contains(@class, 'Collapsiblestyle__CollapsibleTitle-sc')]").innerText()
+            expect(title).toEqual(`Bachelor degree in any study field - ${random}`)
+        })
+
+        // test to update working right
+        // test for error message when user forgot to choose an option and also when user selected --- on country
+        test('add working rights', async ({ page }) => {
+            const input = new Input(page)
+            const label = page.locator("//div[span/label/text()='Working rights']")
+            const workingRight = label.locator("//following-sibling::div")
+            const checkVisible = await workingRight.locator("span.icon--cross").isVisible()
+            if (checkVisible) {
+                await workingRight.locator("span.icon--cross").click()
+                const modal = page.locator("//div[contains(@class, 'Modalstyle') and text()='Are you sure you want to remove this group?']/following-sibling::div")
+                await modal.locator("a.button:has-text('Remove')").click()
+            }
+            await label.locator("//following-sibling::button[text()='+ Add Group']").click()
+            const rightsLabel = page.locator("//span[label/text()='Applicants who have (select all that apply)']/following-sibling::div")
+            await rightsLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]").nth(0).waitFor()
+            const rights = rightsLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("span.icon--danger")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Select at least one value']")).toBeVisible()
+            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
+            const countRights = await rights.count()
+            for (let i = 0; i < countRights; i++) {
+                const random = getRandomNumber(1, 2)
+                if (random == 1) await rights.nth(i).locator("label").click()
+            }
+            await page.locator("//span[label/text()='In this country']/following-sibling::div//select").waitFor()
+            const country = await input.randomSelect("//span[label/text()='In this country']/following-sibling::div//select", false)
+            await workingRight.locator("button.button:has-text('Save Group')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            const title = await workingRight.locator("//span[contains(@class, 'Collapsiblestyle__CollapsibleTitle-sc')]").innerText()
+            expect(title).toEqual(country)
+        })
+
         // test that clicking the back button goes to the previous page
         test('back button is working', async ({ page }) => {
             const menu = await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc')]").allInnerTexts()

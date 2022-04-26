@@ -2,6 +2,7 @@ const { test, expect } = require('@playwright/test')
 const { getRandomNumber, getRandomCharacters } = require("../../common/common-functions")
 const { CompleteLogin, Input } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
+const moment = require('moment')
 
 // go to the events section
 test.beforeEach(async ({ page }) => {
@@ -131,11 +132,54 @@ test.describe('tests to edit events on the employer hub', async () => {
         expect(timezonePreview).toContain(newValue)
     })
 
-    // TODO: update the event start date and time
+    // update the event start date and time
     // check for error messages when the field was left blank
-    // check that it's also not possible to have finish date before start date
-    test("update event start and finish date and time", async ({ page }) => {
+    test("update event start and finish date and time - use month of april", async ({ page }) => {
+        const startDateLabel = page.locator("//span[label/text()='Start date and time']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        await startDateLabel.locator("input").nth(0).fill("")
+        const endDateLabel = page.locator("//span[label/text()='Finish date and time']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        await endDateLabel.locator("input").nth(0).fill("")
+        await page.click("button.button span:has-text('Save')")
+        await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toHaveCount(2)
+        const year = moment().format("YYYY")
+        let start = moment(`${year}-04-01`).format("MMMM D, YYYY")
+        let end = moment(`${year}-04-30`).format("MMMM D, YYYY")
+        await startDateLabel.locator("input").nth(0).fill(start)
+        await endDateLabel.locator("input").nth(0).fill(end)
+        await page.click("button.button span:has-text('Save')")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[text()='Preview']").click()
+        ])
+        const startPreview = await page.locator("//div[contains(@class, 'field-label') and text()='Starts']/following-sibling::div").innerText()
+        expect(startPreview).toContain(moment(`${year}-04-01`).format("ddd D MMM YYYY"))
+        const endPreview = await page.locator("//div[contains(@class, 'field-label') and text()='Ends']/following-sibling::div").innerText()
+        expect(endPreview).toContain(moment(`${year}-04-30`).format("ddd D MMM YYYY"))
+    })
 
+    // update the event start date and time
+    // check for error messages when the field was left blank
+    test("update event start and finish date and time - use month of december", async ({ page }) => {
+        const startDateLabel = page.locator("//span[label/text()='Start date and time']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        await startDateLabel.locator("input").nth(0).fill("")
+        const endDateLabel = page.locator("//span[label/text()='Finish date and time']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        await endDateLabel.locator("input").nth(0).fill("")
+        await page.click("button.button span:has-text('Save')")
+        await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toHaveCount(2)
+        const year = moment().format("YYYY")
+        let start = moment(`${year}-12-01`).format("MMMM D, YYYY")
+        let end = moment(`${year}-12-30`).format("MMMM D, YYYY")
+        await startDateLabel.locator("input").nth(0).fill(start)
+        await endDateLabel.locator("input").nth(0).fill(end)
+        await page.click("button.button span:has-text('Save')")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[text()='Preview']").click()
+        ])
+        const startPreview = await page.locator("//div[contains(@class, 'field-label') and text()='Starts']/following-sibling::div").innerText()
+        expect(startPreview).toContain(moment(`${year}-12-01`).format("ddd D MMM YYYY"))
+        const endPreview = await page.locator("//div[contains(@class, 'field-label') and text()='Ends']/following-sibling::div").innerText()
+        expect(endPreview).toContain(moment(`${year}-12-30`).format("ddd D MMM YYYY"))
     })
 
     // update the event location and choose venue
