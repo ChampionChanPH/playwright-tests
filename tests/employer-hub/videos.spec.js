@@ -19,13 +19,17 @@ test.describe('tests to add a new video on the employer hub', async () => {
     test.beforeEach(async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
-            page.locator("//a[span/text()='+ Add video']").click()
+            page.locator("//a[text()='+ Add video']").click()
         ])
     })
 
-    // TODO: test to add a new video
+    // test to add a new video
     test('add new video', async ({ page }) => {
-
+        const random = getRandomCharacters(6)
+        await page.locator("input[name=title]").fill(`New Video Title - ${random}`)
+        await page.locator("input[name=url]").fill(`https://www.youtube.com/watch?v=6XYBbwXDj9o`)
+        await page.click("button.button span:has-text('Submit')")
+        await page.locator("//a[text()='Close']").click()
     })
 })
 
