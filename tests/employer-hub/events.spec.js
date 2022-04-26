@@ -24,9 +24,22 @@ test.describe('tests to add a new event on the employer hub', async () => {
         ])
     })
 
-    // TODO: test to add a new event
+    // test to add a new event
     test('add new event', async ({ page }) => {
-
+        const random = getRandomCharacters(6)
+        await page.locator("input[name=name]").fill(`New Event - ${random}`)
+        const timezone = page.locator("//span[label/text()='Time Zone']/following-sibling::div")
+        await timezone.locator("input").fill("Sydney")
+        await timezone.locator(`li:has-text('Sydney')`).click()
+        const start = moment().format("MMMM D, YYYY")
+        const end = moment().add(7, 'd').format("MMMM D, YYYY")
+        const startDateLabel = page.locator("//span[label/text()='Start date and time']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        const endDateLabel = page.locator("//span[label/text()='Finish date and time']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        await startDateLabel.locator("input").nth(0).fill(start)
+        await endDateLabel.locator("input").nth(0).fill(end)
+        await page.locator("label[for='online-virtual']").click()
+        await page.click("button.button span:has-text('Submit')")
+        await page.locator("//a[text()='Close']").click()
     })
 })
 
@@ -142,8 +155,8 @@ test.describe('tests to edit events on the employer hub', async () => {
         await page.click("button.button span:has-text('Save')")
         await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toHaveCount(2)
         const year = moment().format("YYYY")
-        let start = moment(`${year}-04-01`).format("MMMM D, YYYY")
-        let end = moment(`${year}-04-30`).format("MMMM D, YYYY")
+        const start = moment(`${year}-04-01`).format("MMMM D, YYYY")
+        const end = moment(`${year}-04-30`).format("MMMM D, YYYY")
         await startDateLabel.locator("input").nth(0).fill(start)
         await endDateLabel.locator("input").nth(0).fill(end)
         await page.click("button.button span:has-text('Save')")
@@ -167,8 +180,8 @@ test.describe('tests to edit events on the employer hub', async () => {
         await page.click("button.button span:has-text('Save')")
         await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toHaveCount(2)
         const year = moment().format("YYYY")
-        let start = moment(`${year}-12-01`).format("MMMM D, YYYY")
-        let end = moment(`${year}-12-30`).format("MMMM D, YYYY")
+        const start = moment(`${year}-12-01`).format("MMMM D, YYYY")
+        const end = moment(`${year}-12-30`).format("MMMM D, YYYY")
         await startDateLabel.locator("input").nth(0).fill(start)
         await endDateLabel.locator("input").nth(0).fill(end)
         await page.click("button.button span:has-text('Save')")
