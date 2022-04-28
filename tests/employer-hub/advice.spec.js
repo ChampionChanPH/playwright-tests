@@ -13,14 +13,43 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
     ])
-    await Promise.all([
-        page.waitForNavigation(),
-        page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
-    ])
+})
+
+// test to add a new article on the employer hub
+test.describe('tests to add a new article on the employer hub', async () => {
+    // click on the add article button on the list page
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[span/text()='+ Add Article']").click()
+        ])
+    })
+
+    // test to add a new article
+    test('add new article', async ({ page }) => {
+        const input = new Input(page)
+        const random = getRandomCharacters(6)
+        await page.locator("input[name=title]").fill(`New Article - ${random}`)
+        await page.locator("select[name=type]").waitFor()
+        await input.randomSelect("select[name=type]", false)
+        await page.locator("button.button span:has-text('Next')").click()
+        const body_content = "Some advice article description with some random characters:"
+        await page.locator("div.ck-editor__editable").fill(`${body_content} ${random}.`)
+        await page.locator("label:has-text('Body')").click()
+        await page.click("button.button span:has-text('Submit')")
+        await page.locator("//a[text()='Close']").click()
+    })
 })
 
 // tests for editing a advice article
 test.describe('edit advice article', async () => {
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
+        ])
+    })
+
     // tests for the basic details section on job opportunities
     test.describe('basic details section', async () => {
         // before each test, go to the basic details section

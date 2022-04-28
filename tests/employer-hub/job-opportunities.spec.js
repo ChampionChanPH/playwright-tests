@@ -11,14 +11,86 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
     ])
-    await Promise.all([
-        page.waitForNavigation(),
-        page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
-    ])
 })
+
+// test to add a new job opportunity on the employer hub
+test.describe('tests to add a new job opportunity on the employer hub', async () => {
+    // click on the create job button on the list page
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[span/text()='+ Create job']").click()
+        ])
+    })
+
+    // TODO: test to add a new job opportunity
+    test('add new job opportunity', async ({ page }) => {
+        const input = new Input(page)
+        const randomCharacters = getRandomCharacters(6)
+        await page.locator("input[name=title]").fill(`Cybersecurity Internship - ${randomCharacters}`)
+        await page.locator("select[name=industrySectors]").waitFor()
+        await input.randomSelect("select[name=industrySectors]", false)
+        await page.locator("label[for='radio-1']").click()
+        await page.locator("input[name=minNumVacancies]").fill("3")
+        await page.locator("input[name=maxNumVacancies]").fill("8")
+        await page.locator("input[name=applyByUrl]").fill("https://dev.frontend.prosple.com/")
+        await page.locator("button.button span:has-text('Next')").click()
+        await page.locator("textarea[name=overviewSummary]").fill(`Summary with random characters: ${randomCharacters}`)
+        await page.locator("div.ck-editor__editable").fill(`Position description with random characters: ${randomCharacters}`)
+        await page.locator("button.button span:has-text('Next')").click()
+        const studyFieldsLabel = page.locator("//span[label/text()='Target study fields']/following-sibling::div")
+        const studyFields = studyFieldsLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+        await studyFieldsLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]").nth(0).waitFor()
+        const countStudyFields = await studyFields.count()
+        for (let i = 0; i < countStudyFields; i++) {
+            const random = getRandomNumber(1, 2)
+            if (random == 1) await studyFields.nth(i).locator("label").click()
+        }
+        const workingRightLabel = page.locator("//div[span/label/text()='Working rights']")
+        const workingRight = workingRightLabel.locator("//following-sibling::div")
+        await workingRightLabel.locator("//following-sibling::button[text()='+ Add Group']").click()
+        const rightsLabel = page.locator("//span[label/text()='Applicants who have (select all that apply)']/following-sibling::div")
+        await rightsLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]").nth(0).waitFor()
+        const rights = rightsLabel.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+        const countRights = await rights.count()
+        for (let i = 0; i < countRights; i++) {
+            const random = getRandomNumber(1, 2)
+            if (random == 1) await rights.nth(i).locator("label").click()
+        }
+        await page.locator("//span[label/text()='In this country']/following-sibling::div//select").waitFor()
+        await input.randomSelect("//span[label/text()='In this country']/following-sibling::div//select", false)
+        await workingRight.locator("button.button:has-text('Save Group')").click()
+        await page.locator("button.button span:has-text('Next')").click()
+        await input.randomSelect("//span[label/text()='Remuneration']/following-sibling::div//select", false)
+        await page.locator("input[name=minSalary]").fill("10000")
+        await page.locator("input[name=maxSalary]").fill("50000")
+        await page.locator("button.button span:has-text('Next')").click()
+        await page.locator("label=[for=remoteAvailable]").click()
+        const remoteWorkLabel = page.locator("//span[label/text()='Remote work locations']/following-sibling::div")
+        await remoteWorkLabel.locator("//button[text()='Add']").click()
+        await input.randomSelect("//span[label/text()='Remote work locations']/following-sibling::div//select", false)
+        await page.locator("button.button span:has-text('Next')").click()
+        const timeZoneLabel = page.locator("//span[label/text()='Time zone']/following-sibling::div")
+        await timeZoneLabel.locator("input").fill("Sydney")
+        await timeZoneLabel.locator(`li:has-text('Sydney')`).click()
+        const applicationClose = page.locator("//span[label/text()='Application close date']/following-sibling::div[contains(@class, 'DateAndTimeField')]")
+        await applicationClose.locator("//div[contains(@class, 'StyledDatePicker')]//input").fill(`${moment().add(1, 'd').format("MMMM D, YYYY")}`)
+        await page.locator("label[for='start-date-8']").click()
+        await page.click("button.button span:has-text('Submit')")
+        await page.locator("//a[text()='Close']").click()
+    })
+})
+
 
 // tests for editing a job opportunity
 test.describe('edit job opportunity', async () => {
+    test.beforeEach(async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+        ])
+    })
+
     // tests for the basic details section on job opportunities
     test.describe('basic details section', async () => {
         // before each test, go to the basic details section
