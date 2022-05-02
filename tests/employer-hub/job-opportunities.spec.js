@@ -19,11 +19,11 @@ test.describe('tests to add a new job opportunity on the employer hub', async ()
     test.beforeEach(async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
-            page.locator("//a[span/text()='+ Create job']").click()
+            page.locator("//a[text()='+ Create job']").click()
         ])
     })
 
-    // TODO: test to add a new job opportunity
+    // test to add a new job opportunity
     test('add new job opportunity', async ({ page }) => {
         const input = new Input(page)
         const randomCharacters = getRandomCharacters(6)
@@ -61,11 +61,13 @@ test.describe('tests to add a new job opportunity on the employer hub', async ()
         await input.randomSelect("//span[label/text()='In this country']/following-sibling::div//select", false)
         await workingRight.locator("button.button:has-text('Save Group')").click()
         await page.locator("button.button span:has-text('Next')").click()
+        await page.locator("//span[label/text()='Remuneration']/following-sibling::div//select").waitFor()
         await input.randomSelect("//span[label/text()='Remuneration']/following-sibling::div//select", false)
         await page.locator("input[name=minSalary]").fill("10000")
         await page.locator("input[name=maxSalary]").fill("50000")
+        await page.locator("//label[text()='Remuneration']").click()
         await page.locator("button.button span:has-text('Next')").click()
-        await page.locator("label=[for=remoteAvailable]").click()
+        await page.locator("label[for=remoteAvailable]").click()
         const remoteWorkLabel = page.locator("//span[label/text()='Remote work locations']/following-sibling::div")
         await remoteWorkLabel.locator("//button[text()='Add']").click()
         await input.randomSelect("//span[label/text()='Remote work locations']/following-sibling::div//select", false)

@@ -85,4 +85,30 @@ test.describe('test for diversity contents on the employer hub', async () => {
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
     })
+
+    // test to update the body field with some image
+    test('update the body field by adding image', async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        await page.locator("div.ck-editor__editable").click()
+        await page.keyboard.press("Control+A")
+        await page.keyboard.press("Delete")
+        await page.locator('text=Insert imageInsert image').click();
+        // Upload prosple background.jpg
+        await page.locator('[aria-label="Rich\\ Text\\ Editor\\,\\ main"]').setInputFiles('prosple background.jpg');
+        // Click button:has-text("Save") >> nth=1
+        await page.locator('button:has-text("Save")').nth(1).click();
+        // Click text=Close
+        await page.locator('text=Close').click();
+        // Click text=Insert mediaInsert media
+        await page.locator('text=Insert mediaInsert media').click();
+        // Click input[type="text"]
+        await page.locator('input[type="text"]').click();
+        // Fill input[type="text"]
+        await page.locator('input[type="text"]').fill('https://youtu.be/35Xgx6IfG5I');
+        await page.click("button.button span:has-text('Save')")
+        await page.locator("//button[text()='Close']").click()
+    })
 })
