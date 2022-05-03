@@ -14,8 +14,8 @@ test.beforeEach(async ({ page }) => {
 test.describe('test after user successfully logged in', async () => {
     // test to check on the side menu and see that it's working as expected 
     test('test on the side menu', async ({ page }) => {
-        await page.locator("//div[contains(@class, 'Navigationstyle__SidebarWrapper')]//span[contains(@class, 'Navigationstyle__MenuLabel')]").nth(0).waitFor()
-        const menu = page.locator("//div[contains(@class, 'Navigationstyle__SidebarWrapper')]//span[contains(@class, 'Navigationstyle__MenuLabel')]")
+        await page.locator("//div[contains(@class, 'Navigationstyle__SidebarWrapper')]/a/span[contains(@class, 'Navigationstyle__MenuLabel')]").nth(0).waitFor()
+        const menu = page.locator("//div[contains(@class, 'Navigationstyle__SidebarWrapper')]/a/span[contains(@class, 'Navigationstyle__MenuLabel')]")
         const menuCount = await menu.count()
         for (let i = 0; i < menuCount; i++) {
             const label = await menu.nth(i).innerText()
@@ -23,15 +23,16 @@ test.describe('test after user successfully logged in', async () => {
                 page.waitForNavigation(),
                 menu.nth(i).click()
             ])
-            expect(page.url()).toContain(`/${label.toLowerCase().replaceAll(" ", "-").replaceAll("&", "and")}/`)
+            const expected_url = label.toLowerCase().split(" ").join("-").replace("&", "and")
+            expect(page.url()).toContain(`/${expected_url}/`)
             console.log(`${label} - ${page.url()}`)
         }
     })
 
     // test to check on the top menu and see that it's working as expected 
     test('test on the top menu', async ({ page }) => {
-        await page.locator("//div[contains(@class, 'Navigationstyle__HeaderMenuWrapper')]//span[contains(@class, 'Navigationstyle__MenuLabel')]").nth(0).waitFor()
-        const menu = page.locator("//div[contains(@class, 'Navigationstyle__HeaderMenuWrapper')]//span[contains(@class, 'Navigationstyle__MenuLabel')]")
+        await page.locator("//div[contains(@class, 'Navigationstyle__HeaderMenuWrapper')]/a/span[contains(@class, 'Navigationstyle__MenuLabel')]").nth(0).waitFor()
+        const menu = page.locator("//div[contains(@class, 'Navigationstyle__HeaderMenuWrapper')]/a/span[contains(@class, 'Navigationstyle__MenuLabel')]")
         const menuCount = await menu.count()
         for (let i = 0; i < menuCount; i++) {
             const label = await menu.nth(i).innerText()
@@ -39,7 +40,8 @@ test.describe('test after user successfully logged in', async () => {
                 page.waitForNavigation(),
                 menu.nth(i).click()
             ])
-            expect(page.url()).toContain(`/${label.toLowerCase().replaceAll(" ", "-").replaceAll("&", "and")}/`)
+            const expected_url = label.toLowerCase().split(" ").join("-").replace("&", "and")
+            expect(page.url()).toContain(`/${expected_url}/`)
             console.log(`${label} - ${page.url()}`)
         }
     })

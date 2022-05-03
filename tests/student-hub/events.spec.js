@@ -38,7 +38,8 @@ test.describe('events page tests', async () => {
     test("location filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const locationFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'In these locations')]//following-sibling::*[@class='toggle-target']")
-        await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = locationFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
@@ -61,7 +62,8 @@ test.describe('events page tests', async () => {
     test("degree filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const degreeFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'Filter by degree')]//following-sibling::*[@class='toggle-target']")
-        await degreeFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await degreeFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await degreeFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = degreeFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
@@ -84,7 +86,8 @@ test.describe('events page tests', async () => {
     test("industry sector filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const sectorFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'Filter by industry sector')]//following-sibling::*[@class='toggle-target']")
-        await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = sectorFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
