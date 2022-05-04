@@ -42,6 +42,7 @@ test.describe('seo landing page tests', async () => {
     test("click review link to detail page", async ({ page }) => {
         const reviews = page.locator("//div[contains(@class, 'viewport--viewport-read-reviews')]")
         const countReviews = await reviews.count()
+        if (countReviews == 0) test.skip()
         let random = getRandomNumber(1, countReviews)
         const employerListPage = await reviews.nth(random - 1).locator("//preceding-sibling::*[contains(@class, 'Logostyle__Logo')]//p").innerText()
         await Promise.all([

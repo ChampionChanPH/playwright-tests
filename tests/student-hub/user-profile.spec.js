@@ -62,10 +62,14 @@ test.describe("user profile tests", async () => {
         const qualifications = page.locator("//h3[contains(@class, 'field-set__label') and text()='Qualifications']")
         const checkVisible = await qualifications.isVisible()
         test.skip(!checkVisible, "skip test when no qualifications section")
-        await qualifications.locator("//following-sibling::button[text()='Add a qualification']").click()
-        const form = qualifications.locator("//following-sibling::div//form")
-        await expect.soft(form.locator("button.button:has-text('Submit')")).toBeVisible()
         await page.locator("span:has-text('Loading')").last().waitFor({ state: 'detached' })
+        const form = qualifications.locator("//following-sibling::div//form")
+        const remove = form.locator("button.button--remove")
+        const removeCount = await remove.count()
+        for (let i = 0; i < removeCount; i++) {
+            await remove.nth(0).click()
+        }
+        await qualifications.locator("//following-sibling::button[text()='Add a qualification']").click()
         let random = getRandomCharacters(6)
         let institution = `Adamson University_${random}`
         await form.locator("input[name=institution]").fill(institution)
@@ -206,6 +210,7 @@ test.describe("user profile tests", async () => {
         await form.locator("//label[contains(@class, 'input-label') and text()='What final year high school subjects do/did you take?']/following-sibling::*/button[text()='Add']").click()
         const randomSubject = "Math_" + getRandomCharacters(6)
         await form.locator("//input[@name='finalYearHighSchoolSubjects.0']").fill(randomSubject)
+        await page.locator("//h3[text()='About Your High School']").click()
         await form.locator("//button[text()='Submit']").click()
         await page.waitForSelector("//li[@data-testid='message-item' and p/text()='Form was submitted successfully.']")
         const savedYear = await form.locator("//label[contains(@class, input-label) and text()='Expected/actual high school graduation year?']/following-sibling::div").innerText()

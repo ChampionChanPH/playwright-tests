@@ -87,7 +87,7 @@ test.describe('test for diversity contents on the employer hub', async () => {
     })
 
     // test to update the body field with some image
-    test('update the body field by adding image', async ({ page }) => {
+    test.skip('update the body field by adding image', async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
             page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
