@@ -15,7 +15,8 @@ test.describe('search job page tests', async () => {
     test("study field filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const studyFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'studying or have a qualification')]//following-sibling::*[@class='toggle-target']")
-        await studyFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await studyFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await studyFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = studyFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
@@ -47,7 +48,8 @@ test.describe('search job page tests', async () => {
     test("job type filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const jobFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'looking for')]//following-sibling::*[@class='toggle-target']")
-        await jobFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await jobFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await jobFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = jobFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
@@ -74,7 +76,8 @@ test.describe('search job page tests', async () => {
     test("location filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const locationFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'work in')]//following-sibling::*[@class='toggle-target']")
-        await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await locationFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = locationFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
@@ -95,7 +98,8 @@ test.describe('search job page tests', async () => {
     test("sectors filter", async ({ page }) => {
         const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
         const sectorFilter = filter.locator("//button[@class='toggle-trigger' and div/h4/text()='I prefer these sectors']//following-sibling::*[@class='toggle-target']")
-        await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
+        const checkVisible = await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
+        if (checkVisible) await sectorFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
         const fields = sectorFilter.locator("//div[@class='facet__item']")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
@@ -215,7 +219,7 @@ test.describe('search job page tests', async () => {
     })
 
     // check that when filtered, the results were filtered correctly
-    test("sort by filter, employers a-z", async ({ page }) => {
+    test.skip("sort by filter, employers a-z", async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
             page.locator('select[name=sort]').selectOption({ label: "Employers A-Z" })
@@ -242,7 +246,7 @@ test.describe('search job page tests', async () => {
     })
 
     // check that when filtered, the results were filtered correctly
-    test("sort by filter, employers z-a", async ({ page }) => {
+    test.skip("sort by filter, employers z-a", async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
             page.locator('select[name=sort]').selectOption({ label: "Employers Z-A" })
