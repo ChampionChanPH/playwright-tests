@@ -46,7 +46,7 @@ const config = {
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'Chrome',
+      name: 'Desktop Chrome',
       use: {
         ...devices['Desktop Chrome'],
       },

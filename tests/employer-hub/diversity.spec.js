@@ -3,6 +3,8 @@ const { getRandomNumber, getRandomCharacters } = require("../../common/common-fu
 const { CompleteLogin } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
 
+const prospleLogo = "./resources/prosple-logo.png"
+
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
@@ -68,7 +70,7 @@ test.describe('test for diversity contents on the employer hub', async () => {
 
     // test to update the body field
     // check for error message when the field was left blank
-    test('update the body field', async ({ page }) => {
+    test('update the body field by adding texts', async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
             page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
@@ -87,6 +89,7 @@ test.describe('test for diversity contents on the employer hub', async () => {
     })
 
     // test to update the body field with some image
+    // TODO: find a way to see how to add image to CKEditor
     test.skip('update the body field by adding image', async ({ page }) => {
         await Promise.all([
             page.waitForNavigation(),
@@ -97,17 +100,33 @@ test.describe('test for diversity contents on the employer hub', async () => {
         await page.keyboard.press("Delete")
         await page.locator('text=Insert imageInsert image').click();
         // Upload prosple background.jpg
-        await page.locator('[aria-label="Rich\\ Text\\ Editor\\,\\ main"]').setInputFiles('prosple background.jpg');
+        await page.locator('[aria-label="Rich\\ Text\\ Editor\\,\\ main"]').setInputFiles(prospleLogo);
         // Click button:has-text("Save") >> nth=1
         await page.locator('button:has-text("Save")').nth(1).click();
         // Click text=Close
         await page.locator('text=Close').click();
         // Click text=Insert mediaInsert media
-        await page.locator('text=Insert mediaInsert media').click();
+        await page.locator("span::has-text('Inset media')").click();
         // Click input[type="text"]
         await page.locator('input[type="text"]').click();
         // Fill input[type="text"]
         await page.locator('input[type="text"]').fill('https://youtu.be/35Xgx6IfG5I');
+        await page.click("button.button span:has-text('Save')")
+        await page.locator("//button[text()='Close']").click()
+    })
+
+    // test to update the body field with some video link
+    test.skip('update the body field by adding video link', async ({ page }) => {
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        await page.locator("div.ck-editor__editable").click()
+        await page.keyboard.press("Control+A")
+        await page.keyboard.press("Delete")
+        await page.locator("text=Insert mediaInsert media").waitFor()
+        await page.locator("span.ck-tooltip_s span:has-text('Insert media')").click()
+        await page.locator("form.ck-responsive-form input").fill('https://youtu.be/35Xgx6IfG5I')
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
     })
