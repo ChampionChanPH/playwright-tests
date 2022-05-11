@@ -1,7 +1,9 @@
 {
   "devDependencies": {
-    "@playwright/test": "^1.19.2",
-    "playwright": "^1.19.1"
+    "@playwright/test": "^1.21.1",
+    "lighthouse": "^9.5.0",
+    "playwright": "^1.21.1",
+    "playwright-lighthouse": "^2.2.2"
   },
   "scripts": {
     "test": "npx playwright test"

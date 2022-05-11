@@ -10,7 +10,7 @@ defaults:
     working-directory: tests/student-hub
 jobs:
   test-win:
-    name: "Windows"
+    name: "Windows Chromium"
     strategy:
       fail-fast: false
       matrix:
