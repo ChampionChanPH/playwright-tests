@@ -127,10 +127,20 @@ test.describe('edit job opportunity', async () => {
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
             const sector = await input.randomSelect("select[name=industrySectors]", false)
-            const newValue = await page.locator("select[name=industrySectors]").getAttribute("value")
-            console.log(newValue)
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Basic Details']").click()
+            const value = await page.locator("select[name=industrySectors]").inputValue()
+            const selectedSector = await page.locator(`select[name=industrySectors] option[value='${value}']`).textContent()
+            expect.soft(selectedSector).toEqual(sector)
         })
 
         // test to update opportunity type
@@ -199,6 +209,7 @@ test.describe('edit job opportunity', async () => {
         // test to update application link
         // check for error message when field was left blank or provided an invalid URL
         test('update application link', async ({ page }) => {
+            const random = getRandomCharacters(6)
             const label = page.locator("//span[label/text()='Application Link']/following-sibling::div")
             await label.locator("input[name=applyByUrl]").fill("")
             await page.click("button.button span:has-text('Save')")
@@ -209,10 +220,21 @@ test.describe('edit job opportunity', async () => {
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='URL is not valid']")).toBeVisible()
-            await label.locator("input[name=applyByUrl]").fill("https://gradaustralia.com.au/")
+            await label.locator("input[name=applyByUrl]").fill(`https://gradaustralia.com.au/${random}`)
             await page.locator("//label[text()='Application Link']").click()
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Basic Details']").click()
+            const applyLink = await page.locator("input[name=applyByUrl]").inputValue()
+            expect.soft(applyLink).toEqual(`https://gradaustralia.com.au/${random}`)
         })
 
         // test that clicking the next button goes to the next page

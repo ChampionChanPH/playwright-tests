@@ -3,10 +3,11 @@ const { playAudit } = require('playwright-lighthouse');
 const playwright = require('playwright');
 
 test.describe('audit example', () => {
-    test.only('lighthouse audit report', async ({ page }) => {
+    test('lighthouse audit report', async () => {
         const browser = await playwright['chromium'].launch({
             args: ['--remote-debugging-port=9222'],
-        });
+        })
+        const page = await browser.newPage()
         await page.goto('https://gradaustralia.com.au/')
 
         await playAudit({
@@ -21,9 +22,9 @@ test.describe('audit example', () => {
             port: 9222,
             reports: {
                 formats: {
-                    json: true, //defaults to false
-                    html: true, //defaults to false
-                    csv: true, //defaults to false
+                    json: false,
+                    html: true,
+                    csv: false,
                 },
                 name: `lighthouse-${new Date().getTime()}`,
                 directory: `${process.cwd()}/playwright-report/lighthouse`,
