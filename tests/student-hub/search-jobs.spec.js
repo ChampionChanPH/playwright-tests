@@ -149,22 +149,6 @@ test.describe('search job page tests', async () => {
         expect(jobTitleOverviewPage).toEqual(jobTitleListPage)
     })
 
-    // confirm that the apply now button on the search jobs page is working as expected
-    // clicking apply now button opens a new tab that's why it checks for 2 pages
-    // FIXME: get rid of the waitfortimeout
-    test("apply now button is clickable", async ({ page, context }) => {
-        await page.locator("a.button--type-apply").nth(0).waitFor()
-        const apply = page.locator("a.button--type-apply")
-        const countApply = await apply.count()
-        let random = getRandomNumber(1, countApply)
-        // const url = await apply.nth(random - 1).getAttribute("href")
-        await apply.nth(random - 1).click()
-        // const urls = []
-        // const pages = context.pages().length
-        // // pages.forEach(element => urls.push(element._mainFrame._url))
-        // expect(pages).toEqual(2)
-    })
-
     // check that the closing in message on jobs is correct
     test("closing in alert message", async ({ page }) => {
         const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")
@@ -348,6 +332,20 @@ test.describe("search job page tests for logged-in users", async () => {
     test.beforeEach(async ({ page }) => {
         const login = new CompleteLogin(page)
         await login.studentHubLogin()
+    })
+
+    // confirm that the apply now button on the search jobs page is working as expected
+    // clicking apply now button opens a new tab that's why it checks for 2 pages
+    // FIXME: get rid of the waitfortimeout
+    test("apply now button is clickable", async ({ page, context }) => {
+        await page.locator("a.button--type-apply").nth(0).waitFor()
+        const apply = page.locator("a.button--type-apply")
+        const countApply = await apply.count()
+        let random = getRandomNumber(1, countApply)
+        await Promise.all([
+            context.waitForEvent("page"),
+            await apply.nth(random - 1).click()
+        ])
     })
 
     // bookmark a job and check that what was saved is correct

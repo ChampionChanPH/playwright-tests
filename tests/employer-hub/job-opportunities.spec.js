@@ -299,6 +299,17 @@ test.describe('edit job opportunity', async () => {
             await page.locator("//label[text()='Position description']").click()
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Position Description']").click()
+            const content = await positionDescription.locator("div.ck-editor__editable").textContent()
+            expect.soft(content).toEqual(`${body_content}${random}.`)
         })
 
         // test that clicking the back button goes to the previous page
