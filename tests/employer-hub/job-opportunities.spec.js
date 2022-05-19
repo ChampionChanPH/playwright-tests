@@ -360,12 +360,36 @@ test.describe('edit job opportunity', async () => {
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Select at least one study field']")).toBeVisible()
+            const chosenStudyFields = []
             for (let i = 0; i < countStudyFields; i++) {
                 const random = getRandomNumber(1, 2)
-                if (random == 1) await studyFields.nth(i).locator("label").click()
+                if (random == 1) {
+                    await studyFields.nth(i).locator("label").click()
+                    const study = await studyFields.nth(i).locator("label").textContent()
+                    chosenStudyFields.push(study)
+                }
             }
+            console.log(chosenStudyFields)
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Hiring Criteria']").click()
+            await label.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]").nth(0).waitFor()
+            for (let i = 0; i < countStudyFields; i++) {
+                const isChecked = await studyFields.nth(i).locator("input").getAttribute("class")
+                if (isChecked == "is-checked") {
+                    const study = await studyFields.nth(i).locator("label").textContent()
+                    console.log(study)
+                    expect(chosenStudyFields).toContain(study)
+                }
+            }
         })
 
         // test to update the requirements and pathways and user chose "Degree or Certificate"
