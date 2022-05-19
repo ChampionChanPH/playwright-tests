@@ -335,8 +335,8 @@ test.describe("search job page tests for logged-in users", async () => {
     })
 
     // confirm that the apply now button on the search jobs page is working as expected
-    // clicking apply now button opens a new tab that's why it checks for 2 pages
-    // FIXME: get rid of the waitfortimeout
+    // clicking apply now button opens a new tab
+    // test added to tests requiring sign-in because dev frontend needs the user to signin.
     test("apply now button is clickable", async ({ page, context }) => {
         await page.locator("a.button--type-apply").nth(0).waitFor()
         const apply = page.locator("a.button--type-apply")
