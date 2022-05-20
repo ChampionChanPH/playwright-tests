@@ -638,7 +638,7 @@ test.describe('edit job opportunity', async () => {
         // test to update remuneration
         // check for error message when selected ---
         // also check for error message when minimum is above the maximum salary or the fields were left blank
-        test.only('update remuneration', async ({ page }) => {
+        test('update remuneration', async ({ page }) => {
             const input = new Input(page)
             const label = page.locator("//span[label/text()='Remuneration']/following-sibling::div")
             await page.locator("select.sc-khIgXV").selectOption({ label: "---" })
