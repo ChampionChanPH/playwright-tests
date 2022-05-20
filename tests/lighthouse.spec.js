@@ -3,12 +3,14 @@ const { playAudit } = require('playwright-lighthouse');
 const playwright = require('playwright');
 
 test.describe('audit example', () => {
-    test('lighthouse audit report', async () => {
+    test.only('lighthouse audit report', async () => {
         const browser = await playwright['chromium'].launch({
             args: ['--remote-debugging-port=9222'],
         })
         const page = await browser.newPage()
         await page.goto('https://gradaustralia.com.au/')
+        console.log(process.cwd())
+        console.log(`lighthouse-${new Date().getTime()}`)
 
         await playAudit({
             page: page,
@@ -27,7 +29,7 @@ test.describe('audit example', () => {
                     csv: false,
                 },
                 name: `lighthouse-${new Date().getTime()}`,
-                directory: `${process.cwd()}/playwright-report/lighthouse`,
+                directory: `${process.cwd()}/lighthouse/gradaustralia`,
             }
         })
 
