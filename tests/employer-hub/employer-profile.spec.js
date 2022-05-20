@@ -36,6 +36,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
             const random = getRandomCharacters(6)
             await page.fill("input[name=title]", `Deloitte_${random}`)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // remove all existing names then add two new names
@@ -54,17 +56,25 @@ test.describe('test for employer profile on the employer hub', async () => {
             await page.locator("input[name='alternativeNames.0']").fill(`Alt Organisation Name_${random}`)
             random = getRandomCharacters(6)
             await page.locator("input[name='alternativeNames.1']").fill(`Alt Organisation Name_${random}`)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // check for error message when input an invalid link
         // then enter a correct link and save
         test('edit recruitment homepage link', async ({ page }) => {
+            const random = getRandomCharacters(6)
             await page.locator("input[name='websiteURL']").fill("hello")
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='URL is not valid']")).toBeVisible()
-            await page.locator("input[name='websiteURL']").fill(data.employerHubUrl)
+            await page.locator("input[name='websiteURL']").fill(`${data.employerHubUrl}/${random}`)
             await page.click("label:has-text('Link to your recruitment homepage')")
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
+            await page.reload()
+            const link = await page.locator("input[name='websiteURL']").inputValue()
+            expect.soft(link).toEqual(`${data.employerHubUrl}/${random}`)
         })
     })
 
@@ -83,6 +93,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Unsupported format']")).toBeVisible()
             await logo.locator("input[name=logoUpload]").setInputFiles(prospleLogo)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // remove existing banner and add a new one
@@ -93,6 +105,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='Unsupported format']")).toBeVisible()
             await banner.locator("input[name=bannerUpload]").setInputFiles(prospleBackground)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
     })
 
@@ -118,6 +132,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await page.locator("input[name=linkedinURL]").fill(`https://linkedin.com/${random}`)
             await page.locator("input[name=youtubeURL]").fill(`https://youtube.com/${random}`)
             await page.locator("input[name=instagramURL]").fill(`https://instagram.com/${random}`)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
     })
 
@@ -143,6 +159,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await expect(page.locator("span.error")).toBeVisible()
             random = getRandomCharacters(15) + ' ' + getRandomCharacters(15)
             await page.locator("textarea[name=summary]").fill(random)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // edit the why choose your organisation section
@@ -159,6 +177,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             const body_content = "Why choose your organisation field with some random numbers: "
             const random = getRandomCharacters(6)
             await whyChoose.locator("div.ck-editor__editable").fill(`${body_content}${random}.`)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // edit the what can candidates expect in your recruitment process section
@@ -175,6 +195,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             const body_content = "What can candidates expect in your recruitment process field with some random numbers: "
             const random = getRandomCharacters(6)
             await whatExpect.locator("div.ck-editor__editable").fill(`${body_content}${random}.`)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // edit the what remuneration and career growth can candidates expect section
@@ -193,6 +215,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             const random = getRandomCharacters(6)
             await whatRemuneration.locator("div.ck-editor__editable").fill(`${body_content}${random}.`)
             await label.click()
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // update the industry sectors section
@@ -204,6 +228,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
             await input.randomSelect("select[name=industrySectors]", false)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // update the how many staff members section
@@ -215,6 +241,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             await expect(page.locator("span.icon--danger")).toBeVisible()
             await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
             await input.randomSelect("select[name=numEmployees]", false)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
     })
 
@@ -241,6 +269,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             const add = targetRegion.locator("//button[text()='Add']")
             await add.click()
             await input.randomSelect("select.sc-khIgXV", false)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
 
         // edit what study fields does your organisation typically recruit from fields
@@ -261,6 +291,8 @@ test.describe('test for employer profile on the employer hub', async () => {
                 const random = getRandomNumber(1, 2)
                 if (random == 1) await studyFields.nth(i).locator("label").click()
             }
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
     })
 
@@ -287,12 +319,8 @@ test.describe('test for employer profile on the employer hub', async () => {
             const add = targetRegion.locator("//button[text()='Add']")
             await add.click()
             await input.randomSelect("select.sc-khIgXV", false)
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
         })
     })
-})
-
-// after each test, click on the save button and check for the confirmation message
-test.afterEach(async ({ page }) => {
-    await page.click("button.button span:has-text('Save')")
-    await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Profile was successfully updated.']")).toBeVisible()
 })
