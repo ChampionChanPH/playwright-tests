@@ -7,12 +7,12 @@ const data = require("../../common/common-details.json")
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
     await Promise.all([
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Videos']").nth(1).click()
     ])
+    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
 // test to add a new video on the employer hub

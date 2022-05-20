@@ -8,12 +8,12 @@ const prospleLogo = "./resources/prosple-logo.png"
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
     await Promise.all([
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
     ])
+    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
 // tests that can be done on the diversity & inclusion section in the employer hub

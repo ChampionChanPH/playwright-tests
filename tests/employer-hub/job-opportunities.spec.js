@@ -7,12 +7,12 @@ const moment = require('moment')
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
     await Promise.all([
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
     ])
+    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
 // test to add a new job opportunity on the employer hub
@@ -638,7 +638,7 @@ test.describe('edit job opportunity', async () => {
         // test to update remuneration
         // check for error message when selected ---
         // also check for error message when minimum is above the maximum salary or the fields were left blank
-        test('update remuneration', async ({ page }) => {
+        test.only('update remuneration', async ({ page }) => {
             const input = new Input(page)
             const label = page.locator("//span[label/text()='Remuneration']/following-sibling::div")
             await page.locator("select.sc-khIgXV").selectOption({ label: "---" })
