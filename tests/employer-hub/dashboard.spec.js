@@ -8,6 +8,8 @@ const moment = require('moment')
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
+    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
 // tests to be done after the user successfully logged in

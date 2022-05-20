@@ -7,6 +7,8 @@ const moment = require('moment')
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
+    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    if (checkVisible) await page.locator("span.cc-1j8t").click()
     await Promise.all([
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
@@ -641,19 +643,19 @@ test.describe('edit job opportunity', async () => {
             const label = page.locator("//span[label/text()='Remuneration']/following-sibling::div")
             await page.locator("select.sc-khIgXV").selectOption({ label: "---" })
             await page.click("button.button span:has-text('Save')")
-            await expect(page.locator("span.icon--danger")).toBeVisible()
-            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='All fields are required']")).toBeVisible()
+            await expect.soft(page.locator("span.icon--danger")).toBeVisible()
+            await expect.soft(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='All fields are required']")).toBeVisible()
             await input.randomSelect("select.sc-khIgXV", false)
             await label.locator("input[name=minSalary]").fill("")
             await label.locator("input[name=maxSalary]").fill("1000")
             await page.click("button.button span:has-text('Save')")
-            await expect(page.locator("span.icon--danger")).toBeVisible()
-            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='All fields are required']")).toBeVisible()
+            await expect.soft(page.locator("span.icon--danger")).toBeVisible()
+            await expect.soft(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='All fields are required']")).toBeVisible()
             await label.locator("input[name=minSalary]").fill("1000")
             await label.locator("input[name=maxSalary]").fill("")
             await page.click("button.button span:has-text('Save')")
-            await expect(page.locator("span.icon--danger")).toBeVisible()
-            await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='All fields are required']")).toBeVisible()
+            await expect.soft(page.locator("span.icon--danger")).toBeVisible()
+            await expect.soft(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='All fields are required']")).toBeVisible()
             await label.locator("input[name=minSalary]").fill("2000")
             await label.locator("input[name=maxSalary]").fill("1000")
             await page.click("button.button span:has-text('Save')")
@@ -666,7 +668,7 @@ test.describe('edit job opportunity', async () => {
             await label.locator("input[name=maxSalary]").fill(maximumSalary.toString())
             await page.locator("//label[text()='Remuneration']").click()
             await page.click("button.button span:has-text('Save')")
-            await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
             await Promise.all([
                 page.waitForNavigation(),
                 page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
@@ -674,8 +676,8 @@ test.describe('edit job opportunity', async () => {
             const jobs = page.locator("//div[contains(@class, 'Jobsstyle__StyledOpportunityTeaser')]")
             const savedMinimumSalary = await jobs.nth(0).locator("//dt[text()='Minimum Salary']/following-sibling::dd[1]").innerText()
             const savedMaximumSalary = await jobs.nth(0).locator("//dt[text()='Maximum Salary']/following-sibling::dd[1]").innerText()
-            expect(savedMinimumSalary).toEqual(`${currency} ${minimumSalary.toLocaleString('en-US')}`)
-            expect(savedMaximumSalary).toEqual(`${currency} ${maximumSalary.toLocaleString('en-US')}`)
+            expect.soft(savedMinimumSalary).toEqual(`${currency} ${minimumSalary.toLocaleString('en-US')}`)
+            expect.soft(savedMaximumSalary).toEqual(`${currency} ${maximumSalary.toLocaleString('en-US')}`)
         })
 
         // update hide remuneration from candidates and see that it's saving correctly
@@ -700,6 +702,32 @@ test.describe('edit job opportunity', async () => {
             const newValue = await page.locator("input[id=hideSalary]").getAttribute('class')
             console.log(`Checkbox value: ${newValue}`)
             expect(currentValue).not.toEqual(newValue)
+        })
+
+        // update the remuneration description and make sure that it was saved correctly
+        test('remuneration description', async ({ page }) => {
+            const random = getRandomCharacters(6)
+            await page.locator("input[name=salaryDescription]").fill(`Willing to negotiate - ${random}`)
+            await page.locator("label:has-text('Remuneration description')").click()
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            const jobs = page.locator("//div[contains(@class, 'Jobsstyle__StyledOpportunityTeaser')]")
+            const salary = await jobs.nth(0).locator("//dt[text()='Salary']/following-sibling::dd[1]").innerText()
+            expect.soft(salary).toEqual(`Willing to negotiate - ${random}`)
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Pay & Conditions']").click()
+            const value = await page.locator("input[name=salaryDescription]").inputValue()
+            expect.soft(value).toEqual(`Willing to negotiate - ${random}`)
+            await page.locator("input[name=salaryDescription]").fill("")
+            await page.click("button.button span:has-text('Save')")
+            await expect.soft(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
         })
 
         // test that clicking the back button goes to the previous page
@@ -824,7 +852,7 @@ test.describe('edit job opportunity', async () => {
             ])
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Hiring Locations']").click()
             await page.locator("input[name=locationDescription]").waitFor()
-            const value = await page.locator("input[name=locationDescription]").getAttribute("value")
+            const value = await page.locator("input[name=locationDescription]").inputValue()
             expect(value).toEqual(`${description} ${random}.`)
         })
 
