@@ -11,8 +11,9 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
     ])
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
+    // await page.waitForLoadState()
+    // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    // if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
 // test to add a new job opportunity on the employer hub
@@ -913,6 +914,17 @@ test.describe('edit job opportunity', async () => {
             await label.locator(`li:has-text('${newValue}')`).click()
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//section[contains(@class, 'OpportunityTeaserstyle__ActionSection')]/a").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Application Timeline']").click()
+            const savedValue = await label.locator("input").inputValue()
+            expect(savedValue).toEqual(newValue)
         })
 
         // application open and close date and time

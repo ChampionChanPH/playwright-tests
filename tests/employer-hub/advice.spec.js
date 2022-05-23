@@ -13,8 +13,17 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
     ])
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
+    // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    // if (checkVisible) await page.locator("span.cc-1j8t").click()
+})
+
+test.describe('article tests but not for add or edit article', async () => {
+    // after clicking the first article title, click on the back button and see if it goes back to the article list page
+    test('advice back button is working', async ({ page }) => {
+        await page.locator("//h3[contains(@class, 'GenericTeaserstyle__Title-sc')]").first().click()
+        await page.locator("span:has-text('Back')").click()
+        await page.locator("//h2[contains(@class, 'PageHeadingstyle__Heading') and text()='Advice']").waitFor()
+    })
 })
 
 // test to add a new article on the employer hub
@@ -94,9 +103,21 @@ test.describe('edit advice article', async () => {
             await page.click("button.button span:has-text('Save')")
             await expect.soft(page.locator("span.icon--danger")).toBeVisible()
             await expect.soft(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
-            await input.randomSelect("select[name=type]", false)
+            const type = await input.randomSelect("select[name=type]", false)
             await page.click("button.button span:has-text('Save')")
             await page.locator("//a[text()='Close']").click()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Basic Details']").click()
+            const savedValue = await page.locator("select[name=type]").inputValue()
+            const savedType = await page.locator(`select[name=type] option[value="${savedValue}"]`).innerText()
+            expect(savedType).toEqual(type)
         })
 
         // test for the industry sector section
