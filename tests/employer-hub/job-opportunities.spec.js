@@ -778,7 +778,7 @@ test.describe('edit job opportunity', async () => {
                 await remove.nth(0).click()
             }
             await label.locator("//button[text()='Add']").click()
-            await input.randomSelect("//span[label/text()='On-site work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
+            const location = await input.randomSelect("//span[label/text()='On-site work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
             await Promise.all([
@@ -792,6 +792,9 @@ test.describe('edit job opportunity', async () => {
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Hiring Locations']").click()
             const newValue = await page.locator("input[id=onSiteAvailableValue]").getAttribute('class')
             expect(newValue).toEqual("is-checked")
+            const locationValue = await page.locator("//span[label/text()='On-site work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]").inputValue()
+            const savedLocation = await page.locator(`//span[label/text()='On-site work locations']/following-sibling::div//select/option[@value="${locationValue}"]`).innerText()
+            expect(savedLocation).toEqual(location)
         })
 
         // test for the remove work available section
@@ -808,7 +811,7 @@ test.describe('edit job opportunity', async () => {
                 await remove.nth(0).click()
             }
             await label.locator("//button[text()='Add']").click()
-            await input.randomSelect("//span[label/text()='Remote work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
+            const location = await input.randomSelect("//span[label/text()='Remote work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
             await Promise.all([
@@ -822,6 +825,9 @@ test.describe('edit job opportunity', async () => {
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Hiring Locations']").click()
             const newValue = await page.locator("input[id=remoteAvailable]").getAttribute('class')
             expect(newValue).toEqual("is-checked")
+            const locationValue = await page.locator("//span[label/text()='Remote work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]").inputValue()
+            const savedLocation = await page.locator(`//span[label/text()='Remote work locations']/following-sibling::div//select/option[@value="${locationValue}"]`).innerText()
+            expect(savedLocation).toEqual(location)
         })
 
         // test to check for error message when nothing was selected under the hiring locations section

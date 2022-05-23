@@ -1,19 +1,19 @@
 const { test, expect } = require('@playwright/test')
-const { playAudit } = require('playwright-lighthouse');
-const playwright = require('playwright');
+const { playAudit } = require('playwright-lighthouse')
+const playwright = require('playwright')
 
-test.describe('audit example', () => {
-    test.only('lighthouse audit report', async () => {
+test.describe.parallel('lighthouse audit', () => {
+    test('lighthouse audit report', async () => {
         const browser = await playwright['chromium'].launch({
             args: ['--remote-debugging-port=9222'],
         })
         const page = await browser.newPage()
-        await page.goto('https://gradaustralia.com.au/')
-        console.log(process.cwd())
-        console.log(`lighthouse-${new Date().getTime()}`)
+        await page.goto()
+        // await page.goto('https://dev.portal.prosple.com')
 
         await playAudit({
             page: page,
+            // mostly needed is the seo and performance but it won't hurt to add all
             thresholds: {
                 performance: 25,
                 accessibility: 25,
@@ -28,8 +28,8 @@ test.describe('audit example', () => {
                     html: true,
                     csv: false,
                 },
-                name: `lighthouse-${new Date().getTime()}`,
-                directory: `${process.cwd()}/lighthouse/gradaustralia`,
+                name: `lighthouse-student-hub-${new Date().getTime()}`,
+                directory: `${process.cwd()}/lighthouse`,
             }
         })
 
