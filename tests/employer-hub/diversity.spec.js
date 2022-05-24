@@ -12,8 +12,19 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
     ])
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
+    // await page.waitForLoadState('networkidle')
+    // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    // if (checkVisible) await page.locator("span.cc-1j8t").click()
+})
+
+// tests that are not about adding or editing a diversity content
+test.describe('diversity tests but not for add or edit diversity content', async () => {
+    // after clicking the first title, click on the back button and see if it goes back to the article list page
+    test('diversity back button is working', async ({ page }) => {
+        await page.locator("//h3[contains(@class, 'GenericTeaserstyle__Title-sc')]").first().click()
+        await page.locator("span:has-text('Back')").click()
+        await page.locator("//h2[contains(@class, 'PageHeadingstyle__Heading') and text()='Diversity & Inclusion']").waitFor()
+    })
 })
 
 // tests that can be done on the diversity & inclusion section in the employer hub
@@ -88,6 +99,16 @@ test.describe('test for diversity contents on the employer hub', async () => {
         await page.locator("label:has-text('Body')").click()
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Diversity & Inclusion']").nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        const text = await page.locator("div.ck-editor__editable").innerText()
+        expect(text).toEqual(`${body_content} ${body}.`)
     })
 
     // test to update the body field with some image

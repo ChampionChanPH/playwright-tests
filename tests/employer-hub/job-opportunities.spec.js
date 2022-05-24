@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
     ])
-    // await page.waitForLoadState()
+    // await page.waitForLoadState('networkidle')
     // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
     // if (checkVisible) await page.locator("span.cc-1j8t").click()
 })

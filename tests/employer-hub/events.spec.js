@@ -12,8 +12,19 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Events']").nth(1).click()
     ])
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
+    // await page.waitForLoadState('networkidle')
+    // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    // if (checkVisible) await page.locator("span.cc-1j8t").click()
+})
+
+// tests that are not about adding or editing an event
+test.describe('event tests but not for add or edit an event', async () => {
+    // after clicking the first event title, click on the back button and see if it goes back to the event list page
+    test('event back button is working', async ({ page }) => {
+        await page.locator("//h3[contains(@class, 'EventTeaserstyle__Title-sc')]").first().click()
+        await page.locator("span:has-text('Back')").click()
+        await page.locator("//h2[contains(@class, 'PageHeadingstyle__Heading') and text()='Events']").waitFor()
+    })
 })
 
 // test to add a new event on the employer hub
@@ -235,8 +246,8 @@ test.describe('tests to edit events on the employer hub', async () => {
             page.waitForNavigation(),
             page.locator("//a[span/text()='Preview']").nth(0).click()
         ])
-        const timezonePreview = await page.locator("//div[contains(@class, 'field-label') and text()='Location']/following-sibling::div[contains(@class, 'field-item')]").innerText()
-        expect(timezonePreview).toContain(newValue)
+        const locationPreview = await page.locator("//div[contains(@class, 'field-label') and text()='Location']/following-sibling::div[contains(@class, 'field-item')]").innerText()
+        expect(locationPreview).toContain(newValue)
     })
 
     // update the event location and choose online/virtual
@@ -280,42 +291,84 @@ test.describe('tests to edit events on the employer hub', async () => {
                 expect(getClass).not.toEqual("is-checked")
             }
         }
+        const chosenSectors = []
         for (let i = 0; i < countSectors; i++) {
             const random = getRandomNumber(1, 2)
             if (random == 1) {
                 await industrySectors.nth(i).locator("label").click()
+                const sector = await industrySectors.nth(i).locator("label").innerText()
+                chosenSectors.push(sector)
                 const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
                 expect(getClass).toEqual("is-checked")
             }
         }
+        console.log(chosenSectors)
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Events']").nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").nth(0).waitFor()
+        for (let i = 0; i < countSectors; i++) {
+            const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
+            if (getClass == "is-checked") {
+                const sector = await industrySectors.nth(i).locator("label").textContent()
+                console.log(sector)
+                expect(chosenSectors).toContain(sector)
+            }
+        }
     })
 
     // test for the study field section
     test('update study field', async ({ page }) => {
         await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").nth(1).waitFor()
         const label = page.locator("//span[label/text()='Study Field']/following-sibling::div")
-        const industrySectors = label.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
-        const countSectors = await industrySectors.count()
-        for (let i = 0; i < countSectors; i++) {
-            const isChecked = await industrySectors.nth(i).locator("input").getAttribute("class")
+        const studyFields = label.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+        const countStudyFields = await studyFields.count()
+        for (let i = 0; i < countStudyFields; i++) {
+            const isChecked = await studyFields.nth(i).locator("input").getAttribute("class")
             if (isChecked == "is-checked") {
-                await industrySectors.nth(i).locator("label").click()
-                const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
+                await studyFields.nth(i).locator("label").click()
+                const getClass = await studyFields.nth(i).locator("input").getAttribute("class")
                 expect(getClass).not.toEqual("is-checked")
             }
         }
-        for (let i = 0; i < countSectors; i++) {
+        const chosenStudyFields = []
+        for (let i = 0; i < countStudyFields; i++) {
             const random = getRandomNumber(1, 2)
             if (random == 1) {
-                await industrySectors.nth(i).locator("label").click()
-                const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
+                await studyFields.nth(i).locator("label").click()
+                const study = await studyFields.nth(i).locator("label").innerText()
+                chosenStudyFields.push(study)
+                const getClass = await studyFields.nth(i).locator("input").getAttribute("class")
                 expect(getClass).toEqual("is-checked")
             }
         }
+        console.log(chosenStudyFields)
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Events']").nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").nth(1).waitFor()
+        for (let i = 0; i < countStudyFields; i++) {
+            const getClass = await studyFields.nth(i).locator("input").getAttribute("class")
+            if (getClass == "is-checked") {
+                const study = await studyFields.nth(i).locator("label").textContent()
+                console.log(study)
+                expect(chosenStudyFields).toContain(study)
+            }
+        }
     })
 
     // test to check that the region section is updating
@@ -329,9 +382,21 @@ test.describe('tests to edit events on the employer hub', async () => {
             await remove.nth(0).click()
         }
         await label.locator("//button[text()='Add']").click()
-        await input.randomSelect("//span[label/text()='Region']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
+        const location = await input.randomSelect("//span[label/text()='Region']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Events']").nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        await label.locator("//button[text()='Remove']").waitFor()
+        const savedValue = await label.locator("//select[contains(@class, 'sc-khIgXV')]").inputValue()
+        const savedLocation = await label.locator(`//select[contains(@class, 'sc-khIgXV')]/option[@value="${savedValue}"]`).innerText()
+        expect(savedLocation).toEqual(location)
     })
 
     // test to update the event introduction

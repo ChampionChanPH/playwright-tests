@@ -9,6 +9,7 @@ const prospleLogo = "./resources/prosple-logo.png"
 test.beforeEach(async ({ page }) => {
     const login = new CompleteLogin(page)
     await login.employerHubLogin()
+    await page.waitForLoadState("networkidle")
     await Promise.all([
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
@@ -17,6 +18,7 @@ test.beforeEach(async ({ page }) => {
     // if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
+// tests that are not about adding or editing an article
 test.describe('article tests but not for add or edit article', async () => {
     // after clicking the first article title, click on the back button and see if it goes back to the article list page
     test('advice back button is working', async ({ page }) => {
@@ -134,42 +136,86 @@ test.describe('edit advice article', async () => {
                     expect(getClass).not.toEqual("is-checked")
                 }
             }
+            const chosenSectors = []
             for (let i = 0; i < countSectors; i++) {
                 const random = getRandomNumber(1, 2)
                 if (random == 1) {
                     await industrySectors.nth(i).locator("label").click()
+                    const sector = await industrySectors.nth(i).locator("label").textContent()
+                    chosenSectors.push(sector)
                     const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
                     expect(getClass).toEqual("is-checked")
                 }
             }
+            console.log(chosenSectors)
             await page.click("button.button span:has-text('Save')")
             await page.locator("//a[text()='Close']").click()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Basic Details']").click()
+            await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").nth(0).waitFor()
+            for (let i = 0; i < countSectors; i++) {
+                const isChecked = await industrySectors.nth(i).locator("input").getAttribute("class")
+                if (isChecked == "is-checked") {
+                    const sector = await industrySectors.nth(i).locator("label").textContent()
+                    console.log(sector)
+                    expect(chosenSectors).toContain(sector)
+                }
+            }
         })
 
         // test for the study field section
         test('update study field', async ({ page }) => {
             await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").nth(1).waitFor()
             const label = page.locator("//span[label/text()='Study Field']/following-sibling::div")
-            const industrySectors = label.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
-            const countSectors = await industrySectors.count()
-            for (let i = 0; i < countSectors; i++) {
-                const isChecked = await industrySectors.nth(i).locator("input").getAttribute("class")
+            const studyFields = label.locator("//div[contains(@class, 'CheckboxGroup__CheckboxContainer-sc')]")
+            const countFields = await studyFields.count()
+            for (let i = 0; i < countFields; i++) {
+                const isChecked = await studyFields.nth(i).locator("input").getAttribute("class")
                 if (isChecked == "is-checked") {
-                    await industrySectors.nth(i).locator("label").click()
-                    const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
+                    await studyFields.nth(i).locator("label").click()
+                    const getClass = await studyFields.nth(i).locator("input").getAttribute("class")
                     expect(getClass).not.toEqual("is-checked")
                 }
             }
-            for (let i = 0; i < countSectors; i++) {
+            const chosenStudyFields = []
+            for (let i = 0; i < countFields; i++) {
                 const random = getRandomNumber(1, 2)
                 if (random == 1) {
-                    await industrySectors.nth(i).locator("label").click()
-                    const getClass = await industrySectors.nth(i).locator("input").getAttribute("class")
+                    await studyFields.nth(i).locator("label").click()
+                    const study = await studyFields.nth(i).locator("label").textContent()
+                    chosenStudyFields.push(study)
+                    const getClass = await studyFields.nth(i).locator("input").getAttribute("class")
                     expect(getClass).toEqual("is-checked")
                 }
             }
+            console.log(chosenStudyFields)
             await page.click("button.button span:has-text('Save')")
             await page.locator("//a[text()='Close']").click()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Basic Details']").click()
+            await page.locator("//div[contains(@class, 'CheckboxTree__Container')]").nth(1).waitFor()
+            for (let i = 0; i < countFields; i++) {
+                const isChecked = await studyFields.nth(i).locator("input").getAttribute("class")
+                if (isChecked == "is-checked") {
+                    const study = await studyFields.nth(i).locator("label").textContent()
+                    console.log(study)
+                    expect(chosenStudyFields).toContain(study)
+                }
+            }
         })
 
         test('update locations', async ({ page }) => {
@@ -182,9 +228,22 @@ test.describe('edit advice article', async () => {
                 await remove.nth(0).click()
             }
             await label.locator("//button[text()='Add']").click()
-            await input.randomSelect("//span[label/text()='Locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
+            const location = await input.randomSelect("//span[label/text()='Locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
             await page.click("button.button span:has-text('Save')")
             await page.locator("//a[text()='Close']").click()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Basic Details']").click()
+            await label.locator("//button[text()='Remove']").waitFor()
+            const savedValue = await label.locator("//select[contains(@class, 'sc-khIgXV')]").inputValue()
+            const savedLocation = await label.locator(`//select[contains(@class, 'sc-khIgXV')]/option[@value='${savedValue}']`).innerText()
+            expect(savedLocation).toEqual(location)
         })
 
         // test that clicking the next button goes to the next page
@@ -265,6 +324,17 @@ test.describe('edit advice article', async () => {
             await page.locator("label:has-text('Body')").click()
             await page.click("button.button span:has-text('Save')")
             await page.locator("//a[text()='Close']").click()
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Advice']").nth(1).click()
+            ])
+            await Promise.all([
+                page.waitForNavigation(),
+                page.locator("//div[contains(@class, 'GenericTeaserstyle__ActionsContainer-sc')]/a[text()='Edit']").nth(0).click()
+            ])
+            await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Content']").click()
+            const text = await page.locator("div.ck-editor__editable").innerText()
+            expect(text).toEqual(`${body_content} ${body}.`)
         })
 
         // test that clicking the back button goes to the previous page
