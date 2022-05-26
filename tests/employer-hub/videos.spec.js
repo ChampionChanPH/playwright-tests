@@ -11,8 +11,18 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Videos']").nth(1).click()
     ])
-    const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    if (checkVisible) await page.locator("span.cc-1j8t").click()
+    // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
+    // if (checkVisible) await page.locator("span.cc-1j8t").click()
+})
+
+// tests that are not about adding or editing an video
+test.describe('video tests but not for add or edit video', async () => {
+    // after clicking the first video title, click on the back button and see if it goes back to the video list page
+    test('advice back button is working', async ({ page }) => {
+        await page.locator("//h3[contains(@class, 'GenericTeaserstyle__Title-sc')]").first().click()
+        await page.locator("span:has-text('Back')").click()
+        await page.locator("//h2[contains(@class, 'PageHeadingstyle__Heading') and text()='Videos']").waitFor()
+    })
 })
 
 // test to add a new video on the employer hub
@@ -103,6 +113,16 @@ test.describe('tests to edit videos on the employer hub', async () => {
         await page.locator("label:has-text('Description')").click()
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Videos']").nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
+        ])
+        const text = await page.locator("div.ck-editor__editable").innerText()
+        expect(text).toEqual(`${description_content} ${description}.`)
     })
 
     // update video url

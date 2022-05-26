@@ -33,6 +33,11 @@ const config = {
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    viewport: null,
+    browserName: "chromium", // chromium, firefox, webkit
+    launchOptions: {
+      args: ["--start-maximized"]
+    },
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -44,57 +49,57 @@ const config = {
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'Desktop Chrome',
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
+  // projects: [
+  //   {
+  //     name: 'Desktop Chrome',
+  //     use: {
+  //       ...devices['Desktop Chrome'],
+  //     },
+  //   },
 
-    // {
-    //   name: 'Firefox',
-    //   use: {
-    //     ...devices['Desktop Firefox'],
-    //   },
-    // },
+  // {
+  //   name: 'Firefox',
+  //   use: {
+  //     ...devices['Desktop Firefox'],
+  //   },
+  // },
 
-    // {
-    //   name: 'Safari',
-    //   use: {
-    //     ...devices['Desktop Safari'],
-    //   },
-    // },
+  // {
+  //   name: 'Safari',
+  //   use: {
+  //     ...devices['Desktop Safari'],
+  //   },
+  // },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: {
-    //     ...devices['Pixel 5'],
-    //   },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: {
-    //     ...devices['iPhone 12'],
-    //   },
-    // },
+  /* Test against mobile viewports. */
+  // {
+  //   name: 'Mobile Chrome',
+  //   use: {
+  //     ...devices['Pixel 5'],
+  //   },
+  // },
+  // {
+  //   name: 'Mobile Safari',
+  //   use: {
+  //     ...devices['iPhone 12'],
+  //   },
+  // },
 
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: {
-    //     channel: 'msedge',
-    //   },
-    // },
+  /* Test against branded browsers. */
+  // {
+  //   name: 'Microsoft Edge',
+  //   use: {
+  //     channel: 'msedge',
+  //   },
+  // },
 
-    // {
-    //   name: 'Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
-  ],
+  // {
+  //   name: 'Chrome',
+  //   use: {
+  //     channel: 'chrome',
+  //   },
+  // },
+  // ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: 'test-results/',
