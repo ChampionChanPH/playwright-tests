@@ -34,7 +34,7 @@ const config = {
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     viewport: null,
-    browserName: "chromium", // chromium, firefox, webkit
+    browserName: "webkit", // chromium, firefox, webkit
     launchOptions: {
       args: ["--start-maximized"]
     },

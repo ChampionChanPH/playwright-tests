@@ -8,7 +8,7 @@ test.describe.parallel('lighthouse audit', () => {
             args: ['--remote-debugging-port=9222'],
         })
         const page = await browser.newPage()
-        await page.goto()
+        await page.goto("https://pfe-2238.frontend.prosple.com/")
         // await page.goto('https://dev.portal.prosple.com')
 
         await playAudit({
@@ -28,7 +28,7 @@ test.describe.parallel('lighthouse audit', () => {
                     html: true,
                     csv: false,
                 },
-                name: `lighthouse-student-hub-${new Date().getTime()}`,
+                name: `lighthouse-mp-${new Date().getTime()}`,
                 directory: `${process.cwd()}/lighthouse`,
             }
         })

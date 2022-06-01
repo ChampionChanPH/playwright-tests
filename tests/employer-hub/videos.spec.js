@@ -11,8 +11,6 @@ test.beforeEach(async ({ page }) => {
         page.waitForNavigation(),
         page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Videos']").nth(1).click()
     ])
-    // const checkVisible = await page.locator("span.cc-1j8t").isVisible()
-    // if (checkVisible) await page.locator("span.cc-1j8t").click()
 })
 
 // tests that are not about adding or editing an video
@@ -63,6 +61,7 @@ test.describe('tests to edit videos on the employer hub', async () => {
         await expect(page.locator("//p[contains(@class, 'Formstyle__ErrorMessage') and text()='This field is required']")).toBeVisible()
         const random = getRandomCharacters(6)
         await page.locator("input[name=title]").fill(`New Video - ${random}`)
+        await page.locator("label:has-text('Title')").click()
         await page.click("button.button span:has-text('Save')")
         await page.locator("//button[text()='Close']").click()
         await Promise.all([
@@ -105,7 +104,7 @@ test.describe('tests to edit videos on the employer hub', async () => {
     // update video description
     test('update video description', async ({ page }) => {
         const description = getRandomCharacters(6)
-        const description_content = "Some video description with some random characters:"
+        const description_content = "Video description with some random characters:"
         await page.locator("div.ck-editor__editable").click()
         await page.keyboard.press("Control+A")
         await page.keyboard.press("Delete")
@@ -122,7 +121,7 @@ test.describe('tests to edit videos on the employer hub', async () => {
             page.locator("//div[contains(@class, 'Content__ContentBox-sc')]//a[text()='Edit']").nth(0).click()
         ])
         const text = await page.locator("div.ck-editor__editable").innerText()
-        expect(text).toEqual(`${description_content} ${description}.`)
+        expect(text).toContain(`${description_content} ${description}.`)
     })
 
     // update video url
