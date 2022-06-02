@@ -684,12 +684,18 @@ test.describe('edit job opportunity', async () => {
         // update hide remuneration from candidates and see that it's saving correctly
         test('update hide remuneration from candidates', async ({ page }) => {
             await page.locator("label[for=hideSalary]").waitFor()
-            const currentValue = await page.locator("input[id=hideSalary]").getAttribute('class')
-            console.log(`Checkbox value: ${currentValue}`)
+            let value = await page.locator("input[id=hideSalary]").getAttribute('class')
+            if (value == "is-checked") await page.locator("label[for=hideSalary]").click()
             await page.locator("label[for=hideSalary]").click()
+            await page.click("a.button:has-text('Display salary')")
+            value = await page.locator("input[id=hideSalary]").getAttribute('class')
+            expect(value).toEqual("")
+            await page.locator("label[for=hideSalary]").click()
+            await page.click("a.button:has-text('Hide salary')")
+            value = await page.locator("input[id=hideSalary]").getAttribute('class')
+            expect(value).toEqual("is-checked")
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("//div[contains(@class, 'Formstyle__Alert')]/p[text()='Opportunity was successfully updated.']")).toBeVisible()
-            await page.reload()
             await Promise.all([
                 page.waitForNavigation(),
                 page.locator("//a[contains(@class, 'Navigationstyle__MenuLink') and span/text()='Job Opportunities']").nth(1).click()
@@ -700,9 +706,8 @@ test.describe('edit job opportunity', async () => {
             ])
             await page.locator("//span[contains(@class, 'Stepperstyle__StepLabel-sc') and text()='Pay & Conditions']").click()
             await page.locator("label[for=hideSalary]").waitFor()
-            const newValue = await page.locator("input[id=hideSalary]").getAttribute('class')
-            console.log(`Checkbox value: ${newValue}`)
-            expect(currentValue).not.toEqual(newValue)
+            value = await page.locator("input[id=hideSalary]").getAttribute('class')
+            expect(value).toEqual("is-checked")
         })
 
         // update the remuneration description and make sure that it was saved correctly
