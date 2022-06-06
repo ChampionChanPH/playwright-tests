@@ -1,4 +1,4 @@
 node_modules/
 playwright-report/
 lighthouse/
-# test-results/
+test-results/
