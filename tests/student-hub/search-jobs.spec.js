@@ -12,23 +12,25 @@ test.beforeEach(async ({ page }) => {
 // tests that can be done on the search job page on the student hub
 test.describe('search job page tests', async () => {
     // use the study field filter and check that the filtered results showing correct study field
-    test("study field filter", async ({ page }) => {
-        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetSimplestyle__FacetSimple')]")
-        const studyFilter = filter.locator("//button[@class='toggle-trigger' and contains(div/h4/text(), 'studying or have a qualification')]//following-sibling::*[@class='toggle-target']")
+    test.only("study field filter", async ({ page }) => {
+        const studyFilter = page.locator("//button[contains(@class, 'toggle-trigger') and contains(*//text(),'studying or have qualification in')]//following-sibling::*[@class='toggle-target']")
         const checkVisible = await studyFilter.locator("//a[contains(@class, 'truncate-trigger')]").isVisible()
         if (checkVisible) await studyFilter.locator("//a[contains(@class, 'truncate-trigger')]").click()
-        const fields = studyFilter.locator("//div[@class='facet__item']")
+        const fields = studyFilter.locator("//li[contains(@class, 'Facetstyle__FacetWrapper-sc')]")
         const countFields = await fields.count()
         let random = getRandomNumber(1, countFields)
         await Promise.all([
             page.waitForNavigation(),
             fields.nth(random - 1).locator("//label/a").click()
         ])
+
+        // Facetstyle__FacetLink-sc-19cl7fy-2 ckKITr
+        // Facetstyle__FacetLink-sc-19cl7fy-2 ckKITr
         const chosenField = await fields.locator("//div[input[@class='is-checked']]/following-sibling::label").innerText()
         let studyField = /.*(?= \()/.exec(chosenField)
         let total = /(?<=\()\d*/.exec(chosenField)
-        const breadcrumb = await page.locator("a[itemprop=item] span").last().innerText()
-        expect(breadcrumb.toLowerCase()).toEqual(studyField[0].toLowerCase())
+        // const breadcrumb = await page.locator("a[itemprop=item] span").last().innerText()
+        // expect(breadcrumb.toLowerCase()).toEqual(studyField[0].toLowerCase())
         const totalItems = await page.locator("div.search__meta p").innerText()
         expect(totalItems).toContain(total[0])
         const jobs = page.locator("//div[contains(@class, 'OpportunityTeaserstyle__OpportunityListing')]")

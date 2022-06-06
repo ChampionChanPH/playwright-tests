@@ -203,7 +203,10 @@ test.describe('courses page tests', async () => {
         const apply = page.locator("a.button--type-apply")
         const countApply = await apply.count()
         let random = getRandomNumber(1, countApply)
-        await apply.nth(random - 1).click()
+        await Promise.all([
+            context.waitForEvent("page"),
+            await apply.nth(random - 1).click()
+        ])
     })
 
     // choose a course on the courses page, click the course title and see that it redirects to the correct detail page

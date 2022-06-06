@@ -8,18 +8,18 @@ test.describe.parallel('lighthouse audit', () => {
             args: ['--remote-debugging-port=9222'],
         })
         const page = await browser.newPage()
-        await page.goto("https://pfe-2238.frontend.prosple.com/")
+        await page.goto("https://gradaustralia.com.au/")
         // await page.goto('https://dev.portal.prosple.com')
 
         await playAudit({
             page: page,
             // mostly needed is the seo and performance but it won't hurt to add all
             thresholds: {
-                performance: 25,
-                accessibility: 25,
-                'best-practices': 25,
-                seo: 25,
-                pwa: 25,
+                performance: 20,
+                accessibility: 20,
+                'best-practices': 20,
+                seo: 20,
+                pwa: 20,
             },
             port: 9222,
             reports: {
@@ -28,7 +28,7 @@ test.describe.parallel('lighthouse audit', () => {
                     html: true,
                     csv: false,
                 },
-                name: `lighthouse-mp-${new Date().getTime()}`,
+                name: `lighthouse-ga-${new Date().getTime()}`,
                 directory: `${process.cwd()}/lighthouse`,
             }
         })
