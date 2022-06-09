@@ -7,6 +7,7 @@ const userId = "auth0|61fb93d73a1c94006a97447a"
 // const uri = `mongodb+srv://prosple:${password}@dev.qxgpg.mongodb.net/?retryWrites=true&w=majority`
 const uri = `mongodb://prosple:${password}@dev-shard-00-00.qxgpg.mongodb.net:27017,dev-shard-00-01.qxgpg.mongodb.net:27017,dev-shard-00-02.qxgpg.mongodb.net:27017/dev?ssl=true&replicaSet=atlas-13p0if-shard-0&authSource=admin&retryWrites=true&w=majority`
 
+// function created to connect to the dev db and delete all of the ve registrations under the specified userId
 async function connect() {
     // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 })
     const client = new MongoClient(uri)
