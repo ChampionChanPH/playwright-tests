@@ -8,5 +8,8 @@
     "employerHubPass": "Prosple0000",
     "firstName": "Prosple",
     "lastName": "Testing",
-    "devMongoDb": "NQPUMTR1hrFnlyVv"
+    "devMongoDb": "NQPUMTR1hrFnlyVv",
+    "cmsUrl": "https://dev.cms.connect.prosple.com",
+    "cmsEmail": "christian.anasco@prosple.com",
+    "cmsPass": "Chan0228"
 }
