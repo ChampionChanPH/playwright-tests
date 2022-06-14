@@ -51,7 +51,7 @@ test.describe('tests for jobs on CMS', async () => {
             page.locator("input[data-drupal-selector=edit-submit]").click()
         ])
         await page.locator("//div[@role='contentinfo' and @aria-label='Status message']").waitFor()
-        await page.goto("https://dev.frontend.prosple.com/search-jobs")
+        await page.goto(`${data.cmsToFrontEndUrl}/search-jobs`)
         await Promise.all([
             page.waitForNavigation(),
             page.locator('select').selectOption({ label: "Newest Opportunities" })
