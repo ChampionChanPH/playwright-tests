@@ -1,0 +1,85 @@
+{
+  "cookies": [
+    {
+      "sameSite": "None",
+      "name": "did",
+      "value": "s%3Av0%3A0bd56970-ebbb-11ec-9e48-57bf0474baff.CP2aqlPoVBsJpz%2FSt7oiLsFxpV7FE2gxQqKtpzEKQxo",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1686752527.901454,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "com.auth0.auth.73daf57718064eef8a1b1acfd2f4c4aa",
+      "value": "{%22nonce%22:%227ea77fe9e15ba9ff41586990929755e5%22%2C%22state%22:%2273daf57718064eef8a1b1acfd2f4c4aa%22%2C%22lastUsedConnection%22:%22prosple-organisation-database%22}",
+      "domain": "dev.cms.connect.prosple.com",
+      "path": "/",
+      "expires": 1655196727,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "None",
+      "name": "auth0",
+      "value": "s%3A3Qj6oGKuTrp-zhyCSjkOr683rq6aVDm_.cl57%2FUSC%2BnaYNst0Q2If%2BQEYGu9JQMqTBYMjdzKcD6k",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1655454127.90151,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "co%2Fverifier%2Fhttps%253A%252F%252Fprosple.au.auth0.com%2FAKpM_2Q80PLJ",
+      "value": "%22GIaC320N3jdVEc1LWU5U1o0jtzgmPrHd%22",
+      "domain": "dev.cms.connect.prosple.com",
+      "path": "/",
+      "expires": 1655195827,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "Lax",
+      "name": "did_compat",
+      "value": "s%3Av0%3A0bd56970-ebbb-11ec-9e48-57bf0474baff.CP2aqlPoVBsJpz%2FSt7oiLsFxpV7FE2gxQqKtpzEKQxo",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1686752527.901542,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "auth0_compat",
+      "value": "s%3A3Qj6oGKuTrp-zhyCSjkOr683rq6aVDm_.cl57%2FUSC%2BnaYNst0Q2If%2BQEYGu9JQMqTBYMjdzKcD6k",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1655454127.901568,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "SSESSc6780505d45394ad6846686128e913f2",
+      "value": "HAz27rwGFPRHyeWce7%2CJdWBxKbDPd6g8EtV3W4pbG7Z4C1wI",
+      "domain": ".dev.cms.connect.prosple.com",
+      "path": "/",
+      "expires": 1657194929.245293,
+      "httpOnly": true,
+      "secure": true
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://dev.cms.connect.prosple.com",
+      "localStorage": [
+        {
+          "name": "Drupal.toolbar.activeTabID",
+          "value": "\"toolbar-item-administration\""
+        }
+      ]
+    }
+  ]
+}

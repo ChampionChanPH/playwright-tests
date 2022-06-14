@@ -13,5 +13,6 @@ test.describe('login via email and password tests on CMS', async () => {
             page.click("span.auth0-label-submit")
         ])
         await page.locator("a.toolbar-icon-user").waitFor()
+        // await page.context().storageState({ path: 'authStateDevCMS.json' })
     })
 })

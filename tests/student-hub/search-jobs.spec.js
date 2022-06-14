@@ -120,6 +120,84 @@ test.describe('search job page tests', async () => {
         expect(totalItems).toContain(total[0])
     })
 
+    // virtual experience registration and see if it will be successful
+    // registration happens on the search jobs page
+    test("successful ve registration on the search jobs page", async ({ page }) => {
+        test.skip(data.studentHubUrl == "https://gradaustralia.com.au", "skip if it's a live testing")
+        const jobFilter = page.locator("//button[contains(@class, 'toggle-trigger') and contains(*//text(), 'm looking for')]//following-sibling::*[@class='toggle-target']")
+        const checkVisible = await jobFilter.locator("a.truncate-trigger").isVisible()
+        if (checkVisible) await jobFilter.locator("a.truncate-trigger").click()
+        const fields = jobFilter.locator("//li[contains(@class, 'Facetstyle__FacetWrapper-sc')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            fields.locator("//a[contains(text(), 'Virtual Experience')]").click()
+        ])
+        await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
+        const ve = page.locator("button[data-event-track=cta-ve-register]")
+        const veCount = await ve.count()
+        const random = getRandomNumber(1, veCount)
+        await ve.nth(random - 1).click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Log in')").click()
+        ])
+        await page.fill("input#email", data.studentHubEmail)
+        await page.fill("input#password", data.studentHubPass)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click("button#btn-login")
+        ])
+        await page.waitForSelector("div.viewport--normal a.logo")
+        await page.locator("input#organisation-consent").click()
+        await page.locator("button:has-text('Submit')").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("a:has-text('Continue to experience.')").click()
+        ])
+        expect(page.url()).toContain('virtual-experience')
+    })
+
+    // virtual experience registration and see if it will be successful
+    // registration happens on the ve detail page
+    test("successful ve registration on the ve detail page", async ({ page }) => {
+        test.skip(data.studentHubUrl == "https://gradaustralia.com.au", "skip if it's a live testing")
+        const jobFilter = page.locator("//button[contains(@class, 'toggle-trigger') and contains(*//text(), 'm looking for')]//following-sibling::*[@class='toggle-target']")
+        const checkVisible = await jobFilter.locator("a.truncate-trigger").isVisible()
+        if (checkVisible) await jobFilter.locator("a.truncate-trigger").click()
+        const fields = jobFilter.locator("//li[contains(@class, 'Facetstyle__FacetWrapper-sc')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            fields.locator("//a[contains(text(), 'Virtual Experience')]").click()
+        ])
+        await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
+        const ve = page.locator("button[data-event-track=cta-ve-register]")
+        const veCount = await ve.count()
+        const random = getRandomNumber(1, veCount)
+        await Promise.all([
+            page.waitForNavigation(),
+            ve.nth(random - 1).locator("//ancestor::article//*[contains(@class, 'Teaser__TeaserTitlePrimary-sc')]/a").click()
+        ])
+        await ve.first().click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Log in')").click()
+        ])
+        await page.fill("input#email", data.studentHubEmail)
+        await page.fill("input#password", data.studentHubPass)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click("button#btn-login")
+        ])
+        await page.waitForSelector("div.viewport--normal a.logo")
+        await page.locator("input#organisation-consent").click()
+        await page.locator("button:has-text('Submit')").click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("a:has-text('Continue to experience.')").click()
+        ])
+        expect(page.url()).toContain('virtual-experience')
+    })
+
     // choose a job on the search jobs page with "Read reviews", click the link and see that it redirects to the correct detail page
     test("click review link to detail page", async ({ page }) => {
         const reviews = page.locator("//div[contains(@class, 'JobTeaserstyle__Reviews-sc')]")
