@@ -260,6 +260,18 @@ test.describe("scholarships page tests for logged-in users", async () => {
         await login.studentHubLogin()
     })
 
+    // confirm that the website button on the search jobs page is working as expected
+    test("website button is clickable", async ({ page, context }) => {
+        await page.locator("a.button--type-apply").last().waitFor()
+        const apply = page.locator("a.button--type-apply")
+        const countApply = await apply.count()
+        let random = getRandomNumber(1, countApply)
+        await Promise.all([
+            context.waitForEvent("page"),
+            await apply.nth(random - 1).click()
+        ])
+    })
+
     // bookmark a scholarship and check that what was saved is correct
     // FIXME: get rid of the waitfortimeout
     test("bookmark scholarship from scholarships page", async ({ page }) => {

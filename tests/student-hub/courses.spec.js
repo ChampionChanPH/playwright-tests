@@ -348,8 +348,8 @@ test.describe("courses page tests for logged-in users", async () => {
     })
 
     // check that the website redirect button is working
-    test("website redirect button is clickable", async ({ page }) => {
-        await page.locator("a.button--type-apply").nth(0).waitFor()
+    test("website redirect button is clickable", async ({ page, context }) => {
+        await page.locator("a.button--type-apply").last().waitFor()
         const apply = page.locator("a.button--type-apply")
         const countApply = await apply.count()
         let random = getRandomNumber(1, countApply)

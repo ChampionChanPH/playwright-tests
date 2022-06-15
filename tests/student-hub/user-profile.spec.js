@@ -56,7 +56,7 @@ test.describe("user profile tests", async () => {
 
     // tests to perform on "Qualifications" section
     // FIXME: find a way to get rid of the waitfortimeout
-    test("qualifications section", async ({ page }) => {
+    test.only("qualifications section", async ({ page }) => {
         const input = new Input(page)
         await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
         const qualifications = page.locator("//h3[contains(@class, 'field-set__label') and text()='Qualifications']")
