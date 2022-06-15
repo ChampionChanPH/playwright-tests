@@ -5,7 +5,7 @@ const data = require("../../common/common-details.json")
 
 // go to the courses page on the student hub
 test.beforeEach(async ({ page }) => {
-    await page.goto(data.studentHubUrl + "/courses")
+    await page.goto(data.studentHubUrl + "/courses?default=1")
     await page.waitForSelector("div.viewport--normal a.logo")
 })
 
@@ -197,18 +197,6 @@ test.describe('courses page tests', async () => {
         }
     })
 
-    // check that the website redirect button is working
-    test("website redirect button is clickable", async ({ page }) => {
-        await page.locator("a.button--type-apply").nth(0).waitFor()
-        const apply = page.locator("a.button--type-apply")
-        const countApply = await apply.count()
-        let random = getRandomNumber(1, countApply)
-        await Promise.all([
-            context.waitForEvent("page"),
-            await apply.nth(random - 1).click()
-        ])
-    })
-
     // choose a course on the courses page, click the course title and see that it redirects to the correct detail page
     test("click course title to detail page", async ({ page }) => {
         const courses = page.locator("//div[contains(@class, 'CourseTeaserstyle__CourseTeaser')]")
@@ -357,6 +345,18 @@ test.describe("courses page tests for logged-in users", async () => {
     test.beforeEach(async ({ page }) => {
         const login = new CompleteLogin(page)
         await login.studentHubLogin()
+    })
+
+    // check that the website redirect button is working
+    test("website redirect button is clickable", async ({ page }) => {
+        await page.locator("a.button--type-apply").nth(0).waitFor()
+        const apply = page.locator("a.button--type-apply")
+        const countApply = await apply.count()
+        let random = getRandomNumber(1, countApply)
+        await Promise.all([
+            context.waitForEvent("page"),
+            await apply.nth(random - 1).click()
+        ])
     })
 
     // bookmark a course and check that what was saved is correct

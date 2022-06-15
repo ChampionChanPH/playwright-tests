@@ -18,6 +18,7 @@ class CompleteLogin {
             this.page.waitForNavigation(),
             this.page.click("button#btn-login")
         ])
+        await this.page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
         await this.page.waitForSelector("div.viewport--normal a.logo")
     }
 

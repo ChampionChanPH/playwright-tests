@@ -5,7 +5,7 @@ const data = require("../../common/common-details.json")
 
 // go to the search jobs page on the student hub
 test.beforeEach(async ({ page }) => {
-    await page.goto(data.studentHubUrl + "/search-jobs")
+    await page.goto(data.studentHubUrl + "/search-jobs?defaults_applied=1")
     await page.waitForSelector("div.viewport--normal a.logo")
 })
 

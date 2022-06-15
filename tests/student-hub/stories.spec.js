@@ -5,7 +5,7 @@ const data = require("../../common/common-details.json")
 
 // go to the stories page on the student hub
 test.beforeEach(async ({ page }) => {
-    await page.goto(data.studentHubUrl + "/profiles")
+    await page.goto(data.studentHubUrl + "/profiles?default=1")
     await page.waitForSelector("div.viewport--normal a.logo")
 })
 
