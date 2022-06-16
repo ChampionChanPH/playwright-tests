@@ -56,7 +56,7 @@ test.describe("user profile tests", async () => {
 
     // tests to perform on "Qualifications" section
     // FIXME: find a way to get rid of the waitfortimeout
-    test.only("qualifications section", async ({ page }) => {
+    test("qualifications section", async ({ page }) => {
         const input = new Input(page)
         await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
         const qualifications = page.locator("//h3[contains(@class, 'field-set__label') and text()='Qualifications']")
@@ -93,7 +93,7 @@ test.describe("user profile tests", async () => {
         await form.locator("div.field-set-view").waitFor()
         const name = await form.locator("div.name-tag__tags").innerText()
         const course = await form.locator("div.field-set-view h6").innerText()
-        expect.soft(name).toEqual(institution.toUpperCase())
+        expect.soft(name).toContain(institution.toUpperCase())
         expect(course).toEqual(`BS Computer Science_${random}`)
         await form.locator("button.button.button--remove").click()
     })
