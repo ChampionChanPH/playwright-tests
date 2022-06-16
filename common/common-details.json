@@ -12,5 +12,6 @@
     "cmsUrl": "https://dev.cms.connect.prosple.com",
     "cmsToFrontEndUrl": "https://dev.frontend.prosple.com",
     "cmsEmail": "christian.anasco@prosple.com",
-    "cmsPass": "Chan0228"
+    "cmsPass": "Chan0228",
+    "userId": "auth0|61fb93d73a1c94006a97447a"
 }

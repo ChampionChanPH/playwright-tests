@@ -26,7 +26,7 @@ test.describe('homepage tests', async () => {
             page.click("//button[contains(@class, 'SearchBannerstyle__StyledButton-sc')]")
         ])
         console.log("choices:", choices)
-        expect(page.url()).toContain("/search-jobs")
+        // expect(page.url()).toContain("/search-jobs")
         // const breadcrumbs = await page.locator("ul.breadcrumbs span").allTextContents()
         // console.log("breadcrumbs:", breadcrumbs)
         // choices.forEach(choice => {

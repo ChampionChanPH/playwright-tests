@@ -73,18 +73,6 @@ test.describe('seo landing page tests', async () => {
         expect(jobTitleOverviewPage).toEqual(jobTitleListPage)
     })
 
-    // confirm that the apply now button on the seo landing page is working as expected
-    test("apply now button is clickable", async ({ page, context }) => {
-        await page.locator("a.button--type-apply").last().waitFor()
-        const apply = page.locator("a.button--type-apply")
-        const countApply = await apply.count()
-        let random = getRandomNumber(1, countApply)
-        await Promise.all([
-            context.waitForEvent("page"),
-            await apply.nth(random - 1).click()
-        ])
-    })
-
     // clicking the advice article title will redirect to the correct detail page
     test("click article title to detail page", async ({ page }) => {
         const advices = page.locator("h2.heading:has-text('Advice for ')").locator("//following-sibling::div//div[@data-testid='collection-item']")
@@ -181,7 +169,7 @@ test.describe('seo landing page tests', async () => {
         console.log(`chosen story: ${name} (${jobTitle})`)
         await Promise.all([
             page.waitForNavigation(),
-            stories.nth(random - 1).locator("//div[contains(@class, 'StorySnippetstyle__StorySnippetActions')]/a").click()
+            stories.nth(random - 1).locator("//div[contains(@class, 'StorySnippetstyle__StorySnippetActions')]/a").first().click()
         ])
         const nameDetailPage = await page.locator("h1.heading").innerText()
         const jobTitleDetailPage = await page.locator("//div[contains(@class, 'StoryDetailstyle__Byline')]").innerText()
@@ -265,6 +253,18 @@ test.describe("seo landing page tests for logged-in users", async () => {
     test.beforeEach(async ({ page }) => {
         const login = new CompleteLogin(page)
         await login.studentHubLogin()
+    })
+
+    // confirm that the apply now button on the seo landing page is working as expected
+    test("apply now button is clickable", async ({ page, context }) => {
+        await page.locator("a.button--type-apply").nth(0).waitFor()
+        const apply = page.locator("a.button--type-apply")
+        const countApply = await apply.count()
+        let random = getRandomNumber(1, countApply)
+        await Promise.all([
+            context.waitForEvent("page"),
+            await apply.nth(random - 1).click()
+        ])
     })
 
     // bookmark a job and see that what was saved on the account is correct
