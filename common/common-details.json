@@ -1,16 +1,16 @@
 {
-    "studentHubUrl": "https://pfe-2268.frontend.prosple.com",
+    "studentHubUrl": "https://dev.frontend.prosple.com",
     "studentHubEmail": "testing.with.prosple@gmail.com",
     "studentHubPass": "Prosple0000",
     "studentHubFBPass": "Prosple0000",
-    "employerHubUrl": "https://portal.prosple.com",
+    "employerHubUrl": "https://dev.portal.prosple.com",
     "employerHubEmail": "testing.with.prosple@gmail.com",
     "employerHubPass": "Prosple0000",
     "firstName": "Prosple",
     "lastName": "Testing",
     "devMongoDb": "NQPUMTR1hrFnlyVv",
     "cmsUrl": "https://dev.cms.connect.prosple.com",
-    "cmsToFrontEndUrl": "https://pfe-2268.frontend.prosple.com",
+    "cmsToFrontEndUrl": "https://dev.frontend.prosple.com",
     "cmsEmail": "christian.anasco@prosple.com",
     "cmsPass": "Chan0228"
 }
