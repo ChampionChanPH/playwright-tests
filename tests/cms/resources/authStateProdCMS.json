@@ -1,0 +1,95 @@
+{
+  "cookies": [
+    {
+      "sameSite": "None",
+      "name": "JSESSIONID",
+      "value": "ec885396cb7eedc5",
+      "domain": ".nr-data.net",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true
+    },
+    {
+      "sameSite": "None",
+      "name": "did",
+      "value": "s%3Av0%3Aede83b30-e7fb-11ec-b21b-0ffc7e1c8d1f.Z6ff%2F71t99IhIoYCX5BVa7YtFovZeZDfmD2gm4C0Ghc",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1686340591.515675,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "com.auth0.auth.535fb3f3aab2387bce71063b35aa2e9e",
+      "value": "{%22nonce%22:%2219e26b88a01efea3c65a4fccd4f03ebe%22%2C%22state%22:%22535fb3f3aab2387bce71063b35aa2e9e%22%2C%22lastUsedConnection%22:%22prosple-organisation-database%22}",
+      "domain": "cms.connect.prosple.com",
+      "path": "/",
+      "expires": 1654784790,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "None",
+      "name": "auth0",
+      "value": "s%3Ab0AN7UucmUME4_NuGEMZi0ZJuKA6Wx4M.PHpRFRe0fJQ%2FSfOcXzf5JgJ3y2ixWS7LrSxxOOxB%2FQU",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1655042191.515738,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "co%2Fverifier%2Fhttps%253A%252F%252Fprosple.au.auth0.com%2FritH6CfIuvcp",
+      "value": "%228kGnkLd69kSbVyedjm_D7wqg6lmFE6zz%22",
+      "domain": "cms.connect.prosple.com",
+      "path": "/",
+      "expires": 1654783890,
+      "httpOnly": false,
+      "secure": false
+    },
+    {
+      "sameSite": "Lax",
+      "name": "did_compat",
+      "value": "s%3Av0%3Aede83b30-e7fb-11ec-b21b-0ffc7e1c8d1f.Z6ff%2F71t99IhIoYCX5BVa7YtFovZeZDfmD2gm4C0Ghc",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1686340591.515775,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "auth0_compat",
+      "value": "s%3Ab0AN7UucmUME4_NuGEMZi0ZJuKA6Wx4M.PHpRFRe0fJQ%2FSfOcXzf5JgJ3y2ixWS7LrSxxOOxB%2FQU",
+      "domain": "prosple.au.auth0.com",
+      "path": "/",
+      "expires": 1655042191.515795,
+      "httpOnly": true,
+      "secure": true
+    },
+    {
+      "sameSite": "Lax",
+      "name": "SSESS2cf15923804da3bca5ffc3388ea3c182",
+      "value": "1wDvzWT2XUB%2CcODhGW9yWUkzCKDlIa6cIZJcb%2C4u8FdUtovA",
+      "domain": ".cms.connect.prosple.com",
+      "path": "/",
+      "expires": 1656782992.928941,
+      "httpOnly": true,
+      "secure": true
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://cms.connect.prosple.com",
+      "localStorage": [
+        {
+          "name": "Drupal.toolbar.activeTabID",
+          "value": "\"toolbar-item-administration\""
+        }
+      ]
+    }
+  ]
+}
