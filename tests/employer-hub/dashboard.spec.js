@@ -47,4 +47,20 @@ test.describe('test after user successfully logged in', async () => {
             console.log(`${label} - ${page.url()}`)
         }
     })
+
+    // test to make sure that the news and updates is working
+    test('news and updates, click on title', async ({ page, context }) => {
+        await Promise.all([
+            context.waitForEvent("page"),
+            page.locator("//a[contains(@class, 'NewsAndUpdatesstyles__PostTitleLink-sc')]").first().click()
+        ])
+    })
+
+    // test to make sure that the news and updates is working
+    test('news and updates, click on read more button', async ({ page, context }) => {
+        await Promise.all([
+            context.waitForEvent("page"),
+            page.locator("a:has-text('Read more')").first().click()
+        ])
+    })
 })

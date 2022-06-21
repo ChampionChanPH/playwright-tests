@@ -381,7 +381,7 @@ test.describe("search job page tests for logged-in users", async () => {
         let random = getRandomNumber(1, countApply)
         await Promise.all([
             context.waitForEvent("page"),
-            await apply.nth(random - 1).click()
+            apply.nth(random - 1).click()
         ])
     })
 
@@ -450,7 +450,7 @@ test.describe("search job page tests for logged-in users", async () => {
     test("bookmark job from search jobs page", async ({ page }) => {
         const saveButton = page.locator("a.save")
         const countSaveButton = await saveButton.count()
-        let random = getRandomNumber(1, countSaveButton)
+        const random = getRandomNumber(1, countSaveButton)
         const employerListPage = await saveButton.nth(random - 1).locator("//ancestor::li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]//div[contains(@class, 'Logo__Wrapper-sc')]/p").innerText()
         const jobListPage = await saveButton.nth(random - 1).locator("//ancestor::li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]//a[contains(@class, 'JobTeaserstyle__JobTeaserTitleLink-sc')]").innerText()
         console.log("bookmarked employer:", employerListPage)

@@ -10,14 +10,13 @@ test.beforeEach(async ({ page }) => {
 // tests for the student hub footer
 test.describe('footer tests', async () => {
     // click on each of the social icons on the website
-    test.skip('test for the social icons on the website', async ({ page }) => {
-        const socialIcons = page.locator("div[data-testid=section] div.social-icons a")
+    test('test for the social icons on the website', async ({ page, context }) => {
+        await page.locator("div.social-icons a").nth(0).waitFor()
+        const socialIcons = page.locator("div.social-icons a")
         const countSocialIcons = await socialIcons.count()
         for (let index = 0; index < countSocialIcons; index++) {
-            const icon = await socialIcons.nth(index).getAttribute("href")
-            console.log(icon)
             await Promise.all([
-                page.waitForNavigation(),
+                context.waitForEvent("page"),
                 socialIcons.nth(index).click()
             ])
         }

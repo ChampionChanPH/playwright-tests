@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test')
 const { getRandomNumber } = require('../../common/common-functions')
+const { CompleteLogin } = require("../../common/common-classes")
 const data = require("../../common/common-details.json")
 
 test.beforeEach(async ({ page }) => {
@@ -99,5 +100,132 @@ test.describe('homepage tests', async () => {
                 menus.nth(index).click()
             ])
         }
+    })
+
+    // bookmark an employer and user is not logged in
+    // confirm that the login popup will show up and will be redirected to the login page
+    test('bookmark an employer, login via popup', async ({ page }) => {
+        const saveButton = page.locator("div.viewport--large div.organisation-card button.save")
+        const countSaveButton = await saveButton.count()
+        const random = getRandomNumber(1, countSaveButton)
+        await saveButton.nth(random - 1).click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Log in')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign in')")).toBeVisible()
+    })
+
+    // bookmark an employer and user is not logged in
+    // confirm that the login popup will show up and will be redirected to the signup page
+    test('bookmark an employer, signup via popup', async ({ page }) => {
+        const saveButton = page.locator("div.viewport--large div.organisation-card button.save")
+        const countSaveButton = await saveButton.count()
+        const random = getRandomNumber(1, countSaveButton)
+        await saveButton.nth(random - 1).click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Sign up')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign up with')")).toBeVisible()
+    })
+
+    // bookmark an article and user is not logged in
+    // confirm that the login popup will show up and will be redirected to the login page
+    test('bookmark an article, login via popup', async ({ page }) => {
+        const saveButton = page.locator("div.viewport--large").locator("//div[contains(@class, 'AdviceCardstyle__BaseAdviceCard-sc')]").locator("button.save")
+        const countSaveButton = await saveButton.count()
+        const random = getRandomNumber(1, countSaveButton)
+        await saveButton.nth(random - 1).click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Log in')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign in')")).toBeVisible()
+    })
+
+    // bookmark an article and user is not logged in
+    // confirm that the login popup will show up and will be redirected to the signup page
+    test('bookmark an article, signup via popup', async ({ page }) => {
+        const saveButton = page.locator("div.viewport--large").locator("//div[contains(@class, 'AdviceCardstyle__BaseAdviceCard-sc')]").locator("button.save")
+        const countSaveButton = await saveButton.count()
+        const random = getRandomNumber(1, countSaveButton)
+        await saveButton.nth(random - 1).click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("button:has-text('Sign up')").click()
+        ])
+        await expect(page.locator("h1:has-text('Sign up with')")).toBeVisible()
+    })
+})
+
+// tests on homepage that requires users to login
+test.describe("homepage tests for logged-in users", async () => {
+    // login process
+    test.beforeEach(async ({ page }) => {
+        const login = new CompleteLogin(page)
+        await login.studentHubLogin()
+    })
+
+    // bookmark an employer and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
+    test("bookmark employer from homepage", async ({ page }) => {
+        const employerCard = page.locator("div.viewport--large div.organisation-card")
+        const countEmployerCard = await employerCard.count()
+        const random = getRandomNumber(1, countEmployerCard)
+        const employerHomePage = await employerCard.nth(random - 1).locator("h3.heading a").innerText()
+        console.log("Bookmarked employer:", employerHomePage)
+        await employerCard.last().waitFor({ state: "visible" })
+        await employerCard.nth(random - 1).locator("a.save").click()
+        await employerCard.nth(random - 1).locator("span:has-text('Saved')").waitFor()
+        const textButton = await employerCard.nth(random - 1).locator("a.save span").last().innerText()
+        expect.soft(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Employers']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const employerBookmarked = await page.locator("h2.heading a").innerText()
+        expect.soft(employerBookmarked).toEqual(employerHomePage)
+        console.log("Saved employer:", employerBookmarked)
+        await page.locator("div.teaser__item a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Employers")
+    })
+
+    // bookmark an article and check that what was saved is correct
+    // FIXME: get rid of the waitfortimeout
+    test("bookmark article from homepage", async ({ page }) => {
+        const articleCard = page.locator("div.viewport--large").locator("//div[contains(@class, 'AdviceCardstyle__BaseAdviceCard-sc')]")
+        const countArticleCard = await articleCard.count()
+        const random = getRandomNumber(1, countArticleCard)
+        const articleHomePage = await articleCard.nth(random - 1).locator("//h5[contains(@class, 'AdviceCardstyle__AdviceHeading-sc')]/a").innerText()
+        console.log("Bookmarked article:", articleHomePage)
+        await articleCard.last().waitFor({ state: "visible" })
+        await articleCard.nth(random - 1).locator("a.save").click()
+        await articleCard.nth(random - 1).locator("span:has-text('Saved')").waitFor()
+        const textButton = await articleCard.nth(random - 1).locator("a.save span").last().innerText()
+        expect.soft(textButton).toEqual("Saved")
+        await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator('text=My Bookmarks').nth(1).click()
+        ])
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("//div[contains(@class, 'region--sidebar')]//a[text()='Advice']").click()
+        ])
+        await page.waitForTimeout(3000)
+        const articleBookmarked = await page.locator("h3.heading a").innerText()
+        expect.soft(articleBookmarked).toEqual(articleHomePage)
+        console.log("Saved article:", articleBookmarked)
+        await page.locator("a.save").click()
+        const message = await page.locator("h1.heading").innerText()
+        expect(message).toEqual("No Saved Articles")
     })
 })
