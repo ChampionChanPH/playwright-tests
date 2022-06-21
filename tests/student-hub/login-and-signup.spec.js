@@ -55,12 +55,10 @@ test.describe('signup tests on student hub', async () => {
         await page.click("//div[contains(@id, 'login-form')]//a[@class='open-signup']")
         await page.fill("input#given-name", data.firstName)
         await page.fill("input#family-name", data.lastName)
-        const random = getRandomNumber(1, 100)
-        await page.fill("input#email-signup", `testing.with.prosple+${random}@gmail.com`)
+        await page.fill("input#email-signup", `testing.with.prosple+1000@gmail.com`)
 
         await page.fill("input#password-signup", data.studentHubPass)
         await page.click("button#btn-signup")
-        console.log(`Email used: testing.with.prosple+${random}@gmail.com`)
         await page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
         await Promise.all([
             page.waitForNavigation(),
@@ -74,8 +72,8 @@ test.describe('signup tests on student hub', async () => {
             page.waitForNavigation(),
             page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
         ])
-        await page.fill("input#email", `christian.anasco+${random}@prosple.com`)
-        await page.fill("input#password", `Prosple1234`)
+        await page.fill("input#email", `testing.with.prosple+1000@gmail.com`)
+        await page.fill("input#password", data.studentHubPass)
         await page.click("button#btn-login")
         await expect(page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
     })

@@ -100,7 +100,7 @@ test.describe("user profile tests", async () => {
 
     // tests to perform on "More Information About You" section
     // FIXME: checkbox on "SEND ME INFORMATION ON RELEVANT CAREER & EDUCATION OPPORTUNITIES." is not working. commented out for now.
-    test("more information about you section", async ({ page }) => {
+    test.only("more information about you section", async ({ page }) => {
         const input = new Input(page)
         await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
         const moreInfo = page.locator("//h3[contains(@class, 'field-set__label') and text()='More Information About You']")
@@ -122,7 +122,7 @@ test.describe("user profile tests", async () => {
         const remove = form.locator("button.button:has-text('Remove')")
         const removeCount = await remove.count()
         for (let i = 0; i < removeCount; i++) {
-            await remove.nth(0).click()
+            await remove.first().click()
         }
         await form.locator("button.button:has-text('Add')").click()
         const language = await input.randomSelect("//select[@name='spokenLanguages.0.0']", false)

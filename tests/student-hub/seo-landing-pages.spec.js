@@ -169,7 +169,7 @@ test.describe('seo landing page tests', async () => {
         console.log(`chosen story: ${name} (${jobTitle})`)
         await Promise.all([
             page.waitForNavigation(),
-            stories.nth(random - 1).locator("//div[contains(@class, 'StorySnippetstyle__StorySnippetActions')]/a").first().click()
+            stories.nth(random - 1).locator("//div[contains(@class, 'StorySnippetstyle__StorySnippetActions')]/a[@data-event-track='cta-read-story']").first().click()
         ])
         const nameDetailPage = await page.locator("h1.heading").innerText()
         const jobTitleDetailPage = await page.locator("//div[contains(@class, 'StoryDetailstyle__Byline')]").innerText()

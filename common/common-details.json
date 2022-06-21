@@ -1,5 +1,5 @@
 {
-    "studentHubUrl": "https://revert-master.frontend.prosple.com",
+    "studentHubUrl": "https://gradaustralia.com.au",
     "studentHubEmail": "testing.with.prosple@gmail.com",
     "studentHubPass": "Prosple0000",
     "studentHubFBPass": "Prosple0000",
@@ -10,7 +10,7 @@
     "lastName": "Testing",
     "devMongoDb": "NQPUMTR1hrFnlyVv",
     "cmsUrl": "https://dev.cms.connect.prosple.com",
-    "cmsToFrontEndUrl": "https://revert-master.frontend.prosple.com",
+    "cmsToFrontEndUrl": "https://dev.frontend.prosple.com",
     "cmsEmail": "christian.anasco@prosple.com",
     "cmsPass": "Chan0228",
     "userId": "auth0|61fb93d73a1c94006a97447a"
