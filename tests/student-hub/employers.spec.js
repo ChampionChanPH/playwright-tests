@@ -146,7 +146,8 @@ test.describe('employer page tests', async () => {
     test("click review link to detail page", async ({ page }) => {
         const reviews = page.locator("//li[@class='list__item' and a[contains(text(), 'Read reviews')]]")
         const countReviews = await reviews.count()
-        let random = getRandomNumber(1, countReviews)
+        if (countReviews == 0) test.skip()
+        const random = getRandomNumber(1, countReviews)
         const employerListPage = await reviews.nth(random - 1).locator("//ancestor::div[contains(@class, 'section--rating')]/preceding-sibling::h2").innerText()
         await Promise.all([
             page.waitForNavigation(),
