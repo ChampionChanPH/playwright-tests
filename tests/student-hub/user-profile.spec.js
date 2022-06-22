@@ -100,7 +100,7 @@ test.describe("user profile tests", async () => {
 
     // tests to perform on "More Information About You" section
     // FIXME: checkbox on "SEND ME INFORMATION ON RELEVANT CAREER & EDUCATION OPPORTUNITIES." is not working. commented out for now.
-    test.only("more information about you section", async ({ page }) => {
+    test("more information about you section", async ({ page }) => {
         const input = new Input(page)
         await page.locator("//h3[contains(@class, 'field-set__label') and text()='Personal Details']").waitFor()
         const moreInfo = page.locator("//h3[contains(@class, 'field-set__label') and text()='More Information About You']")
