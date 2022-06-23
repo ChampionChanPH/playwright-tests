@@ -206,6 +206,7 @@ test.describe('search job page tests', async () => {
     test("click review link to detail page", async ({ page }) => {
         const reviews = page.locator("//div[contains(@class, 'JobTeaserstyle__Reviews-sc')]")
         const countReviews = await reviews.count()
+        if (countReviews == 0) test.skip()
         const random = getRandomNumber(1, countReviews)
         const employerListPage = await reviews.nth(random - 1).locator("//preceding-sibling::*[contains(@class, 'Logo__Wrapper-sc')]/p").innerText()
         await Promise.all([

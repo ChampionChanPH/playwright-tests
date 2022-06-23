@@ -32,4 +32,8 @@ test.describe('single page tests', async () => {
         await expect(page.locator("//h3[contains(@class, 'Webform__Heading-sc') and text()='Success!']")).toBeVisible()
         await page.locator("a.button:has-text('Sounds good')").click()
     })
+
+    test("confirm default location is working", async ({ page }) => {
+
+    })
 })
