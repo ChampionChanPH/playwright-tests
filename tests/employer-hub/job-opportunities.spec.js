@@ -771,17 +771,20 @@ test.describe('edit job opportunity', async () => {
         })
 
         // test for the opportunity located in the physical location
-        test('test for the opportunity located in the physical location', async ({ page }) => {
+        test.only('test for the opportunity located in the physical location', async ({ page }) => {
             const input = new Input(page)
             const currentValue = await page.locator("input[id=onSiteAvailableValue]").getAttribute('class')
             if (currentValue != "is-checked") await page.locator("label[for=onSiteAvailableValue]").click()
             await expect(page.locator("//label[text()='On-site work locations']")).toBeVisible()
             const label = page.locator("//span[label/text()='On-site work locations']/following-sibling::div")
-            await label.locator("//button[text()='Remove']").waitFor()
+            // await label.locator("//button[text()='Remove']").waitFor()
+            await page.locator("img.loading-spinner").last().waitFor({ state: 'hidden' })
             const remove = label.locator("//button[text()='Remove']")
             const removeCount = await remove.count()
-            for (let i = 0; i < removeCount; i++) {
-                await remove.nth(0).click()
+            if (removeCount > 0) {
+                for (let i = 0; i < removeCount; i++) {
+                    await remove.nth(0).click()
+                }
             }
             await label.locator("//button[text()='Add']").click()
             const location = await input.randomSelect("//span[label/text()='On-site work locations']/following-sibling::div//select[contains(@class, 'sc-khIgXV')]", false)
@@ -810,7 +813,8 @@ test.describe('edit job opportunity', async () => {
             if (currentValue != "is-checked") await page.locator("label[for=remoteAvailable]").click()
             await expect(page.locator("//label[text()='Remote work locations']")).toBeVisible()
             const label = page.locator("//span[label/text()='Remote work locations']/following-sibling::div")
-            await label.locator("//button[text()='Remove']").waitFor()
+            // await label.locator("//button[text()='Remove']").waitFor()
+            await page.locator("img.loading-spinner").last().waitFor({ state: 'hidden' })
             const remove = label.locator("//button[text()='Remove']")
             const removeCount = await remove.count()
             for (let i = 0; i < removeCount; i++) {
