@@ -771,7 +771,7 @@ test.describe('edit job opportunity', async () => {
         })
 
         // test for the opportunity located in the physical location
-        test.only('test for the opportunity located in the physical location', async ({ page }) => {
+        test('test for the opportunity located in the physical location', async ({ page }) => {
             const input = new Input(page)
             const currentValue = await page.locator("input[id=onSiteAvailableValue]").getAttribute('class')
             if (currentValue != "is-checked") await page.locator("label[for=onSiteAvailableValue]").click()

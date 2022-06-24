@@ -34,6 +34,12 @@ test.describe('single page tests', async () => {
     })
 
     test("confirm default location is working", async ({ page }) => {
-
+        await page.goto("https://id.prosple.com/")
+        await page.waitForSelector("div.viewport--normal a.logo")
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("li a:has-text('Cari kerja')").last().click()
+        ])
+        expect(page.url()).toContain("?locations=")
     })
 })
