@@ -33,7 +33,7 @@ test.describe('single page tests', async () => {
         await page.locator("a.button:has-text('Sounds good')").click()
     })
 
-    test.only("confirm default location is working", async ({ page }) => {
+    test("confirm default location is working", async ({ page }) => {
         let url = "https://id.prosple.com"
         if (data.studentHubUrl != "https://gradaustralia.com.au") url = data.studentHubUrl
         await page.goto(`${url}/search-jobs`)
