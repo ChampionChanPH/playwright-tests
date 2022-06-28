@@ -41,7 +41,7 @@ test.describe('single page tests', async () => {
         expect(page.url()).toContain("?locations=")
     })
 
-    test.only('user complete ve', async ({ page }) => {
+    test('user complete ve', async ({ page }) => {
         test.skip(data.studentHubUrl == "https://gradaustralia.com.au", "skip if it's a live testing")
         const virtualExperience = new VirtualExperience()
         await virtualExperience.deleteRegistration()

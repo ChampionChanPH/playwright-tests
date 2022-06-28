@@ -66,7 +66,7 @@ test.describe('tests for creating contents on CMS', async () => {
     // add employer content via group section
     // skip if prod site for now
     // test skipped because the employer is not showing up at all, delay for a couple of minutes
-    test.skip('employer creation', async ({ page }) => {
+    test('employer creation', async ({ page }) => {
         test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
         await page.goto(data.cmsUrl + "/group/6/content/create/group_node%3Aemployer")
         await page.locator("summary[aria-controls=edit-group-basic-details]").click()
@@ -111,7 +111,6 @@ test.describe('tests for creating contents on CMS', async () => {
         await searchbox.locator("span.icon--search").click()
         await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
         const jobTitles = await page.locator("h2.heading a").allInnerTexts()
-        await page.waitForTimeout(10000)
         console.log(jobTitles)
         expect(jobTitles.includes(`Tester Company LLC - ${random}`)).toBeTruthy()
     })
