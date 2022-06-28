@@ -1,3 +1,4 @@
+const { test, expect } = require('@playwright/test')
 const { MongoClient, ServerApiVersion } = require('mongodb')
 const data = require("./common-details.json")
 const { getRandomNumber } = require("./common-functions")
@@ -56,14 +57,29 @@ class CompleteLogin {
             this.page.waitForNavigation(),
             this.page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
         ])
-        await this.page.click("//div[@id='signup-message']//a[@class='open-signup']")
+        await this.page.click("//div[@id='login-form']//a[@class='open-signup']")
         await this.page.fill("input#given-name", firstName)
         await this.page.fill("input#family-name", lastName)
         await this.page.fill("input#email-signup", `testing.with.prosple+${email}@gmail.com`)
         await this.page.fill("input#password-signup", data.studentHubPass)
         await this.page.click("button#btn-signup")
         await this.page.hover("//button[@class='toggle-trigger']//span[contains(@class, 'icon--profile')]")
-        console.log(`"${this.browserName}"`)
+        await Promise.all([
+            this.page.waitForNavigation(),
+            this.page.locator('text=My Account').nth(1).click()
+        ])
+        await this.page.click("//button[@data-testid='cancel-modal-trigger']")
+        await this.page.click('text=Yes, I understand that cancelled accounts are not recoverable')
+        await this.page.click('text=Stop receiving communications from GradAustralia and all other Prosple sites')
+        await this.page.click("//button[@data-testid='cancel-button']")
+        await Promise.all([
+            this.page.waitForNavigation(),
+            this.page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
+        ])
+        await this.page.fill("input#email", `testing.with.prosple+${email}@gmail.com`)
+        await this.page.fill("input#password", data.studentHubPass)
+        await this.page.click("button#btn-login")
+        await expect(this.page.locator("//div[contains(@class, 'error-message') and text()='Wrong email or password.']")).toBeVisible()
     }
 }
 
