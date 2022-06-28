@@ -11,7 +11,7 @@ class CompleteLogin {
     async studentHubLogin() {
         await Promise.all([
             this.page.waitForNavigation(),
-            this.page.locator("//a[contains(@class, 'AuthMenustyle__SignInButton-sc-yhrlvv-3')]").nth(1).click()
+            this.page.locator("a.AuthMenustyle__SignInButton-sc-yhrlvv-3").nth(1).click()
         ])
         await this.page.fill("input#email", data.studentHubEmail)
         await this.page.fill("input#password", data.studentHubPass)
