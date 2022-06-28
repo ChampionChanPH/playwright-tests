@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium]
+        browser: [chromium, firefox, webkit]
     timeout-minutes: 60
     runs-on: windows-latest # macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'
@@ -29,35 +29,9 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
-    - uses: actions/upload-artifact@v2
+    - name: Upload test results
       if: always()
-      with:
-        name: ${{ matrix.browser }}-test-only
-        path: test-results
-        retention-days: 30
-  test-mac:
-    name: "Windows - Firefox"
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [firefox]
-    timeout-minutes: 60
-    runs-on: windows-latest # macos-latest, ubuntu-latest
-    # if: github.event.deployment_status.state == 'success'
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v2
-      if: always()
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.browser }}-test-only
         path: playwright-report
-        retention-days: 30
