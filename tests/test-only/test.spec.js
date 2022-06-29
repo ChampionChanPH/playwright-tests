@@ -10,7 +10,7 @@ test.beforeAll(async ({ browserName }, workerInfo) => {
 test.describe('signup tests on student hub', async () => {
     // user successfully sign up for an account in the student hub by providing some personal details
     // after successful signup, close the account and check that the credentials won't work when tried to login
-    test.only('successful user signup', async ({ page, browserName }) => {
+    test('successful user signup', async ({ page, browserName }) => {
         const login = new CompleteLogin(page, browserName)
         await login.signUp()
     })
