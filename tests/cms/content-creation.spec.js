@@ -21,7 +21,7 @@ test.describe('tests for creating contents on CMS', async () => {
         await timezone.click()
         await timezone.locator("input.chosen-search-input").type("Sydney")
         await timezone.locator("li em:has-text('Sydney')").click()
-        await page.locator("input[data-drupal-selector=edit-field-parent-employer-0-target-id]").fill("Prosple (27021)")
+        await page.locator("input[data-drupal-selector=edit-field-parent-employer-0-target-id]").fill("Tester Company (47384)")
         await page.locator("summary[aria-controls=edit-group-opportunity-details]").click()
         const jobType = page.locator("div#edit-field-opportunity-types label")
         const jobTypeCount = await jobType.count()
