@@ -57,12 +57,12 @@ const config = {
       },
     },
 
-    {
-      name: 'Desktop Firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-      },
-    },
+    // {
+    //   name: 'Desktop Firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //   },
+    // },
 
     // {
     //   name: 'Safari',

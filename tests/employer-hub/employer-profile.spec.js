@@ -29,7 +29,7 @@ test.describe('test for employer profile on the employer hub', async () => {
 
         // first check for error when user input blank organisation name
         // then edit the organisation name successfully
-        test('edit organisation name', async ({ page }) => {
+        test.skip('edit organisation name', async ({ page }) => {
             await page.fill("input[name=title]", "")
             await page.click("button.button span:has-text('Save')")
             await expect(page.locator("span.icon--danger")).toBeVisible()
