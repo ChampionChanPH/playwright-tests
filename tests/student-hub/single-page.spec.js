@@ -9,7 +9,8 @@ const doc = "./resources/blank.docx"
 // tests on single page tests only
 test.describe('single page tests', async () => {
     // test the apply webform on the jobs page
-    test("apply webform submission", async ({ page }) => {
+    // test is only for webform with the category set to application
+    test("apply webform submission - application category", async ({ page }) => {
         await page.goto(data.studentHubUrl + "/graduate-employers/prosple/jobs-internships/prosple-summer-internship-program")
         await page.waitForSelector("div.viewport--normal a.logo")
         await page.locator("a[data-event-track=cta-webform]").first().click()
