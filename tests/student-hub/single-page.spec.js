@@ -103,4 +103,14 @@ test.describe('single page tests', async () => {
         status = await page.locator("div[data-testid=virtual-experience-status-badge] p").innerText()
         expect(status).toEqual("COMPLETED")
     })
+
+    test.only('check for console errors', async ({ page }) => {
+        await page.goto("https://dev.frontend.prosple.com/")
+        await page.waitForSelector("div.viewport--normal a.logo")
+        page.on('console', msg => {
+            console.log(`msg: ${msg}`)
+            if (msg.type() === 'error')
+                console.log(`Error text: "${msg.text()}"`);
+        });
+    })
 })

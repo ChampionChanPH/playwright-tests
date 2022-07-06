@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
-    timeout-minutes: 60
+    timeout-minutes: 120
     runs-on: windows-latest # macos-latest, ubuntu-latest
     # if: github.event.deployment_status.state == 'success'
     steps:
