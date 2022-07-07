@@ -11,7 +11,7 @@ test.use({
 test.describe('e2e tests for adding jobs in cms to frontend', async () => {
     // add job content via group section
     // skip if prod site for now
-    test.only('add jobs with only the required fields', async ({ page }) => {
+    test('add jobs with only the required fields', async ({ page }) => {
         test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
         await page.goto(data.cmsUrl + "/group/6/content/create/group_node%3Acareer_opportunity")
         await page.locator("summary[aria-controls=edit-group-basic-details]").click()
@@ -63,9 +63,8 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         expect(jobTitles.includes(`Prosple Summer Internship Program - ${random}`)).toBeTruthy()
     })
 
-    // add job content via group section
-    // skip if prod site for now
-    test('add jobs with only the required fields', async ({ page }) => {
+    // include application open date when adding the cms
+    test('add jobs with application open date, no time', async ({ page }) => {
         test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
 
     })

@@ -37,6 +37,26 @@ test.describe('homepage tests', async () => {
         // })
     })
 
+    test('confirm that the keyword search is working', async ({ page }) => {
+        const keyword = "Internship"
+        const url = "https://theuniguide.com.au"
+        if (data.studentHubUrl == "https://gradaustralia.com.au") {
+            await page.goto(url)
+            await page.waitForSelector("div.viewport--normal a.logo")
+        }
+        await page.locator("input#keyword-search").fill(keyword)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click("//button[contains(@class, 'SearchBannerstyle__StyledButton-sc')]")
+        ])
+        await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
+        const filter = page.locator("//div[contains(@class, 'viewport viewport--normal')]//div[contains(@class, 'FacetInputTextstyle__FacetInputText-sc')]")
+        const keywordFilter = filter.locator("//button[@class='toggle-trigger' and contains(h4/text(), 'Search by ')]/following-sibling::*[@class='toggle-target']")
+        const term = await keywordFilter.locator("input[name=facet--input-text--fulltext]").inputValue()
+        expect(term).toEqual(keyword)
+        expect(page.url()).toContain(`fulltext=${keyword}`)
+    })
+
     // check individual pages and see if they are working
     test.slow('confirm if pages are available on the website', async ({ page }) => {
         // const checkJobs = await page.locator("//li[@class='menu__item']/a[@href='/search-jobs']").isVisible()
