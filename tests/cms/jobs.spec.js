@@ -571,6 +571,7 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
     })
 })
 
+// tests to open an existing job and do some updates and check in the frontend that the new data is showing up correctly.
 test.describe('e2e tests for updating job contents in cms to frontend', async () => {
 
 })
