@@ -525,7 +525,7 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         await page.locator("//div[@role='contentinfo' and @aria-label='Error message']").isVisible()
     })
 
-    // skip if prod site for now 
+    // skip if prod site for now
     // add job and select date range as expected start date and leave the end date field blank
     test('add job and date range as expected start date but leave end date field blank', async ({ page }) => {
         test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
