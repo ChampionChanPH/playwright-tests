@@ -428,9 +428,9 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         expect(jobTitles.includes(`Prosple Summer Internship Program - ${random}`)).toBeTruthy()
         const index = jobTitles.indexOf(`Prosple Summer Internship Program - ${random}`)
         const jobs = page.locator("//li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]").nth(index)
-        await jobs.locator("a.button--type-apply:has-text('Apply on employer site')").waitFor()
-        await expect(jobs.locator("a.button--type-apply")).toBeVisible()
-        const link = await jobs.locator("a.button--type-apply").getAttribute("href")
+        await jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply') and text()='Apply on employer site']").waitFor()
+        await expect(jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]")).toBeVisible()
+        const link = await jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]").getAttribute("href")
         expect(link).toEqual(applyLink)
     })
 
