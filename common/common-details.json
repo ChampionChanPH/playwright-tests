@@ -1,5 +1,5 @@
 {
-    "studentHubUrl": "https://gradaustralia.com.au",
+    "studentHubUrl": "https://pfe-2357.frontend.prosple.com",
     "studentHubEmail": "testing.with.prosple@gmail.com",
     "studentHubPass": "Prosple0000",
     "studentHubFBPass": "Prosple0000",
@@ -10,7 +10,7 @@
     "lastName": "Testing",
     "devMongoDb": "NQPUMTR1hrFnlyVv",
     "cmsUrl": "https://dev.cms.connect.prosple.com",
-    "cmsToFrontEndUrl": "https://dev.frontend.prosple.com",
+    "cmsToFrontEndUrl": "https://pfe-2357.frontend.prosple.com",
     "cmsToEmployerHubUrl": "https://dev.portal.prosple.com",
     "cmsEmail": "christian.anasco@prosple.com",
     "cmsPass": "Chan0228",
