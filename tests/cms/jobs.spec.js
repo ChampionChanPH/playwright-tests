@@ -125,7 +125,7 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         expect(jobTitles.includes(`Prosple Summer Internship Program - ${random}`)).toBeTruthy()
         const index = jobTitles.indexOf(`Prosple Summer Internship Program - ${random}`)
         const jobs = page.locator("//li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]").nth(index)
-        await expect(jobs.locator("a.button--type-apply")).toBeVisible()
+        await expect(jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]")).toBeVisible()
     })
 
     // include later application open date when adding a job in cms
@@ -188,7 +188,7 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         expect(jobTitles.includes(`Prosple Summer Internship Program - ${random}`)).toBeTruthy()
         const index = jobTitles.indexOf(`Prosple Summer Internship Program - ${random}`)
         const jobs = page.locator("//li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]").nth(index)
-        await expect(jobs.locator("a.button--type-apply")).not.toBeVisible()
+        await expect(jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]")).not.toBeVisible()
     })
 
     // include application close date when adding a job in cms
