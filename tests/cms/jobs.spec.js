@@ -399,7 +399,7 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         await location.locator("input.chosen-search-input").type("Australia")
         await location.locator("li em:text('Australia')").first().click()
         await page.locator("summary[aria-controls=edit-group-application-details]").click()
-        await page.locator("input[data-drupal-selector=edit-field-apply-by-url-0-uri]").fill(applyLink)
+        await page.locator("input[data-drupal-selector=edit-field-apply-by-url-0-uri]").fill(`${applyLink}/${random}`)
         await page.locator("summary[aria-controls=edit-group-requirements]").click()
         const studyField = page.locator("div#edit-field-study-field span.fancytree-checkbox")
         const studyFieldCount = await studyField.count()
@@ -428,10 +428,10 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
         expect(jobTitles.includes(`Prosple Summer Internship Program - ${random}`)).toBeTruthy()
         const index = jobTitles.indexOf(`Prosple Summer Internship Program - ${random}`)
         const jobs = page.locator("//li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]").nth(index)
-        await jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply') and text()='Apply on employer site']").waitFor()
+        await jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]").waitFor()
         await expect(jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]")).toBeVisible()
         const link = await jobs.locator("//*[self::a or self::button][contains(@class, 'button--type-apply')]").getAttribute("href")
-        expect(link).toEqual(applyLink)
+        expect(link).toEqual(`${applyLink}/${random}`)
     })
 
     // skip if prod site for now
@@ -830,6 +830,62 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
 })
 
 // tests to open an existing job and do some updates and check in the frontend that the new data is showing up correctly.
-test.describe('e2e tests for updating job contents in cms to frontend', async () => {
+test.describe.skip('e2e tests for updating job contents in cms to frontend', async () => {
+    // skip if prod site for now 
+    // update the opportunity name of the job then confirm data is correct in frontend
+    test('update opportunity name', async ({ page }) => {
+        test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
+        await page.goto(data.cmsUrl + "/node/47748/edit")
+        await page.locator("summary[aria-controls=edit-group-basic-details]").click()
+        const random = getRandomCharacters(6)
+        await page.locator("input[data-drupal-selector=edit-title-0-value]").fill(`Prosple Test Opportunity - ${random}`)
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("input[data-drupal-selector=edit-submit]").click()
+        ])
+        await page.locator("//div[@role='contentinfo' and @aria-label='Status message']").waitFor()
+        await page.goto(`${data.cmsToFrontEndUrl}/search-jobs?defaults_applied=1`)
+        await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
+        const jobTitles = await page.locator("//a[contains(@class, 'JobTeaserstyle__JobTeaserTitleLink-sc')]").allInnerTexts()
+        console.log(jobTitles)
+        expect(jobTitles.includes(`Prosple Test Opportunity - ${random}`)).toBeTruthy()
+    })
 
+    test('update opportunity type', async ({ page }) => {
+        test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
+        await page.goto(data.cmsUrl + "/node/47748/edit")
+        await page.locator("summary[aria-controls=edit-group-opportunity-details]").click()
+        const jobCheckbox = page.locator("div#edit-field-opportunity-types input")
+        const jobCheckboxCount = await jobCheckbox.count()
+        for (let index = 0; index < jobCheckboxCount; index++) {
+            const value = await jobCheckbox.nth(index).getAttribute("checked")
+            if (value == "checked") {
+                await jobCheckbox.nth(index).click()
+            }
+        }
+        holder = []
+        const jobType = page.locator("div#edit-field-opportunity-types label")
+        const jobTypeCount = await jobType.count()
+        for (let index = 0; index < jobTypeCount; index++) {
+            const random = getRandomNumber(1, 10)
+            if (random >= 5) {
+                const label = await jobType.nth(index).innerText()
+                holder.push(label)
+                await jobType.nth(index).click()
+            }
+        }
+
+        const randomJobType = getRandomNumber(1, jobTypeCount)
+        await jobType.nth(randomJobType - 1).click()
+        await Promise.all([
+            page.waitForNavigation(),
+            page.locator("input[data-drupal-selector=edit-submit]").click()
+        ])
+        await page.locator("//div[@role='contentinfo' and @aria-label='Status message']").waitFor()
+        await page.goto(`${data.cmsToFrontEndUrl}/search-jobs?defaults_applied=1`)
+        await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
+        const jobTitles = await page.locator("//a[contains(@class, 'JobTeaserstyle__JobTeaserTitleLink-sc')]").allInnerTexts()
+        console.log(jobTitles)
+        expect(jobTitles.includes(`Prosple Test Opportunity - ${random}`)).toBeTruthy()
+    })
 })
