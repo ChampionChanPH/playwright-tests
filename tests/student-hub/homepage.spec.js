@@ -57,10 +57,17 @@ test.describe('homepage tests', async () => {
         expect(page.url()).toContain(`fulltext=${keyword}`)
     })
 
+    // check the 404 page
+    test('confirm that 404 page is working', async ({ page }) => {
+        const [response] = await Promise.all([
+            page.waitForResponse(`${data.studentHubUrl}/404`),
+            page.goto(`${data.studentHubUrl}/404`),
+        ])
+        expect.soft(response.status()).toBeGreaterThan(400)
+    })
+
     // check individual pages and see if they are working
     test.slow('confirm if pages are available on the website', async ({ page }) => {
-        // const checkJobs = await page.locator("//li[@class='menu__item']/a[@href='/search-jobs']").isVisible()
-        // console.log("Value is:", checkJobs)
         const [homepage_response] = await Promise.all([
             page.waitForResponse(data.studentHubUrl),
             page.goto(data.studentHubUrl),
