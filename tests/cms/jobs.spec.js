@@ -830,7 +830,7 @@ test.describe('e2e tests for adding jobs in cms to frontend', async () => {
 })
 
 // tests to open an existing job and do some updates and check in the frontend that the new data is showing up correctly.
-test.describe.skip('e2e tests for updating job contents in cms to frontend', async () => {
+test.describe('e2e tests for updating job contents in cms to frontend', async () => {
     // skip if prod site for now 
     // update the opportunity name of the job then confirm data is correct in frontend
     test('update opportunity name', async ({ page }) => {
@@ -855,6 +855,7 @@ test.describe.skip('e2e tests for updating job contents in cms to frontend', asy
         test.skip(data.cmsUrl == "https://cms.connect.prosple.com", "skip if it's a live testing")
         await page.goto(data.cmsUrl + "/node/47748/edit")
         await page.locator("summary[aria-controls=edit-group-opportunity-details]").click()
+        const name = await page.locator("input[data-drupal-selector=edit-title-0-value]").inputValue()
         const jobCheckbox = page.locator("div#edit-field-opportunity-types input")
         const jobCheckboxCount = await jobCheckbox.count()
         for (let index = 0; index < jobCheckboxCount; index++) {
@@ -868,15 +869,14 @@ test.describe.skip('e2e tests for updating job contents in cms to frontend', asy
         const jobTypeCount = await jobType.count()
         for (let index = 0; index < jobTypeCount; index++) {
             const random = getRandomNumber(1, 10)
-            if (random >= 5) {
+            if (random > 5) {
                 const label = await jobType.nth(index).innerText()
                 holder.push(label)
                 await jobType.nth(index).click()
             }
         }
-
-        const randomJobType = getRandomNumber(1, jobTypeCount)
-        await jobType.nth(randomJobType - 1).click()
+        const combineJobType = holder.join(", ")
+        console.log(combineJobType)
         await Promise.all([
             page.waitForNavigation(),
             page.locator("input[data-drupal-selector=edit-submit]").click()
@@ -886,6 +886,11 @@ test.describe.skip('e2e tests for updating job contents in cms to frontend', asy
         await page.locator("span:has-text('Updating Results')").last().waitFor({ state: "hidden" })
         const jobTitles = await page.locator("//a[contains(@class, 'JobTeaserstyle__JobTeaserTitleLink-sc')]").allInnerTexts()
         console.log(jobTitles)
-        expect(jobTitles.includes(`Prosple Test Opportunity - ${random}`)).toBeTruthy()
+        expect(jobTitles.includes(name)).toBeTruthy()
+        const index = jobTitles.indexOf(name)
+        const jobs = page.locator("//li[contains(@class, 'SearchResultsstyle__SearchResult-sc')]").nth(index)
+        const badge = await jobs.locator("//div[contains(@class, 'JobTeaserstyle__JobTeaserBadge-sc')]/p").innerText()
+        expect(badge).toEqual(combineJobType)
+        console.log(badge)
     })
 })
