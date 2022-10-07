@@ -9,7 +9,7 @@ Simply download it from their website: [Node JS](https://nodejs.org/). Once you 
 
 Once you have the repository cloned, open a new terminal and run the command below:
 
-`npm install`
+`playwright install`
 
 The line above will download all of the dependencies you needed to start creating or updating tests.
 
